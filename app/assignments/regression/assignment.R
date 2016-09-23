@@ -24,19 +24,19 @@ getData <- function(seed, secret, extra = ""){
 	df$ID = factor(1:N)
 	
 	
-	z = random.set(N)
+	z = random.set(N, x.mean = 50, x.sd = 10, y.mean = 1000, y.sd = 200)
 	df$stress.before.test1 = z$data$x
 	df$score.test1 = z$data$y
 	types[1] = z$type
 	texts[1] = z$text
 	
-	z = random.set(N)
+	z = random.set(N, x.mean = 100, x.sd = 15, y.mean = 50, y.sd = 10)
 	df$IQ = z$data$x
 	df$cognitive.task2 = z$data$y
 	types[2] = z$type
 	texts[2] = z$text
 	
-	z = random.set(N)
+	z = random.set(N, x.mean = 10, x.sd = 3, y.mean = 2000, y.sd = 400)
 	df$practice.task2 = z$data$x
 	df$response.time.task2 = z$data$y
 	types[3] = z$type
@@ -67,9 +67,9 @@ getAssignment <- function(seed, secret, assignmentDir = NULL, solutions = FALSE)
 
 ############ Helper functions
 
-random.set = function(N = 150){
+random.set = function(N = 150, ...){
   type = sample(c("linear","none","nonmonotone","nonlinear"), 1)
-  df = make.set(type = type, N = N)
+  df = make.set(type = type, N = N, ... )
   if( type == "nonmonotone"){
     correl = NA
     text = "The relationship strong but it is not monotone. A correlation is not an appropriate statistic for characterizing this relationship."
@@ -104,15 +104,15 @@ random.set = function(N = 150){
   list(data = df, type = type, text = text)
 }
 
-make.set = function(type="linear", N = 150){
+make.set = function(type="linear", N = 150, ...){
   switch(type,
-         linear = make.linear(N),
-         nonlinear = make.nonlinear(N),
-         nonmonotone = make.nonmonotone(N),
-         none = make.linear(N, TRUE))
+         linear = make.linear(N, ...),
+         nonlinear = make.nonlinear(N, ...),
+         nonmonotone = make.nonmonotone(N, ...),
+         none = make.linear(N, TRUE, ...))
 }
 
-make.nonlinear <- function(N){
+make.nonlinear <- function(N, x.mean=0, x.sd = 1, y.mean = 0, y.sd = 1 ){
   x = runif(N,0,100)
   x=sort(x)
   x0 = (x - min(x))/sd(x)
@@ -126,10 +126,12 @@ make.nonlinear <- function(N){
   }
   y = 50 + y0 + rnorm(y0,0,err.sd)
   
+  y = rescale(y, y.mean, y.sd)
+  x = rescale(x, x.mean, x.sd)
   return(data.frame(x=x,y=y))
 }
 
-make.nonmonotone <- function(N){
+make.nonmonotone <- function(N, x.mean=0, x.sd = 1, y.mean = 0, y.sd = 1){
   x = runif(N,0,100)
   x0 = (x - mean(x))/sd(x)
   y0 = x0^2
@@ -139,10 +141,13 @@ make.nonmonotone <- function(N){
   }
   err.sd = diff(range(y0))/10
   y = 5*(y0 + rnorm(y0,0,err.sd))
+  
+  y = rescale(y, y.mean, y.sd)
+  x = rescale(x, x.mean, x.sd)
   return(data.frame(x=x,y=y))
 }
 
-make.linear <- function(N, no.cor=FALSE){
+make.linear <- function(N, no.cor=FALSE, x.mean=0, x.sd = 1, y.mean = 0, y.sd = 1){
   x = rnorm(N,50,15)
   x0 = (x - mean(x))/sd(x)
   slp = (rbeta(1, 2, 2)*2 - 1) * (1 - no.cor)
@@ -150,8 +155,13 @@ make.linear <- function(N, no.cor=FALSE){
   
   err.sd = ifelse(no.cor,10,diff(range(y0))/runif(1,0,10))
   y = 5*(y0 + rnorm(y0,0,err.sd))
+  
+  y = rescale(y, y.mean, y.sd)
+  x = rescale(x, x.mean, x.sd)
   return(data.frame(x=x,y=y))
 }
 
-
+rescale = function(x, mean=0, sd=1){
+  as.vector(scale(x))*sd + mean
+}
 
