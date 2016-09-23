@@ -1,0 +1,216 @@
+---
+title: "Regression assignment"
+author: "Richard D. Morey"
+date: "22 September 2016"
+output:
+  html_document:
+      dev: svg
+  html_fragment:
+      dev: svg
+---
+
+```{r include=FALSE}
+# This chunk allows standalone compilation
+if(!exists("assignment")){
+  seed = 124
+  secret = "dgnvo"
+  source("assignment.R")
+  source("../../settings.R")
+  solutions = FALSE
+}
+
+```
+
+`r assignment`
+-----
+
+*Note: This is only a portion of the assigment. See Learning Central for the complete assignment.*
+
+```{r include=FALSE}
+knitr::opts_chunk$set(fig.width=5,fig.height=5)
+
+require(stargazer)
+require(broom)
+all.data = getData(seed, secret, assignment)
+myData = all.data[['data']]
+infoData = all.data[['info']]
+
+```
+
+
+The (fictional) data set for this assignment has ten columns. The names, along with their descriptions, appear in the table below.
+
+Variable name | Description
+--------------|----------------
+`ID` | Person identifier 
+`stress.before.test1` | Self-rated stress before a particular vocabulary test 
+`score.test1` |  Score on a particular vocabulary test
+`IQ` | Intelligence quotient
+`cognitive.task2` | Accuracy on a particular cognitive task
+`practice.task2` | Amount of practice on cognitive task in days
+`response.time.task2` | Average response time on cognitive task
+`college.math` | Score on a standardized college entrance math exam
+`score.math.course1` | Mark in first high school math course      
+`score.math.course2` | Mark in second high school math course        
+
+## Question 1
+
+Load the data set into SPSS. For each of the pairs of variables below, create a scatterplot, choosing the correct dependent and independent variables for the axes. Describe the pattern you see in each of the scatterplots, and for each one, choose one of the following measures of the strength of the correlation:
+
+* Pearson's $r$
+* Kendall's $\tau$
+* None (correlation is inappropriate)
+
+### Relationship A
+
+Suppose we are interested in predicting a student's score on their vocabulary test from the stress they experienced before that test. Describe the relationship in terms of form, strength, and direction (if applicable). Calculate the appropriate correlation coefficient (if any).
+
+
+```{r echo=FALSE,fig.cap="Relationship A",include=solutions}
+
+par(las=1,mar=c(3.5,3.5,4,.5),mgp=c(2.5,1,0))
+
+x = myData$stress.before.test1
+y = myData$score.test1
+
+plot(x, y, ylab="score.test1",xlab="stress.before.test1",pch=1, main="Relationship A")
+rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4], col = 
+rgb(0,0,0,.05))
+points(x,y)
+```
+
+```{r results='asis',echo=FALSE,include=solutions}
+cat("#### Solution, Relationship A\n",
+    infoData$texts[1])
+```
+
+### Relationship B
+
+Suppose we are interested in predicting a student's score on the cognitive task from their IQ. Describe the relationship in terms of form, strength, and direction (if applicable). Calculate the appropriate correlation coefficient (if any).
+
+```{r echo=FALSE,fig.cap="Relationship B",include=solutions}
+
+par(las=1,mar=c(3.5,3.5,4,.5),mgp=c(2.5,1,0))
+
+x = myData$IQ
+y = myData$cognitive.task2
+
+plot(x, y, ylab="cognitive.task2",xlab="IQ",pch=1, main="Relationship B")
+rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4], col = 
+rgb(0,0,0,.05))
+points(x,y)
+```
+
+```{r results='asis',echo=FALSE,include=solutions}
+cat("#### Solution, Relationship B\n",
+    infoData$texts[2])
+```
+
+### Relationship C
+
+Suppose we are interested in predicting a student's response time on the cognitive task from the amount of time they practiced on the cognitive task. Describe the relationship in terms of form, strength, and direction (if applicable). Calculate the appropriate correlation coefficient (if any).
+
+```{r echo=FALSE,fig.cap="Relationship C",include=solutions}
+
+par(las=1,mar=c(3.5,3.5,4,.5),mgp=c(2.5,1,0))
+
+x = myData$practice.task2
+y = myData$response.time.task2
+
+plot(x, y, ylab="response.time.task2",xlab="practice.task2",pch=1, main="Relationship C")
+rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4], col = 
+rgb(0,0,0,.05))
+points(x,y)
+```
+
+```{r results='asis',echo=FALSE,include=solutions}
+cat("#### Solution, Relationship C\n",
+    infoData$texts[3])
+```
+
+
+## Question 2 
+
+Perform a linear regression analysis, regressing the college entrance exam math score onto the second high school math course score (that is, the `score.math.course2` will be the independent variable).
+
+### a) 
+
+Create a scatterplot. 
+
+```{r echo=FALSE,results='asis',include=solutions}
+cat("#### Solution\n\n")
+```
+
+```{r echo=FALSE,include=solutions}
+par(las=1,mar=c(3.5,3.5,4,.5),mgp=c(2.5,1,0))
+
+x = myData$score.math.course2
+y = myData$college.math
+
+plot(x, y, ylab="score.test1",xlab="score.math.course2",pch=1, main="Entrance score from second course mark")
+rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4], col = 
+rgb(0,0,0,.05))
+points(x,y)
+#abline(lm(y~x))
+
+```
+
+### b) 
+
+How well does the `score.math.course2` predict scores on the college entrance exam? Report a Pearson $r$ or Kendall's $\tau$ correlation, as appropriate, as well as a $p$ value on the slope of the relationship.
+
+```{r results='asis',echo=FALSE,include=solutions}
+cat("#### Solution
+The typical correlation coefficient one would use here is Pearson's $r$, which is $r=",round(cor(x,y),3),"$. Kendall's $\\tau$ is also possible; $\\tau= ",round(cor(x,y,method="kendall"),3),"$.",
+sep="")
+```
+
+```{r echo=FALSE,results="asis",include=solutions}
+    res = lm(college.math ~ score.math.course2, data=myData)
+    knitr::kable(tidy(res),digits = 4, format = "html", table.attr = "class=\"anovatab\"")
+```
+
+## Question 3 
+
+Suppose we which to try to predict peoples' college entrance scores more accurately, and we add `score.math.course1` as a second predictor (independent variable). 
+
+### a) 
+
+First perform the linear regression analysis with only `score.math.course1` as the independent variable, then perform the linear regression analysis with *both* high school math courses as predictors.
+
+```{r echo=FALSE, results='asis', echo=FALSE,include=solutions}
+res = lm(college.math ~ score.math.course1, dat=myData)
+
+cat("#### Solution\n\n")
+
+    knitr::kable(tidy(res),digits = 4, format = "html", table.attr = "class=\"anovatab\"")
+```
+
+```{r echo=FALSE}
+res = lm(college.math ~ score.math.course1 + score.math.course2, dat=myData)
+```
+
+Report $p$ values for both slopes. 
+
+```{r results='asis',echo=FALSE,include=solutions}
+cat("#### Solution\n\n")
+
+    knitr::kable(tidy(res),digits = 4, format = "html", table.attr = "class=\"anovatab\"")
+```
+
+### b) 
+
+Report $R^2$ and adjusted $R^2$. 
+
+```{r results='asis',echo=FALSE,include=solutions}
+cat("#### Solution\n")
+
+stargazer::stargazer(res, type = 'html')
+
+
+```
+
+
+
+
+

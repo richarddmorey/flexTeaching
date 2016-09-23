@@ -1,0 +1,49 @@
+---
+title: "Summary statistics"
+author: "Richard D. Morey"
+date: "22 September 2016"
+output:
+  html_document:
+      dev: svg
+  html_fragment:
+      dev: svg
+---
+
+```{r include=FALSE}
+# This chunk allows standalone compilation
+if(!exists("assignment")){
+  seed = 124
+  secret = "dgnvo"
+  source("assignment.R")
+  source("../../settings.R")
+  solutions = FALSE
+}
+
+```
+
+`r assignment`
+-----
+
+```{r include=FALSE}
+knitr::opts_chunk$set(fig.width=5,fig.height=5)
+
+require(xtable)
+```
+
+
+This is a test.
+
+
+```{r echo=FALSE, results = 'asis', include=solutions}
+    myData = getData(seed, secret, assignment)
+    res = t(as.matrix(summary(myData[,1])))
+    knitr::kable(res, digits = 4, format = "html", table.attr = "class=\"anovatab\"")
+```
+
+
+
+```{r, echo=FALSE}
+hist(myData$y)
+```
+
+This is the end.

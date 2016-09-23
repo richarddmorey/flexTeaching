@@ -1,0 +1,108 @@
+---
+title: "Check your assignments"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: row
+    css: css/assignments.css
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+require(flexdashboard)
+
+read.secret.from.file = FALSE
+
+source('settings.R')
+assignments = getAssignments()
+tmp = new.env()
+values = reactiveValues(assignment_list = list())
+
+```
+
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+
+```{r}
+
+selectInput("assignment", label="Assignment", 
+            choices = assignments)
+
+textInput("seed", label = "ID number:", width = "150px", placeholder = "2049324", value = "2049324")
+
+if(!read.secret.from.file){
+  textInput("secret", label = "Secret:", width = "150px", placeholder = "s3Cr34", value = "s3Cr34")
+}
+
+selectInput("data_format", label="Data format", 
+            choices = c("SPSS","Excel","R data","csv"))
+
+checkboxInput("hide_table", label="Hide answers?", value = FALSE)
+
+getSecret <- function(){
+  s = readLines("secret")
+  cat(getwd(),"\n")
+  ifelse(read.secret.from.file, s[length(s)],input$secret)
+}
+
+observeEvent(input$assignment,{
+  
+  source(
+    paste0("assignments/",input$assignment,"/assignment.R"),
+    local = tmp)
+  
+  values$assignment_list = as.list(tmp)
+  
+})
+
+
+```
+
+
+Row  {data-height=60}
+------------------------------------
+    
+    
+
+### Data 
+    
+```{r}
+
+renderUI({
+  
+  secret = getSecret()
+  assignmentDir = paste0("assignments/",input$assignment)
+  assignment_time(assignmentDir, secret)
+  
+  str = getURIdata(input$seed, secret, input$data_format, values$assignment_list)
+  HTML(str)
+})
+```
+
+
+Row 
+-------------------------------------
+    
+### Assignment
+    
+```{r}
+
+renderUI({
+
+  secret = getSecret()
+  assignmentDir = paste0("assignments/",input$assignment)
+  assignment_time(assignmentDir, secret)
+  
+  res = values$assignment_list$getAssignment(input$seed, secret, assignmentDir, solutions = !input$hide_table)
+  
+  return(withMathJax(includeHTML(res)))
+
+  
+})
+
+```
+   
+
+    
+
+

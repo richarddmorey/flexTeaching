@@ -1,0 +1,100 @@
+---
+title: "Computing residuals in SPSS"
+author: "Richard D. Morey"
+date: "22 September 2016"
+output:
+  html_document:
+      dev: svg
+  html_fragment:
+      dev: svg
+---
+
+```{r include=FALSE}
+# This chunk allows standalone compilation
+if(!exists("assignment")){
+  seed = 124
+  secret = "dgnvo"
+  source("assignment.R")
+  source("../../settings.R")
+  solutions = FALSE
+}
+
+```
+
+`r assignment`
+-----
+
+
+```{r include=FALSE}
+knitr::opts_chunk$set(fig.width=5,fig.height=5)
+
+require(stargazer)
+require(broom)
+all.data = getData(seed, secret, assignment)
+myData = all.data[['data']]
+infoData = all.data[['info']]
+```
+
+
+The (fictional) data set for this assignment has two columns, `x` and `y`. 
+
+## Part 1: Linear regression
+
+Load the data set into SPSS. Create a scatterplot with `x` and `y` as the independent and dependent variables respectively. Describe the pattern you see and choose one of the following measures of the strength of the correlation:
+
+* Pearson's $r$
+* Kendall's $\tau$
+* None (correlation is inappropriate)
+
+*Regardless of whether linear correlation is appropriate*, use SPSS to add the least squares linear regression line.
+
+### Step by step in SPSS
+
+
+```{r echo=FALSE,fig.cap="Scatterplot",include=solutions}
+
+par(las=1,mar=c(3.5,3.5,4,.5),mgp=c(2.5,1,0))
+
+x = myData$x
+y = myData$y
+
+res = lm(y~x)
+
+plot(x, y, ylab="y",xlab="x",pch=1, main="Scatterplot")
+rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4], col = 
+rgb(0,0,0,.05))
+points(x,y)
+abline(res)
+```
+
+```{r results='asis',echo=FALSE,include=solutions}
+cat("#### Solution\n",
+    infoData$text)
+```
+
+
+## Part 2: residuals
+
+```{r echo=FALSE,fig.cap="Residuals",include=solutions}
+
+par(las=1,mar=c(3.5,3.5,4,.5),mgp=c(2.5,1,0))
+
+plot(x, res$residuals, ylab="Residuals",xlab="x",pch=1, main="Residuals")
+rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4], col = 
+rgb(0,0,0,.05))
+points(x,res$residuals)
+abline(h=0,lty=2)
+lines(lowess(res$residuals~x), col="red", lty=2)
+```
+
+### Step by step in SPSS
+
+
+```{r include=FALSE, eval=FALSE}
+# This is a test of the plotly engine, which doesn't seem to work
+# right now due to this being in an html_fragment
+library(plotly)
+plot_ly(iris, x = ~Sepal.Length, y = ~Petal.Length)
+```
+
+
