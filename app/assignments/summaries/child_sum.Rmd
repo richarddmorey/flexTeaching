@@ -1,0 +1,8 @@
+\[
+\begin{eqnarray}
+\sum_{i=1}^N x_i &=& x_1 + x_2 + \ldots + x_N\\
+&=&`r paste(x,collapse = ' + ')`\\
+&=&`r sum(x)`
+\end{eqnarray}
+\]
+

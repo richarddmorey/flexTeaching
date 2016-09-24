@@ -52,35 +52,14 @@ There are three steps to computing a sample mean: Sum all the values, divide the
 
 First, add up all the values.
 
-```{r, echo=FALSE,include=solutions,results="asis"}
-cat("
-\\[
-\\begin{eqnarray}
-\\sum_{i=1}^N x_i&=& x_1 + x_2 + \\ldots + x_N\\\\
-&=&",
-paste(x,collapse = " + "),"\\\\\n",
-"&=&",sum(x),
-"
-\\end{eqnarray}
-\\]
-",sep="")
+```{r echo=FALSE,eval=solutions,child="child_sum.Rmd"}
 ```
 
 ### 2. Divide by the number of elements
 
 Now take the sum you computed in the last step, and divide it by $N$, the total number of elements.
 
-```{r, echo=FALSE,include=solutions,results="asis"}
-cat("
-\\[
-\\begin{eqnarray}
-\\frac{\\sum_{i=1}^Nx_i}{N} &=& \\frac{",sum(x),"}{",N,"}\\\\
-&=&",
-mean(x),
-"
-\\end{eqnarray}
-\\]
-",sep="")
+```{r echo=FALSE,eval=solutions,child="child_divideN.Rmd"}
 ```
 
 ### 3. Interpret the result
@@ -91,14 +70,7 @@ The mean is has several interpretations. It is:
 * The value for which the sum of the deviations from that value is exactly 0.
 * The value that minimizes the squared deviations from it.
 
-
-```{r, echo=FALSE,include=solutions,results="asis"}
-cat("Below, the mean is represented graphically as a vertical red line with the data points in blue.")
+```{r echo=FALSE,eval=solutions,child="child_plotMean.Rmd"}
 ```
 
 
-```{r, echo=FALSE, fig.height=2,include=solutions}
-plot(x, 0*x,ylab="", xlab="x",axes=FALSE, pch=19,col=rgb(0,0,1,.5))
-axis(1)
-abline(v=mean(x),col="red",lwd=2)
-```

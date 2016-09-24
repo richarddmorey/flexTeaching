@@ -1,0 +1,7 @@
+Below, the mean is represented graphically as a vertical red line with the data points in blue.
+
+```{r, echo=FALSE, fig.height=2}
+plot(x, 0*x,ylab="", xlab="x",axes=FALSE, pch=19,col=rgb(0,0,1,.5))
+axis(1)
+abline(v=mean(x),col="red",lwd=2)
+```

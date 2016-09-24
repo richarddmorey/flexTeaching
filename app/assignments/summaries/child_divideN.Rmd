@@ -1,0 +1,6 @@
+\[
+\begin{eqnarray}
+\frac{\sum_{i=1}^Nx_i}{N} &=& \frac{ `r sum(x)` }{ `r N` }\\
+&=&`r mean(x)`
+\end{eqnarray}
+\]
