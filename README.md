@@ -28,22 +28,31 @@ There are two ways of seeing how it works.
 Data download interface: http://richarddmorey.shinyapps.io/test/download.Rmd <br/>
 Solutions/practice interface: http://richarddmorey.shinyapps.io/test/solve.Rmd
 
+Try changing the student ID or secret and seeing how the solutions change in the solutions/practice interface. Remember to untick the "Hide answers?" box to see the solutions.
+
 ### 2. Get the repository and try it out.
 
-To run:
-    
+Just download the repository and run the corresponding `.Rmd` file in the Rstudio interface. 
+
+![Run button](http://learnbayes.org/images/flexTeach/run.png)
+
+
+The button may say "knit" the first time you run it; that's ok, just click it. You may have to install the packages listed below before it will run.
+
     ## Install necessary packages
-    install.packages(c("shiny","rmarkdown","stargazer","broom","xtable",
+     install.packages(c("shiny","rmarkdown","stargazer","broom","xtable",
          "flexdashboard","digest","base64enc","haven","xlsx",
          "lubridate"), dep=TRUE)
-    
+
+Without Rstudo:
+
+    ## You may need to install the packages above 
     setwd('/PATH/TO/REPOSITORY/app')
     # For data download interface
     rmarkdown::run('download.Rmd')
     # For solutions interface
     rmarkdown::run('solve.Rmd')
 
-**OR (much easier)** just run the corresponding `.Rmd` file in the Rstudio interface, assuming you have the proper packages installed.
     
 ## How can I help?
 
