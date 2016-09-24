@@ -37,7 +37,7 @@ if(!read.secret.from.file){
 selectInput("data_format", label="Data format", 
             choices = c("SPSS","Excel","R data","csv"))
 
-checkboxInput("hide_table", label="Hide answers?", value = FALSE)
+checkboxInput("hide_table", label="Hide answers?", value = TRUE)
 
 getSecret <- function(){
   s = readLines("secret")

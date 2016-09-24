@@ -2,7 +2,9 @@ assignment = "summaries"
 
 getData <- function(seed, secret, extra = ""){
   set.seed.alpha(paste0(seed, secret, extra))
-	data.frame(y = rnorm(50))
+	N = sample(5:15,1)
+	
+  data.frame(x = round(runif(N,1,99)))
 }
  
 getAssignment <- function(seed, secret, assignmentDir = NULL, solutions = FALSE){

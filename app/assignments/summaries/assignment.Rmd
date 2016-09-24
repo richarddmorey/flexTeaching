@@ -28,22 +28,77 @@ if(!exists("assignment")){
 knitr::opts_chunk$set(fig.width=5,fig.height=5)
 
 require(xtable)
+x = getData(seed, secret, assignment)$x
+N = length(x)
+
 ```
 
 
-This is a test.
+Suppose you have a sample of $N=`r N`$ random values, and you'd like to compute the summary statistics for the sample.
 
-
-```{r echo=FALSE, results = 'asis', include=solutions}
-    myData = getData(seed, secret, assignment)
-    res = t(as.matrix(summary(myData[,1])))
+```{r echo=FALSE, results = 'asis'}
+    res = matrix(x,nrow=1)
+    colnames(res) = paste("$x_{",1:N,"}$", sep="")
     knitr::kable(res, digits = 4, format = "html", table.attr = "class=\"anovatab\"")
 ```
 
+First, we compute the mean.
 
+## Compute the sample mean
 
-```{r, echo=FALSE}
-hist(myData$y)
+There are three steps to computing a sample mean: Sum all the values, divide the sum by the total number of elements, then interpret the result.
+
+### 1. Compute the sum
+
+First, add up all the values.
+
+```{r, echo=FALSE,include=solutions,results="asis"}
+cat("
+\\[
+\\begin{eqnarray}
+\\sum_{i=1}^N x_i&=& x_1 + x_2 + \\ldots + x_N\\\\
+&=&",
+paste(x,collapse = " + "),"\\\\\n",
+"&=&",sum(x),
+"
+\\end{eqnarray}
+\\]
+",sep="")
 ```
 
-This is the end.
+### 2. Divide by the number of elements
+
+Now take the sum you computed in the last step, and divide it by $N$, the total number of elements.
+
+```{r, echo=FALSE,include=solutions,results="asis"}
+cat("
+\\[
+\\begin{eqnarray}
+\\frac{\\sum_{i=1}^Nx_i}{N} &=& \\frac{",sum(x),"}{",N,"}\\\\
+&=&",
+mean(x),
+"
+\\end{eqnarray}
+\\]
+",sep="")
+```
+
+### 3. Interpret the result
+
+The mean is has several interpretations. It is:
+
+* Informally, a value in the "middle" of the data values.
+* The value for which the sum of the deviations from that value is exactly 0.
+* The value that minimizes the squared deviations from it.
+
+
+```{r, echo=FALSE,include=solutions,results="asis"}
+cat("Below, the mean is represented graphically as a vertical red line with the data points in blue.")
+```
+
+
+```{r, echo=FALSE, fig.height=2,include=solutions}
+plot(x, 0*x,ylab="", xlab="x",axes=FALSE, pch=19,col=rgb(0,0,1,.5))
+axis(1)
+abline(v=mean(x),col="red",lwd=2)
+```
