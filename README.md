@@ -37,14 +37,14 @@ Just download the repository and run the corresponding `.Rmd` file in the Rstudi
 ![Run button](http://learnbayes.org/images/flexTeach/run.png)
 
 
-The button may say "knit" the first time you run it; that's ok, just click it. You may have to install the packages listed below before it will run.
+The button may say "knit" the first time you run it; that's ok, just click it. You might have to install the packages listed below before it will run.
 
     ## Install necessary packages
      install.packages(c("shiny","rmarkdown","stargazer","broom","xtable",
          "flexdashboard","digest","base64enc","haven","xlsx",
          "lubridate"), dep=TRUE)
 
-Without Rstudo:
+Without Rstudio:
 
     ## You may need to install the packages above 
     setwd('/PATH/TO/REPOSITORY/app')
