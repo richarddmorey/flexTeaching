@@ -1,7 +1,41 @@
 # flexTeaching
 Use rstudio shiny+flexdashboard to create random stats assignments
 
+## What is this?
+
+The flexTeaching app is an interface which allows the creation and deployment of lessons and assignments that include personalized random data, based on a random seed based on their student ID.
+
+[![Screenshot](http://learnbayes.org/images/flexTeach/flexTeach1_tn.png)](http://learnbayes.org/images/flexTeach/flexTeach1.png)
+
+*Students* can download their personalized data sets and see the assignment. *Assignment markers* can obtain the solutions specific to that student using their ID plus the secret in use at the time the student downloaded the data set. *Students* can obtain solutions to exercises with other randomized data sets for practice.
+
+*New assignments* can be built and placed in the `assignments` directory, and they will be automatically picked up by the app.
+ 
+Benefits:
+* Every student's assignment is unique
+* Markers who know the secret can get the solutions to a student's exercises
+* Students who do not know the secret can still generate an infinite number of practice exercises
+* The student's practice exercises can include the solutions. The solutions can be hidden by the student until needed
+
+ 
+## How can I play with the app?
+
+There are two ways of seeing how it works. 
+
+### 1. Demo
+
+#### Check out the demo on shinyapps.io.
+Data download interface: http://richarddmorey.shinyapps.io/test/download.Rmd <br/>
+Solutions/practice interface: http://richarddmorey.shinyapps.io/test/solve.Rmd
+
+### 2. Get the repository and try it out.
+
 To run:
+    
+    ## Install necessary packages
+    install.packages(c("shiny","rmarkdown","stargazer","broom","xtable",
+         "flexdashboard","digest","base64enc","haven","xlsx",
+         "lubridate"), dep=TRUE)
     
     setwd('/PATH/TO/REPOSITORY/app')
     # For data download interface
@@ -9,19 +43,17 @@ To run:
     # For solutions interface
     rmarkdown::run('solve.Rmd')
 
-OR just run the corresponding `.Rmd` file in the Rstudio interface, assuming you have the proper packages installed.
+**OR (much easier)** just run the corresponding `.Rmd` file in the Rstudio interface, assuming you have the proper packages installed.
     
-The solutions interface looks like this:
+## How can I help?
 
-[![Screenshot](http://learnbayes.org/images/flexTeach/flexTeach1_tn.png)](http://learnbayes.org/images/flexTeach/flexTeach1.png)
+You can help in three ways:
+* *Create new assignments.* Use the included example assignments to generate new assignments and contribute them back to the project.
+* *Report/fix bugs.* While you're creating a new assignment, you may find a bug. Please report it in the GitHub issues and/or fix it and make a pull request.
+* *Add new features.* The project is very new. No doubt there are many features that could be added to make it more useful to you and others. Please contribute!
 
-The data set for each assignment is generated randomly based on the student's ID and the secret. This has several benefits:
 
-* Every student's assignment is unique
-* Markers who know the secret can get the solutions to a student's exercises
-* Students who do not know the secret can still generate an infinite number of practice exercises
-* The student's practice exercises can include the solutions. The solutions can be hidden by the student until needed
 
-Assignments can simply be dropped in the `app/assignments` directory and the interface will automatically pick them up. New assignments consist of, essentially, a data generating function, an `Rmd` file that is included as an `html_fragment`, and any helper functions that might be needed.
+## Current limitations
 
-The `html_fragment` assignments are flexible; however, a current limitation is that I do not know how to include the proper HTML dependencies for nice features like `plotly` and other `htmlwidgets`.
+The `html_fragment` assignments are flexible; however, a current limitation is that I do not know how to include the proper HTML dependencies for nice features like `plotly` and other `htmlwidgets`. Hopefully we'll figure out a way around this.
