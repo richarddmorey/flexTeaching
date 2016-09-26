@@ -38,3 +38,5 @@ vignettes/*.pdf
 *.Rproj
 
 app/rsconnect*
+
+rsconnect/shinyapps.io/richarddmorey/test.dcf

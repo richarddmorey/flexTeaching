@@ -48,6 +48,10 @@ When you load the data into SPSS, you should see something like the screenshot b
 
 <img src="images/img_1.png" style="width: 720px; border: 2px solid black;"/>
 
+
+---------
+
+
 ### 1. Create a Scatterplot
 
 * Start the "Chart builder" from the SPSS menu.
@@ -95,6 +99,8 @@ cat("#### Solution\n",
 <img src="images/img_10a.png" style="width: 400px; border: 2px solid black;"/>
 
 
+-------
+
 ### 2. Perform a linear regression analysis
 
 We now perform the regression analysis. 
@@ -129,6 +135,7 @@ knitr::kable(tidy(res),digits = 4, format = "html", table.attr = "class=\"anovat
 
 <img src="images/img_5a.png" style="width: 400px; border: 2px solid black;"/>
 
+---------
 
 ## Part 3: Plot the residuals
 
@@ -156,5 +163,14 @@ lines(lowess(res$residuals~x), col="red", lty=2)
 
 <img src="images/img_11a.png" style="width: 400px; border: 2px solid black;"/>
 
-<br/>
 
+----------
+
+## Part 4. Interpret the residuals
+
+The residuals show how well the linear regression captures the relationship in the data. Ideally, we want residuals that show no systematic trends, such as curvilinearity or increasing/decreasing variance. A residual plot is often useful for magnifying any misfit of the regression line.
+
+```{r echo=FALSE,child="child_sidebyside.Rmd",eval=solutions}
+```
+
+<br/><br/>
