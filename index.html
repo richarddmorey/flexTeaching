@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="flexTeaching : Use rstudio flexdashboards to create random stats assignments">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>flexTeaching</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/richarddmorey/flexTeaching">View on GitHub</a>
+
+          <h1 id="project_title">flexTeaching</h1>
+          <h2 id="project_tagline">Use rstudio flexdashboards to create random stats assignments</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/richarddmorey/flexTeaching/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/richarddmorey/flexTeaching/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h3>
+<a id="what-is-flexteaching" class="anchor" href="#what-is-flexteaching" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>What is flexTeaching?</h3>
+
+<p><a href="https://github.com/richarddmorey/flexTeaching">flexTeaching</a> is a teaching tool for creating and deploying lessons and assignments that include personalized random data, based on a random seed based on their student ID. It is based on <a href="http://shiny.rstudio.com">Rstudio’s shiny</a> and <a href="http://rmarkdown.rstudio.com/flexdashboard/index.html">flexsdashboard</a>.</p>
+
+<h3>
+<a id="see-it-in-action" class="anchor" href="#see-it-in-action" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>See it in action</h3>
+
+<p>Go to the solutions <a href="http://richarddmorey.shinyapps.io/test/solve.Rmd">demo</a>, choose the "summaries" assignment, and uncheck "Hide answers?". Notice that the solutions appear within the document. Now change the student ID or the secret, and see how the data set, and the solutions, change. If you change the student ID or secret back to what it was, you will see that the data and solutions are the same as they were.</p>
+
+<h3>
+<a id="how-does-it-work" class="anchor" href="#how-does-it-work" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How does it work?</h3>
+
+<p>A student goes to the data download interface (<a href="http://richarddmorey.shinyapps.io/test/download.Rmd">demo</a>) and selects an assignment. They then enter their unique ID (e.g., student ID). They can then read the assignment and download a randomly-generated data set that is specific to them. The data is generated using a secret that the student does not know (but markers do; the current secret is "wombat").</p>
+
+<p>One the student has turned in their assignment, a marker can then go to the solution interface (<a href="http://richarddmorey.shinyapps.io/test/solve.Rmd">demo</a>) and input the student's ID number, along with the secret that was used to generate the data. If they uncheck "Hide answers?" they can view the assignment along with the solutions specific to that student.</p>
+
+<p>The students can also access the solutions interface (<a href="http://richarddmorey.shinyapps.io/test/solve.Rmd">demo</a>), but because they don't know the secret they do not get the solutions to <em>their</em> data set. But they can download a new data set and see the solutions for that data set. By changing the ID and the secret in the solutions interface, they can obtain as many practice data sets as they like.</p>
+
+<h3>
+<a id="how-can-i-try-making-my-own-assignment" class="anchor" href="#how-can-i-try-making-my-own-assignment" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How can I try making my own assignment?</h3>
+
+<p>Making an new assignment is easy.</p>
+
+<h4>
+<a id="1-get-the-repository" class="anchor" href="#1-get-the-repository" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1. Get the repository</h4>
+
+<p>If you know how to use GitHub, fork the repository. If not, download the repository and unzip the file.</p>
+
+<h4>
+<a id="2-create-a-new-assignment" class="anchor" href="#2-create-a-new-assignment" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>2. Create a new assignment</h4>
+
+<p>Duplicate the folder <code>app/assignments/summaries</code> in the same folder; call it anything else, say, "summaries2".</p>
+
+<h4>
+<a id="3-install-the-necessary-packages" class="anchor" href="#3-install-the-necessary-packages" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>3. Install the necessary packages</h4>
+
+<p>Run this line of code in R/RStudio:</p>
+
+<pre><code> install.packages(c("shiny","rmarkdown","stargazer","broom","xtable",
+ "flexdashboard","digest","base64enc","haven","xlsx",
+ "lubridate"), dep=TRUE)
+</code></pre>
+
+<h4>
+<a id="4-start-the-flexteaching-app" class="anchor" href="#4-start-the-flexteaching-app" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>4. Start the flexTeaching app</h4>
+
+<p>Open <code>solve.Rmd</code> in RStudio and click "Knit" or "Run document" (depending on what it says in your interface).</p>
+
+<p><img src="http://learnbayes.org/images/flexTeach/run.png" alt='Click "Knit" or "Run document"'></p>
+
+<p>You should see your "new" assignment listed in the assignment box. Selecting it should give you the same output as the summaries" assignment.</p>
+
+<h4>
+<a id="5-edit-the-data-generating-function" class="anchor" href="#5-edit-the-data-generating-function" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>5. Edit the data generating function</h4>
+
+<p>Open <code>assignments.R</code> in your new assignment's folder, and edit the <code>getData</code> function so that it returns a <code>data.frame</code> with random. Do not change the <code>set.seed.alpha</code> line.</p>
+
+<h4>
+<a id="6-edit-the-assignment-markdown" class="anchor" href="#6-edit-the-assignment-markdown" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>6. Edit the assignment markdown</h4>
+
+<p>Open <code>assignments.Rmd</code> file. On code chunks that should only be output when solutions are requested, use the arguments <code>eval=solutions</code> or <code>include=solutions</code>. The former does not run the chunk, the latter runs it but does not make the results visible.</p>
+
+<h4>
+<a id="7-restart-the-interface" class="anchor" href="#7-restart-the-interface" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>7. Restart the interface</h4>
+
+<p>Open <code>solve.Rmd</code> in RStudio and click "Knit" or "Run document". You should be able to see the changes you made to your assignment. Uncheck the "Hide answers?" box to see the solutions.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">flexTeaching maintained by <a href="https://github.com/richarddmorey">richarddmorey</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
