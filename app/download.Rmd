@@ -4,6 +4,8 @@ output:
   flexdashboard::flex_dashboard:
     orientation: row
     css: css/assignments.css
+    includes:
+      in_header: tmp/headers.html
 runtime: shiny
 ---
 
@@ -13,6 +15,8 @@ require(flexdashboard)
 read.secret.from.file = TRUE
 
 source('settings.R')
+writeHeaders("tmp/headers.html")
+
 assignments = getAssignments()
 tmp = new.env()
 values = reactiveValues(assignment_list = list())

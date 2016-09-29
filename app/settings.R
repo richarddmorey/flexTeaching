@@ -113,3 +113,41 @@ assignment_time = function(assignmentDir, secret, tz = "Europe/London"){
   return(can_do)
 }
 
+writeHeaders = function( file ){
+  
+  assignments = getAssignments()
+  html.content = NULL
+  
+  allTags = htmltools::tagList()
+  
+  for(a in assignments){
+    
+    # CSS
+    fs = dir(paste0("assignments/",a,"/include/css/"), full.names = TRUE)
+    for(f in fs){
+      allTags = htmltools::tagAppendChild( allTags, htmltools::tags$link(href=f,rel="stylesheet",type="text/css") )
+    }
+    
+    # JS
+    fs = dir(paste0("assignments/",a,"/include/js/"), full.names = TRUE)
+    for(f in fs){
+      allTags = htmltools::tagAppendChild( allTags, htmltools::tags$script(src=f, type="text/javascript") )
+    }    
+    
+    # HTML
+    fs = dir(paste0("assignments/",a,"/include/html/"), full.names = TRUE)
+    for(f in fs){
+      lns = readLines(f)
+      html.content = paste(html.content,lns,sep = "\n")
+    }    
+    
+  }
+  
+  all.content = paste(html.content,as.character(allTags),sep="\n")
+  writeLines( all.content, con = file )
+  
+  invisible(NULL)
+  
+}
+
+
