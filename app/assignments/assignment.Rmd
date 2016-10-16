@@ -1,0 +1,56 @@
+---
+title: "Summary statistics"
+author: "Richard D. Morey"
+date: "22 September 2016"
+output:
+  html_document:
+      dev: svg
+  html_fragment:
+      dev: svg
+---
+
+```{r include=FALSE}
+# This chunk allows standalone compilation
+if(!exists("assignment")){
+  seed = 124
+  secret = "dgnvo"
+  source("assignment.R")
+  source("../../settings.R")
+  solutions = FALSE
+}
+
+```
+
+`r assignment`
+-----
+
+```{r include=FALSE}
+knitr::opts_chunk$set(fig.width=5,fig.height=5)
+
+require(xtable)
+dat = getData(seed, secret, assignment)
+
+```
+
+
+```{r results='asis',echo=FALSE,include=solutions}
+cat("#### Solutions\n")
+```
+
+
+```{r echo=FALSE,eval=solutions,child="child_calcMeans.Rmd"}
+```
+
+```{r echo=FALSE,eval=solutions,child="child_plotMeans.Rmd"}
+```
+```{r results='asis',echo=FALSE,include=solutions}
+res_aov = aov(Data ~ FactorA*FactorB, data = dat)
+## DM:work around, stargazer did not recognize object returned  by summary, so converted it to df!
+df_aov=data.frame(unclass(summary(res_aov)), check.names = FALSE, stringsAsFactors = FALSE)
+stargazer::stargazer(df_aov, summary=FALSE, type = 'html') 
+```
+
+```{r echo=FALSE,eval=solutions,child="child_PES.Rmd"} 
+# Partial Eta Squared Problem
+```
+

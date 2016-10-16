@@ -1,0 +1,56 @@
+
+
+```{r, echo=FALSE, fig.height=6}
+library(ggplot2)
+mnA1B1 = mean(dat$Data[dat$FactorA=="A" & dat$FactorB=="A"])
+mnA2B1 = mean(dat$Data[dat$FactorA=="B" & dat$FactorB=="A"])
+mnA1B2 = mean(dat$Data[dat$FactorA=="A" & dat$FactorB=="B"])
+mnA2B2 = mean(dat$Data[dat$FactorA=="B" & dat$FactorB=="B"])
+mnA1B3 = mean(dat$Data[dat$FactorA=="A" & dat$FactorB=="C"])
+mnA2B3 = mean(dat$Data[dat$FactorA=="B" & dat$FactorB=="C"])
+
+sdA1B1 = sd(dat$Data[dat$FactorA=="B" & dat$FactorB=="A"])
+sdA2B1 = sd(dat$Data[dat$FactorA=="B" & dat$FactorB=="A"])
+sdA1B2 = sd(dat$Data[dat$FactorA=="A" & dat$FactorB=="B"])
+sdA2B2 = sd(dat$Data[dat$FactorA=="B" & dat$FactorB=="B"])
+sdA1B3 = sd(dat$Data[dat$FactorA=="A" & dat$FactorB=="C"])
+sdA2B3 = sd(dat$Data[dat$FactorA=="B" & dat$FactorB=="C"])
+
+
+#tapped_Means <- tapply(dfs$Means, list(df$FA, dfs$FB), function(x) c(x = x))
+#tapped_SDs <- tapply(dfs$SDs, list(df$FA, df$FB), function(x) c(x = x))
+
+var.names = c("Means", "SDs" , "FA", "FB")
+S = matrix( NA, nrow = 6, ncol = length(var.names))
+dfs = data.frame(S)
+colnames(dfs) = var.names
+dfs$Means = c(mnA1B1, mnA2B1, mnA1B2, mnA2B2, mnA1B3, mnA2B3)
+dfs$SDs = c(sdA1B1, sdA2B1, sdA1B2, sdA2B2, sdA1B3, sdA2B3)
+#dfs$FA = c(1, 2, 1, 2, 1, 2)
+#dfs$FB = c(1, 1, 2, 2, 3, 3)
+
+
+plotTop <- max(dfs$Means + max(dfs$SDs) *2)
+
+
+names = c("Levels_A1B1", "Levels_A2B1", "Levels_A1B2", "Levels_A2B2", "Levels_A1B3", "Levels_A2B3")
+barCenters <- barplot(height = dfs$Means,
+                  names.arg = names,
+                  beside = true, las = 2,
+                  ylim = c(0, plotTop),
+                  cex.names = 0.75, xaxt = "n",
+                  main = "Summary graph of the data (Means, SDs):",
+                  ylab = "Data",
+                  border = "black", axes = TRUE)
+
+text(x = barCenters, y = par("usr")[3] - 1, srt = 45,
+     adj = 1, labels = names, xpd = TRUE)
+
+segments(barCenters, dfs$Means - dfs$SDs , barCenters,
+         dfs$Means + dfs$SDs, lwd = 2)
+
+arrows(barCenters, dfs$Means - dfs$SDs, barCenters,
+       dfs$Means + dfs$SDs, lwd = 2, angle = 90,
+       code = 3, length = 0.1)
+
+```

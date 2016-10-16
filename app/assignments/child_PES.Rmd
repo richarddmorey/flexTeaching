@@ -1,0 +1,39 @@
+
+
+
+Partial Eta-Squared for Factor A: 
+```{r, echo=FALSE, fig.height=6}
+# Partical Eta Squared Calculation for Factor A and B. 
+# 0.01 to 0.06 = small     
+# 0.06 to 0.14 = medium   
+# > 0.14 = large effect size 
+
+
+SS<-summary(res_aov)[[1]][["Sum Sq"]]
+SS_A = SS[1]/(SS[1] + SS[3])
+knitr::kable(SS_A, digits = 2, format = "html", table.attr = "class=\"anovatab\"")
+
+if (SS_A<=0.06){
+  cat("Small Effect Size for Factor A!\n")
+}else if (0.14>=SS_A & SS_A>0.06){
+  cat("Medium Effect Size for Factor A!\n")
+}else {
+  cat("Large Effect Size for Factor A!\n")
+}
+
+```
+
+Partial Eta-Squared for Factor B: 
+```{r, echo=FALSE, fig.height=6}
+SS_B = SS[2]/(SS[2] + SS[3])
+knitr::kable(SS_B, digits = 2, format = "html", table.attr = "class=\"anovatab\"")
+
+if (SS_B<=0.06){
+  cat("Small Effect Size for Factor B!\n")
+}else if (0.14>=SS_B & SS_B>0.06){
+  cat("Medium Effect Size for Factor B!\n")
+}else {
+  cat("Large Effect Size for Factor B!\n")
+}
+
+```
