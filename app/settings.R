@@ -125,20 +125,23 @@ writeHeaders = function( file ){
     # CSS
     fs = dir(paste0("assignments/",a,"/include/css/"), full.names = TRUE)
     for(f in fs){
-      allTags = htmltools::tagAppendChild( allTags, htmltools::tags$link(href=f,rel="stylesheet",type="text/css") )
+      lns = paste(readLines(f),collapse="\n")
+      allTags = htmltools::tagAppendChild( allTags, htmltools::tags$style(lns,type="text/css") )
     }
     
     # JS
     fs = dir(paste0("assignments/",a,"/include/js/"), full.names = TRUE)
     for(f in fs){
-      allTags = htmltools::tagAppendChild( allTags, htmltools::tags$script(src=f, type="text/javascript") )
+      lns = paste(readLines(f),collapse="\n")
+      allTags = htmltools::tagAppendChild( allTags, htmltools::tags$script(lns, type="text/javascript") )
     }    
     
     # HTML
     fs = dir(paste0("assignments/",a,"/include/html/"), full.names = TRUE)
     for(f in fs){
-      lns = readLines(f)
-      html.content = paste(html.content,lns,sep = "\n")
+      lns = pastereadLines(f)
+      html.content = paste(html.content, lns, 
+                           sep = "\n", collapse="\n")
     }    
     
   }

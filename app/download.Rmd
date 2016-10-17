@@ -3,7 +3,7 @@ title: "Generate your data"
 output: 
   flexdashboard::flex_dashboard:
     orientation: row
-    css: css/assignments.css
+    css: ["css/assignments.css"]
     includes:
       in_header: tmp/headers.html
 runtime: shiny
