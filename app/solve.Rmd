@@ -78,7 +78,7 @@ renderUI({
   assignmentDir = paste0("assignments/",input$assignment)
   assignment_time(assignmentDir, secret)
   
-  str = getURIdata(input$seed, secret, input$data_format, values$assignment_list)
+  str = getURIdata(trimws(input$seed), secret, input$data_format, values$assignment_list)
   HTML(str)
 })
 ```
@@ -97,7 +97,7 @@ renderUI({
   assignmentDir = paste0("assignments/",input$assignment)
   assignment_time(assignmentDir, secret)
   
-  res = values$assignment_list$getAssignment(input$seed, secret, assignmentDir, solutions = !input$hide_table)
+  res = values$assignment_list$getAssignment(trimws(input$seed), secret, assignmentDir, solutions = !input$hide_table)
   
   return(withMathJax(includeHTML(res)))
 

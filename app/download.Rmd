@@ -69,7 +69,7 @@ Row  {data-height=60}
 
 renderUI({
   
-  str = getURIdata(input$seed, getSecret(), input$data_format, values$assignment_list)
+  str = getURIdata(trimws(input$seed), getSecret(), input$data_format, values$assignment_list)
   HTML(str)
 })
 ```
@@ -86,7 +86,7 @@ renderUI({
   secret = getSecret()
   assignmentDir = paste0("assignments/",input$assignment)
   
-  res = values$assignment_list$getAssignment(input$seed, secret, assignmentDir, solutions = FALSE)
+  res = values$assignment_list$getAssignment(trimws(input$seed), secret, assignmentDir, solutions = FALSE)
   
   return(withMathJax(includeHTML(res)))
 
