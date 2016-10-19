@@ -1,0 +1,128 @@
+---
+title: "ANOVA"
+author: ""
+date: "22 September 2016"
+output:
+  html_document:
+      dev: svg
+  html_fragment:
+      dev: svg
+  css: ["include/css/anova.css"]
+---
+
+```{r include=FALSE}
+# This chunk allows standalone compilation
+if(!exists("assignment")){
+  seed = 124
+  secret = "dgnvo"
+  source("assignment.R")
+  source("../../settings.R")
+  solutions = FALSE
+}
+
+```
+
+`r assignment`
+-----
+
+```{r include=FALSE}
+knitr::opts_chunk$set(fig.width=5,fig.height=5)
+
+require(ggplot2)
+require(lsr)
+require(broom)
+require(xtable)
+dat = getData(seed, secret, assignment)
+
+```
+
+
+```{r results='asis',echo=FALSE,include=solutions}
+#cat("#### Solutions\n")
+```
+
+## Instructions
+
+This is your first assignment for PS2024.  Please use a calculator. Type each step of your calculations so that your assignment can be submitted electronically.
+
+To do this assignment you can use the Field textbook (3rd Edition, chapter 12 or 4th Edition, chapter 13), the first part of Chapter 13 from Howell, other books or the class notes.  
+
+
+Consult the assignment sheet to find out how to use this website. 
+
+## Question 1 (1 point)
+
+You downloaded an SPPS data set with two factors, A and B, and 60 data points. Factor A has two levels (1, 2) and Factor B has three levels (1, 2, 3).
+
+Create a brief cover story for your data  (e.g. effect of drug and psychotherapy but do not use this example) that describes the all the conditions of the experiment. Give your factors meaningful names that are consistent with your cover story. There is a maximum of 75 words.
+
+Soltion: 
+Points will be awarded based on plausiblity of the cover story. 
+
+
+## Question 2 (2 points)
+
+Calculate the mean and standard deviation for each level of Factor A and Factor B.
+
+```{r echo=FALSE,eval=solutions,child="child_calcMeansA.Rmd"}
+```
+
+
+```{r echo=FALSE,eval=solutions,child="child_calcMeansB.Rmd"}
+```
+
+
+
+## Question 3 (2 points)
+
+Using Excel, plot a summary graph of the data (means, standard deviation) in problem 1 with a legend and appropriate labels for the factors and dependent variable.  You must decide which is the most appropriate graph format (line, bar) for your example 
+
+```{r echo=FALSE,eval=solutions,child="child_plotMeans.Rmd"}
+```
+
+## Question 4 (2 points)
+Undertake the appropriate SPSS analysis of these data. Report the ANOVA result for each main effect and interaction in a paragraph using APA format. You do NOT have to do follow up tests (i.e., simple effects and comparisons).
+
+```{r results='asis',echo=FALSE,include=solutions}
+res = aov(Data ~ FactorA*FactorB, data = dat)
+res.tidy = tidy(res)
+res.tidy[4, 5:6] = ''
+res.tidy[,2:3] = res.tidy[,3:2]
+colnames(res.tidy) = c('Source','SS','df','MS','F','sig') 
+res.tidy[3,1] = 'FactorA x FactorB' 
+res.tidy[4,1] = 'Error'
+res.tidy[1:3,6] = as.character(round(as.numeric(res.tidy[1:3,6]),3))
+res.tidy[1:3,5] = as.character(round(as.numeric(res.tidy[1:3,5]),3))
+knitr::kable(res.tidy, digits = 3, format = "html", table.attr = "class=\"anovatab2\"")
+
+
+```
+
+## Question 5 (2 points) 
+
+Using the sum of squares (SS), degrees of freedom (dfs), and error term from the ANOVA summary table calculate all the mean squares (MS) and all the $F$ ratios for the two main effects and the interaction. Be sure to show all the steps in this calculation. Do not just put, for example, an $F$ value straight from SPSS without showing where it comes from in your calculations.  
+
+```{r echo=FALSE,eval=solutions,child="child_MS_F.Rmd"} 
+```
+
+
+## Question 6 (2 points) 
+
+
+### A. 
+Calculate the partial η<sup>2</sup> (eta-squared) for factor A and B in your design. Show and label all of the steps in your calculations (though you do not have to show the steps you have already shown in problem 4) (1 point). 
+
+
+```{r echo=FALSE,eval=solutions,child="child_PES_A.Rmd"} 
+```
+
+
+### B.
+For each factor calculated, state whether your data indicate a "small", "medium" or "large" effect (as we defined these in class, i.e. Cohen’s conventions) or essentially no effect at all (1 point).
+
+
+```{r echo=FALSE,eval=solutions,child="child_PES_B.Rmd"} 
+```
+
+
+
