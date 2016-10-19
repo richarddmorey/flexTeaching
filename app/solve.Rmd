@@ -32,7 +32,7 @@ Column {.sidebar}
 selectInput("assignment", label="Assignment", 
             choices = assignments)
 
-textInput("seed", label = "ID number:", width = "150px", placeholder = "2049324", value = "2049324")
+textInput("seed", label = "ID number:", width = "150px", placeholder = "Student_ID", value = "Student_ID")
 
 if(!read.secret.from.file){
   textInput("secret", label = "Secret:", width = "150px", placeholder = "s3Cr34", value = "s3Cr34")
