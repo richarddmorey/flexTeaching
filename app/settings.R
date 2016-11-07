@@ -81,7 +81,7 @@ getURIdata<-function(seed, secret, format, assignment_list){
       if (typeof a.download != 'undefined') {
       a.setAttribute('download', '",filenameWithExt,"');
       }else{
-      a.setAttribute('onclick', 'confirm(\"Your browser does not support the download HTML5 attribute. You must rename the file to [something].",ext," after downloading it (or use Chrome/Firefox/Opera). \")');
+      a.setAttribute('onclick', 'confirm(\"Your browser does not support the download HTML5 attribute. The file may be corrupted. Please use Chrome/Firefox/Opera to download the file. \")');
       }
       </script>")
 }
