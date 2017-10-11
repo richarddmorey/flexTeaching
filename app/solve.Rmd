@@ -41,7 +41,7 @@ if(!read.secret.from.file){
 selectInput("data_format", label="Data format", 
             choices = c("SPSS","Excel","R data","csv"))
 
-checkboxInput("hide_table", label="Hide answers?", value = TRUE)
+checkboxInput("hide_table", label="Hide solutions?", value = TRUE)
 
 getSecret <- function(){
   s = readLines("secret")
@@ -53,7 +53,7 @@ observeEvent(input$assignment,{
   
   source(
     paste0("assignments/",input$assignment,"/assignment.R"),
-    local = tmp)
+    local = tmp, chdir = TRUE)
   
   values$assignment_list = as.list(tmp)
   

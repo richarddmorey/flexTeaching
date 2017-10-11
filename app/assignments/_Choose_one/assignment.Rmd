@@ -1,0 +1,31 @@
+---
+title: "Choose an assignment"
+author: ""
+date: "26 September 2017"
+output:
+  html_document:
+      dev: svg
+  html_fragment:
+      dev: svg
+---
+
+`r assignment`
+-----
+
+```{r echo = FALSE}
+url_pieces = strsplit(session$clientData[['url_pathname']],"/")[[1]]
+my_url = url_pieces[length(url_pieces)]
+my_base = paste(url_pieces[-length(url_pieces)], collapse = "/")
+solve_url = paste(my_base, "solve.Rmd", sep = "/")
+download_url = paste(my_base, "download.Rmd", sep = "/")
+solve_page = my_url == "solve.Rmd"
+download_page = my_url == "download.Rmd"
+```
+
+Welcome to the Cardiff University Psych statistics assignment interface. 
+
+```{r echo = FALSE, eval = solve_page, child="child_solve.Rmd"}
+```
+
+```{r echo = FALSE, eval = download_page, child="child_download.Rmd"}
+```
