@@ -1,0 +1,13 @@
+.anovatab2 td,th {
+  padding: 0 .5em 0 .5em;
+  white-space: nowrap;
+}
+
+.anovatab2 td:nth-child(even){
+  background: #eee;
+}
+
+
+.anovatab2 {
+  margin: 20px;
+}
