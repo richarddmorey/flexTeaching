@@ -1,0 +1,45 @@
+
+
+
+Problem 2 - Means and SDs for the levels of Factor A and Factor B: 
+
+
+```{r, echo=FALSE, results='asis'}
+  mns_A = matrix(with(dat,tapply(Data, FactorA, mean)),nrow=1)
+  colnames(mns_A) = 1:2
+  rownames(mns_A) = "Level Means Factor A: "
+  
+  knitr::kable(mns_A, digits = 2, format = "html", table.attr = "class=\"anovatab\"")
+  
+```  
+  
+```{r, echo=FALSE, results='asis'}
+  
+  sds_A = matrix(with(dat,tapply(Data, FactorA, sd)),nrow=1)
+  colnames(sds_A) = 1:2
+  rownames(sds_A) = "Level SDs Factor A: "
+  
+  knitr::kable(sds_A, digits = 2, format = "html", table.attr = "class=\"anovatab\"")
+
+```
+
+```{r, echo=FALSE, results='asis'}
+  mns_B = matrix(with(dat,tapply(Data, FactorB, mean)),nrow=1)
+  colnames(mns_B) = 1:3
+  rownames(mns_B) = "Level Means Factor B: "
+  
+  knitr::kable(mns_B, digits = 2, format = "html", table.attr = "class=\"anovatab\"")
+
+```  
+  
+```{r, echo=FALSE, results='asis'}
+  
+  sds_B = matrix(with(dat,tapply(Data, FactorB, sd)),nrow=1)
+  colnames(sds_B) = 1:3
+  rownames(sds_B) = "Level SDs Factor B: "
+  
+  knitr::kable(sds_B, digits = 2, format = "html", table.attr = "class=\"anovatab\"")
+  
+```
+
+
