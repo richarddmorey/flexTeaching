@@ -13,3 +13,5 @@ On this page you can select any assignment, obtain any number of practice data s
 If a question about an analysis with some practice data, be sure to note the *ID number* and *Secret* (in the left) that you were using, because anyone else with the same *ID number* and *Secret* will be able to obtain the exact same practice data set. That will enable them to help you better.
 
 When you're ready to do your assignment and turn it in for marking, go to the [assigned data download page](`r download_url`) to retrieve your official assignment data set. 
+
+<center><iframe width="560" height="315" src="https://www.youtube.com/embed/x5eRqUgD9c4" frameborder="0" allowfullscreen></iframe></center>

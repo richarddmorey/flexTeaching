@@ -43,11 +43,27 @@ getAssignments <- function(){
     meta_info["sortkey"] = ifelse(is.null(meta_info["sortkey"]) || is.na(meta_info["sortkey"]),
                                 d,
                                 meta_info["sortkey"])
-    meta_info
+    meta_info["group"] = ifelse(is.null(meta_info["group"]) || is.na(meta_info["group"]),
+                                  "Other",
+                                  meta_info["group"])
+    meta_info["dir"] = d
+    return(meta_info)
   })
-  names(a) = meta_info["title",]
-  ord = stringi::stri_order(meta_info["sortkey",], locale="en_US")
-  a[ord]
+  groups = unique(meta_info["group",])
+  meta_list = sapply(groups, function(el){
+    a = meta_info["dir", meta_info["group",] == el]
+    names(a) = meta_info["title", meta_info["group",] == el]
+    sk = meta_info["sortkey", meta_info["group",] == el]
+    ord = stringi::stri_order(sk, locale="en_US")
+    a[ord]
+  }, simplify = FALSE)
+  if(length(meta_list) == 1){
+    meta_list = meta_list[[1]]
+  }else{
+    ord = stringi::stri_order(names(meta_list), locale="en_US")
+    meta_list = meta_list[ord]
+  }
+  return(meta_list)
 }
 
 
