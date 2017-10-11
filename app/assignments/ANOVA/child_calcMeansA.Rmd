@@ -1,0 +1,25 @@
+
+
+#### Solution
+
+```{r, echo=FALSE, results='asis'}
+  mns_A = matrix(with(dat,tapply(Data, FactorA, mean)),nrow=1)
+  colnames(mns_A) = paste('a',1:2)
+  rownames(mns_A) = "Marginal Means Factor A: "
+  
+  knitr::kable(mns_A, digits = 2, format = "html", table.attr = "class=\"anovatab2\"")
+  
+```  
+  
+```{r, echo=FALSE, results='asis'}
+  
+  sds_A = matrix(with(dat,tapply(Data, FactorA, sd)),nrow=1)
+  colnames(sds_A) = paste('a',1:2)
+  rownames(sds_A) = "Marginal  SDs Factor A: "
+  
+  knitr::kable(sds_A, digits = 2, format = "html", table.attr = "class=\"anovatab2\"")
+
+```
+
+
+

@@ -1,0 +1,21 @@
+#### Solution
+
+```{r, echo=FALSE}
+pes = lsr::etaSquared(res)[,2]
+SSs = tidy(res)[,3]
+```
+
+For Factor A:
+
+\[
+\begin{eqnarray}
+\eta^2_p &=& \frac{SS_A}{SS_A + SS_{error}}\\
+&=&\frac{`r SSs[1]`}{`r SSs[1]`+`r SSs[4]`}\\
+&=&`r round(pes[1],3)`
+\end{eqnarray}
+\]
+
+`r get_size_str(pes[1], "A")`
+
+
+

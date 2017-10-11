@@ -1,0 +1,37 @@
+
+#### Solution
+
+```{r, echo=FALSE, fig.height=6}
+
+mns = with(dat,tapply(Data, list(FactorA, FactorB), mean))
+sds = with(dat,tapply(Data, list(FactorA, FactorB), sd))
+Ns = with(dat,tapply(Data, list(FactorA, FactorB), length))
+
+df = as.data.frame.table(mns)
+colnames(df) = c("FactorA","FactorB","Means")
+df$SDs = as.data.frame.table(sds)$Freq
+df$Ns = as.data.frame.table(Ns)$Freq
+df$SEs = df$SDs/sqrt(df$Ns)
+
+#SDs
+limits <- aes(ymax = Means + SDs, ymin=Means - SDs)
+
+#SEs
+#limits <- aes(ymax = Means + SDs, ymin=Means - SEs)
+
+dodge <- position_dodge(width=0.9)
+
+```
+
+```{r echo=FALSE, fig.height=6}
+## Bar plot 1
+p <- ggplot(df, aes(fill=FactorA, y=Means, x=FactorB))
+p + geom_bar(position="dodge", stat="identity") + geom_errorbar(limits, width=0.2, position=dodge)
+```
+
+```{r echo=FALSE, fig.height=6}
+## Bar plot 2
+p <- ggplot(df, aes(fill=FactorB, y=Means, x=FactorA))
+p + geom_bar(position="dodge", stat="identity") + geom_errorbar(limits, width=0.2, position=dodge)
+```
+

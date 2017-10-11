@@ -1,0 +1,49 @@
+#### Solution
+
+```{r, echo=FALSE}
+tab = tidy(res)
+SSs = tab[,3]
+dfs = tab[,2]
+MSs = tab[,4]
+Fs = tab[,5]
+```
+
+For factor A:
+
+\[
+\begin{eqnarray}
+MS_A &=& \frac{SS_A}{df_A}\\
+&=&\frac{`r SSs[1]`}{`r dfs[1]`}\\
+&=&`r round(SSs[1]/dfs[1],3)`
+\end{eqnarray}
+\]
+
+\[
+\begin{eqnarray}
+F_A &=& \frac{MS_A}{MS_{error}}\\
+&=&\frac{`r MSs[1]`}{`r MSs[4]`}\\
+&=&`r round(MSs[1]/MSs[4],3)`
+\end{eqnarray}
+\]
+
+
+<p>
+
+For factor B:
+
+\[
+\begin{eqnarray}
+MS_A &=& \frac{SS_B}{df_B}\\
+&=&\frac{`r SSs[2]`}{`r dfs[2]`}\\
+&=&`r round(SSs[2]/dfs[2],3)`
+\end{eqnarray}
+\]
+
+\[
+\begin{eqnarray}
+F_B &=& \frac{MS_B}{MS_{error}}\\
+&=&\frac{`r MSs[2]`}{`r MSs[4]`}\\
+&=&`r round(MSs[2]/MSs[4],3)`
+\end{eqnarray}
+\]
+
