@@ -26,7 +26,7 @@ par.list = list(bg = "white", #col = cols1[7], col.axis = cols1[7],
 par.list2 = par.list
 par.list2[['mar']] = c(4.5,1,1,1)
 
-getAssignments <- function(){
+getAssignments <- function(sort_locale = "en_US"){
   a = dir("assignments/", no..=TRUE)
   meta_info = sapply(a, function(d){
     mpath = file.path("assignments",d,"meta_info.csv")
@@ -49,19 +49,30 @@ getAssignments <- function(){
     meta_info["dir"] = d
     return(meta_info)
   })
+  # If there's only one assignment, return that
+  if(length(a) == 1){
+    names(a) = meta_info["title",]
+    return(a)
+  }
+  # If there's more than one assignment,
+  # figure out all the groups, etc
   groups = unique(meta_info["group",])
   meta_list = sapply(groups, function(el){
     a = meta_info["dir", meta_info["group",] == el]
     names(a) = meta_info["title", meta_info["group",] == el]
     sk = meta_info["sortkey", meta_info["group",] == el]
-    ord = stringi::stri_order(sk, locale="en_US")
+    ord = stringi::stri_order(sk, locale=sort_locale)
     a[ord]
   }, simplify = FALSE)
+  # Only one group
   if(length(meta_list) == 1){
     meta_list = meta_list[[1]]
   }else{
-    ord = stringi::stri_order(names(meta_list), locale="en_US")
-    meta_list = meta_list[ord]
+    # Sort groups by average sort rank
+    # ignore the tie problem for now
+    ord0 = stringi::stri_order(meta_info["sortkey",], locale=sort_locale)
+    avg_ranks = sort(tapply(ord0[ord0], meta_info["group",], mean))
+    meta_list = meta_list[names(avg_ranks)]
   }
   return(meta_list)
 }
