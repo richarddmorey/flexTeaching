@@ -1,7 +1,7 @@
 ---
 title: "Regression assignment"
 author: "Richard D. Morey"
-date: "22 September 2016"
+date: "8 November 2016"
 output:
   html_document:
       dev: svg
@@ -24,7 +24,15 @@ if(!exists("assignment")){
 `r assignment`
 -----
 
-*Note: This is only a portion of the assigment. See Learning Central for the complete assignment.*
+## Instructions
+
+This is your second assignment for PS2024.  Please type your answers and/or copy/paste the appropriate output from SPSS into a single document so that your assignment can be submitted electronically.
+
+To do this assignment you can use the Field textbook (3rd Edition, chapter 12 or 4th Edition, chapter 13), the first part of Chapter 13 from Howell, other books or the class notes.  
+
+
+Consult the assignment sheet for the first assignment to find out how to use this website. Please download the data using either the <a href="https://www.mozilla.org/en-US/firefox/new/" target="_blank">Mozilla Firefox</a> or the <a href="https://www.google.com/chrome/" target="_blank">Google Chrome</a> web browser. 
+
 
 ```{r include=FALSE}
 knitr::opts_chunk$set(fig.width=5,fig.height=5)
@@ -61,7 +69,7 @@ Load the data set into SPSS. For each of the pairs of variables below, create a 
 * Kendall's $\tau$
 * None (correlation is inappropriate)
 
-### Relationship A
+### Relationship A (1 point)
 
 Suppose we are interested in predicting a student's score on their vocabulary test from the stress they experienced before that test. Describe the relationship in terms of form, strength, and direction (if applicable). Calculate the appropriate correlation coefficient (if any).
 
@@ -84,7 +92,7 @@ cat("#### Solution, Relationship A\n",
     infoData$texts[1])
 ```
 
-### Relationship B
+### Relationship B (1 point)
 
 Suppose we are interested in predicting a student's score on the cognitive task from their IQ. Describe the relationship in terms of form, strength, and direction (if applicable). Calculate the appropriate correlation coefficient (if any).
 
@@ -106,7 +114,7 @@ cat("#### Solution, Relationship B\n",
     infoData$texts[2])
 ```
 
-### Relationship C
+### Relationship C (1 point)
 
 Suppose we are interested in predicting a student's response time on the cognitive task from the amount of time they practiced on the cognitive task. Describe the relationship in terms of form, strength, and direction (if applicable). Calculate the appropriate correlation coefficient (if any).
 
@@ -133,7 +141,7 @@ cat("#### Solution, Relationship C\n",
 
 Perform a linear regression analysis, regressing the college entrance exam math score onto the second high school math course score (that is, the `score.math.course2` will be the independent variable).
 
-### a) 
+### a) (1 point)
 
 Create a scatterplot. 
 
@@ -155,7 +163,7 @@ points(x,y)
 
 ```
 
-### b) 
+### b) (2 points)
 
 How well does the `score.math.course2` predict scores on the college entrance exam? Report a Pearson $r$ or Kendall's $\tau$ correlation, as appropriate, as well as a $p$ value on the slope of the relationship.
 
@@ -174,7 +182,7 @@ sep="")
 
 Suppose we which to try to predict peoples' college entrance scores more accurately, and we add `score.math.course1` as a second predictor (independent variable). 
 
-### a) 
+### a) (2 points)
 
 First perform the linear regression analysis with only `score.math.course1` as the independent variable, then perform the linear regression analysis with *both* high school math courses as predictors.
 
@@ -198,7 +206,7 @@ cat("#### Solution\n\n")
     knitr::kable(tidy(res),digits = 4, format = "html", table.attr = "class=\"anovatab\"")
 ```
 
-### b) 
+### b) (1 point)
 
 Report $R^2$ and adjusted $R^2$. 
 
@@ -210,7 +218,13 @@ stargazer::stargazer(res, type = 'html')
 
 ```
 
+### c) (1 point)
 
+Explain the behaviour of the $p$ values in the linear regression analysis above.
 
+```{r echo=FALSE, results='asis',include=solutions}
 
+cat("#### Solution\n\n Write several sentences. Your solution will be evaluated by the marker. ")
+
+```
 

@@ -1,4 +1,4 @@
-assignment = "Assignment 2 (regression)"
+assignment = read.csv('meta_info.csv', stringsAsFactors = FALSE)[1,"title"]
 
 getData <- function(seed, secret, extra = ""){
   set.seed.alpha(paste0(seed, secret, extra))
