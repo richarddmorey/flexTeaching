@@ -86,11 +86,21 @@ set.seed.alpha <- function(x) {
 }
 
 
-getURIdata<-function(seed, secret, format, assignment_list){
+getURIdata<-function(seed, secret, format, assignment_list, session = NULL){
+  require(digest)
+  
+  if(!is.null(session)){
+    url_pieces = strsplit(session$clientData[['url_pathname']],"/")[[1]]
+    page_name = strsplit(url_pieces[length(url_pieces)], ".", fixed=TRUE)[[1]][1]
+  }else{
+    page_name = "NULL"
+  }
+  
   myData = assignment_list$getData(seed, secret, assignment_list$assignment)
   if(is.null(myData)){
     return("")
   }
+  
   if(!is.data.frame(myData)){
     if(is.list(myData) & is.data.frame(myData[['data']])){
       myData = myData[['data']] 
@@ -98,7 +108,10 @@ getURIdata<-function(seed, secret, format, assignment_list){
       stop("Assignment configuration error. Data is not in correct format.")   
     }
   }
-  name_prefix = paste0("data_", assignment_list$assignment,"_")
+  
+  obj_hash = digest::digest(myData)
+  name_prefix = paste0("data_", page_name ,"_", seed , "_", assignment_list$assignment,"_", obj_hash)
+  
   if(format=="SPSS"){
     ext="sav"
     filenameWithExt = tempfile(name_prefix,fileext=paste0(".",ext))
@@ -118,16 +131,16 @@ getURIdata<-function(seed, secret, format, assignment_list){
   }
   divname = "dl.data.file"
   textHTML = "Click here to download the data."
-  onlyFileName = basename(filenameWithExt)
+  download_filename = paste0(name_prefix, ".", ext)
   
   uri = dataURI(file = filenameWithExt, mime = "application/octet-stream", encoding = "base64")
-  paste0("<a style='text-decoration: none; cursor: pointer;' id='",divname,"'></a>
+  paste0("<a style='text-decoration: none; cursor: pointer;' id='",divname,"' title='",download_filename,"'></a>
     <script>
       var my_uri = '",uri,"';
       var my_blob = dataURItoBlob(my_uri);
       var div = document.getElementById('",divname,"');
       div.innerHTML = '",textHTML,"';
-      div.setAttribute('onclick', 'saveAs(my_blob, \"",onlyFileName ,"\");');
+      div.setAttribute('onclick', 'saveAs(my_blob, \"",download_filename ,"\");');
       </script>")
 }
 

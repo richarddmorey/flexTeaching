@@ -14,10 +14,11 @@ output:
 
 ```{r echo = FALSE}
 url_pieces = strsplit(session$clientData[['url_pathname']],"/")[[1]]
+query_string = session$clientData[['url_search']]
 my_url = url_pieces[length(url_pieces)]
 my_base = paste(url_pieces[-length(url_pieces)], collapse = "/")
-solve_url = paste(my_base, "solve.Rmd", sep = "/")
-download_url = paste(my_base, "download.Rmd", sep = "/")
+solve_url = paste(paste(my_base, "solve.Rmd", sep = "/"), query_string, sep="")
+download_url = paste(paste(my_base, "download.Rmd", sep = "/"), query_string, sep="")
 solve_page = my_url == "solve.Rmd"
 download_page = my_url == "download.Rmd"
 ```

@@ -2,6 +2,7 @@
 title: "Check your assignments"
 output: 
   flexdashboard::flex_dashboard:
+    theme: yeti
     orientation: row
     css: ["css/assignments.css"]
     includes:
@@ -21,6 +22,47 @@ assignments = getAssignments()
 tmp = new.env()
 values = reactiveValues(assignment_list = list())
 
+```
+
+
+```{r}
+require(shinyjs)
+useShinyjs(rmd=TRUE)
+
+observeEvent(input$seed, {
+  observe({
+    query = getQueryString()
+    ID = query[['ID']]
+    ID_active = query[['ID_active']]
+    secret = query[['secret']]
+    secret_active = query[['secret_active']]
+    query_assignment = query[['assignment']]
+
+    if (!is.null(ID)) {
+      updateTextInput(session, 'seed', value = ID)
+    }
+    if (!is.null(secret) & !read.secret.from.file) {
+      updateTextInput(session, 'secret', value = secret)
+    }
+    if (!is.null(query_assignment)) {
+      updateSelectInput(session, 'assignment', selected = query_assignment)
+    }
+
+
+    if (!is.null(ID_active)) {
+      if (ID_active == '0') {
+        disable('seed')
+      }
+    }
+    
+    if (!is.null(secret_active) & !read.secret.from.file) {
+      if (secret_active == '0') {
+        disable('secret')
+      }
+    }
+    
+  })
+}, once = TRUE)
 ```
 
 
@@ -78,7 +120,7 @@ renderUI({
   assignmentDir = paste0("assignments/",input$assignment)
   assignment_time(assignmentDir, secret)
   
-  str = getURIdata(trimws(input$seed), secret, input$data_format, values$assignment_list)
+  str = getURIdata(trimws(input$seed), secret, input$data_format, values$assignment_list, session)
   HTML(str)
 })
 ```
