@@ -181,7 +181,7 @@ writeHeaders = function( file ){
   allTags = tagList()
   
   # top js directory
-  fs = dir(paste0("js/"), full.names = TRUE)
+  fs = dirFilesOnly(paste0("js/"), full.names = TRUE)
   for(f in fs){
     lns = paste(readLines(f),collapse="\n")
     allTags = tagAppendChild( allTags, tags$script(HTML(lns), type="text/javascript") )
@@ -190,21 +190,21 @@ writeHeaders = function( file ){
   for(a in assignments){
     
     # CSS
-    fs = dir(paste0("assignments/",a,"/include/css/"), full.names = TRUE)
+    fs = dirFilesOnly(paste0("assignments/",a,"/include/css/"), full.names = TRUE)
     for(f in fs){
       lns = paste(readLines(f),collapse="\n")
       allTags = tagAppendChild( allTags, tags$style(HTML(lns),type="text/css") )
     }
     
     # JS
-    fs = dir(paste0("assignments/",a,"/include/js/"), full.names = TRUE)
+    fs = dirFilesOnly(paste0("assignments/",a,"/include/js/"), full.names = TRUE)
     for(f in fs){
       lns = paste(readLines(f),collapse="\n")
       allTags = tagAppendChild( allTags, tags$script(HTML(lns), type="text/javascript") )
     }    
     
     # HTML
-    fs = dir(paste0("assignments/",a,"/include/html/"), full.names = TRUE)
+    fs = dirFilesOnly(paste0("assignments/",a,"/include/html/"), full.names = TRUE)
     for(f in fs){
       lns = pastereadLines(f)
       html.content = paste(html.content, lns, 
@@ -272,4 +272,7 @@ numbers2words <- function(x){
   helper(x)
 }
 
-
+dirFilesOnly = function(...){
+  fs = dir(...)
+  fs[!file.info(fs)$isdir]
+}
