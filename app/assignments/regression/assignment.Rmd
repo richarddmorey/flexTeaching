@@ -1,7 +1,7 @@
 ---
 title: "Regression assignment"
 author: "Richard D. Morey"
-date: "8 November 2016"
+date: "13 November 2017"
 output:
   html_document:
       dev: svg
@@ -19,6 +19,18 @@ if(!exists("assignment")){
   solutions = FALSE
 }
 
+getData2 <- function(seed, secret, extra = ""){
+  
+  set.seed.alpha(paste0(seed, secret, extra))
+
+  n = 4
+  y = 1:n
+  x = sample(y)
+  
+  data.frame(x = jitter(x), y = jitter(y))  
+  
+}
+
 ```
 
 `r assignment`
@@ -30,9 +42,7 @@ This is your second assignment for PS2024.  Please type your answers and/or copy
 
 To do this assignment you can use the Field textbook (3rd Edition, chapter 12 or 4th Edition, chapter 13), the first part of Chapter 13 from Howell, other books or the class notes.  
 
-
-Consult the assignment sheet for the first assignment to find out how to use this website. Please download the data using either the <a href="https://www.mozilla.org/en-US/firefox/new/" target="_blank">Mozilla Firefox</a> or the <a href="https://www.google.com/chrome/" target="_blank">Google Chrome</a> web browser. 
-
+Consult the assignment sheet for the first assignment to find out how to use this website. 
 
 ```{r include=FALSE}
 knitr::opts_chunk$set(fig.width=5,fig.height=5)
@@ -137,94 +147,47 @@ cat("#### Solution, Relationship C\n",
 ```
 
 
-## Question 2 
+```{r child='oldQ2-3.Rmd', eval=FALSE}
+```
 
-Perform a linear regression analysis, regressing the college entrance exam math score onto the second high school math course score (that is, the `score.math.course2` will be the independent variable).
+## Question 2
+
+**Make sure you've put in your correct student ID in the ID box for the marked version of the assignment! The scatterplot below depends on your ID number.** 
+
+Consider the scatterplot below.
+
+```{r echo=FALSE,results='asis'}
+tab = getData2(seed, secret,"")
+plot(tab$x,tab$y,xlab = "X", ylab = "Y", pch = 19, col = "blue", las = 1)
+```
 
 ### a) (1 point)
 
-Create a scatterplot. 
+Count the number of total pairs of points, the number of pairs with a showing a positive (consistent), and the number of pairs showinf a negative (inconsistent) relationship.
 
-```{r echo=FALSE,results='asis',include=solutions}
-cat("#### Solution\n\n")
+```{r echo=FALSE, child='kendall1.Rmd',eval=solutions}
 ```
 
-```{r echo=FALSE,include=solutions}
-par(las=1,mar=c(3.5,3.5,4,.5),mgp=c(2.5,1,0))
-
-x = myData$score.math.course2
-y = myData$college.math
-
-plot(x, y, ylab="score.test1",xlab="score.math.course2",pch=1, main="Entrance score from second course mark")
-rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4], col = 
-rgb(0,0,0,.05))
-points(x,y)
-#abline(lm(y~x))
-
-```
 
 ### b) (2 points)
 
-How well does the `score.math.course2` predict scores on the college entrance exam? Report a Pearson $r$ or Kendall's $\tau$ correlation, as appropriate, as well as a $p$ value on the slope of the relationship.
+Use the numbers computed in part (a) to calculate the proportion of positive (consistent) pairs, and then compute Kendall's $\tau$.
 
-```{r results='asis',echo=FALSE,include=solutions}
-cat("#### Solution
-The typical correlation coefficient one would use here is Pearson's $r$, which is $r=",round(cor(x,y),3),"$. Kendall's $\\tau$ is also possible; $\\tau= ",round(cor(x,y,method="kendall"),3),"$.",
-sep="")
+```{r echo=FALSE, child='kendall2.Rmd',eval=solutions}
 ```
 
-```{r echo=FALSE,results="asis",include=solutions}
-    res = lm(college.math ~ score.math.course2, data=myData)
-    knitr::kable(tidy(res),digits = 4, format = "html", table.attr = "class=\"anovatab\"")
-```
+## Question 3
 
-## Question 3 
-
-Suppose we which to try to predict peoples' college entrance scores more accurately, and we add `score.math.course1` as a second predictor (independent variable). 
+Use what you know about how Kendall's $\tau$ and Pearson's $r$ are computed and interpreted to answer the following. It might help to consider the scatterplot from Question 2, and how $\tau$ and $r$ would change if you moved various points in the scatterplot.
 
 ### a) (2 points)
 
-First perform the linear regression analysis with only `score.math.course1` as the independent variable, then perform the linear regression analysis with *both* high school math courses as predictors.
+Explain, in your own words, how Pearson's $r$ can indicate a *strong* relationship while Kendall's $\tau$ indicates a *weak* relationship.
 
-```{r echo=FALSE, results='asis', echo=FALSE,include=solutions}
-res = lm(college.math ~ score.math.course1, dat=myData)
+### b) (2 points)
 
-cat("#### Solution\n\n")
-
-    knitr::kable(tidy(res),digits = 4, format = "html", table.attr = "class=\"anovatab\"")
-```
-
-```{r echo=FALSE}
-res = lm(college.math ~ score.math.course1 + score.math.course2, dat=myData)
-```
-
-Report $p$ values for both slopes. 
-
-```{r results='asis',echo=FALSE,include=solutions}
-cat("#### Solution\n\n")
-
-    knitr::kable(tidy(res),digits = 4, format = "html", table.attr = "class=\"anovatab\"")
-```
-
-### b) (1 point)
-
-Report $R^2$ and adjusted $R^2$. 
-
-```{r results='asis',echo=FALSE,include=solutions}
-cat("#### Solution\n")
-
-stargazer::stargazer(res, type = 'html')
+Explain, in your own words, how Pearson's $r$ can indicate a *weak* relationship while Kendall's $\tau$ indicates a *strong* relationship.
 
 
-```
 
-### c) (1 point)
-
-Explain the behaviour of the $p$ values in the linear regression analysis above.
-
-```{r echo=FALSE, results='asis',include=solutions}
-
-cat("#### Solution\n\n Write several sentences. Your solution will be evaluated by the marker. ")
-
-```
 
