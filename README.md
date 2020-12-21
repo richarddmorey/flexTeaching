@@ -20,18 +20,6 @@ Benefits:
  
 ## How can I play with the app?
 
-There are two ways of seeing how it works. 
-
-### 1. Demo
-
-#### Check out the demo on shinyapps.io.
-Data download interface: http://richarddmorey.shinyapps.io/test/download.Rmd <br/>
-Solutions/practice interface: http://richarddmorey.shinyapps.io/test/solve.Rmd
-
-Try changing the student ID or secret and seeing how the solutions change in the solutions/practice interface. Remember to untick the "Hide answers?" box to see the solutions.
-
-### 2. Get the repository and try it out.
-
 Just download the repository and run the corresponding `.Rmd` file in the Rstudio interface. 
 
 ![Run button](http://learnbayes.org/images/flexTeach/run.png)
