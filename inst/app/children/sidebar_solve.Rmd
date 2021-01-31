@@ -75,9 +75,11 @@ observeEvent(input$masterseed, {
 })
 
 observeEvent(input$assignment, {
-  if(input$masterseed == "" | is.null(input$assignment))
-    return()
-
+  if(values$assignment_first){
+    values$assignment_first = FALSE
+    if(input$masterseed == "" | is.null(input$assignment))
+      return()
+  }
   salt = all_assignment_data[[input$assignment]]$`seed-salt`
   
   updateTextInput(
