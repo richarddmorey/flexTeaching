@@ -1,4 +1,0 @@
-
-*Of the `r n_pair` pairs points in the scatterplot, `r cons` show positive (consistent) relationships. The proportion of positive relationships is thus $`r cons`/`r n_pair`=`r round(cons/n_pair,3)`$.*
-
-*In order to compute Kendall's $\tau$, we multiply this by 2 and subtract 1, giving us $\tau=2\times `r round(cons/n_pair,3)` - 1 = `r 2*round(cons/n_pair,3)-1`$.*

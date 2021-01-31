@@ -1,0 +1,23 @@
+
+```{r}
+shinyjs::useShinyjs(rmd=TRUE)
+
+uiOutput("assignmentbox")
+uiOutput("idbox")
+
+
+```
+
+```{r}
+output$idbox <- renderUI({
+  query = getQueryString()
+  seed = if ('id' %in% names(query)) query[['id']] else ""
+  el = textInput("id", label = "ID:", width = "150px", value = seed, placeholder = "Your ID")
+  if('id_disable' %in% names(query)){
+    return(shinyjs::disabled(el))
+  }else{
+    return(el)
+  }
+})
+
+```

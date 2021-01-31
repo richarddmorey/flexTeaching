@@ -1,0 +1,61 @@
+---
+title: "Check your assignments"
+output: 
+  flexdashboard::flex_dashboard:
+    theme: yeti
+    orientation: row
+runtime: shiny
+---
+
+```{r child="children/setup.Rmd"}
+```
+
+```{r}
+library(rclipboard)
+shiny::includeScript(path = system.file("lib/clipboard.min.js", package = "rclipboard"))
+
+```
+
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+
+```{r child="children/sidebar_main.Rmd"}
+```
+
+```{r child="children/sidebar_solve.Rmd"}
+```
+
+Row  {data-height=60}
+------------------------------------
+    
+### Data 
+
+```{r}
+renderUI({
+  htmltools::tags$span("data", style="color: red;")
+})
+```
+
+
+Row 
+-------------------------------------
+    
+### Assignment
+
+```{r}
+renderUI({
+  htmltools::tags$h3(input$seed, style="color: red;")
+})
+```
+
+
+<script>
+$(document).ready(function () {
+  $("#admin_panel").hide();
+  $("#show_admin").on("click", function() {
+    $("#admin_panel").toggle();
+  });
+});
+</script>
+

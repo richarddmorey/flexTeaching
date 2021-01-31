@@ -1,0 +1,21 @@
+Package: flexTeaching
+Type: Package
+Title: What the package does (short line)
+Version: 0.1
+Date: 2021-01-31
+Author: Richard D. Morey
+Maintainer: Richard D. Morey <richarddmorey@gmail.com>
+Description: More about what it does (maybe more than one line)
+License: MIT
+Encoding: UTF-8
+Imports: 
+    noah (== 0.1.0),
+    shiny,
+    shinyjs,
+    htmltools,
+    rclipboard,
+    knitr,
+    R.utils,
+    glue,
+    yaml
+RoxygenNote: 7.1.1

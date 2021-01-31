@@ -1,0 +1,78 @@
+
+```{r}
+
+uiOutput("solutionsbox")
+
+htmltools::tags$div(
+  "Show admin",
+  id = "show_admin"
+)
+
+htmltools::tags$div(
+  uiOutput("seedbox"),
+  uiOutput("clipseed"),
+  htmltools::tags$hr(),
+  uiOutput("masterseedbox"),
+  id = "admin_panel"
+)
+
+```
+
+```{r}
+output$seedbox <- renderUI({
+  query = getQueryString()
+  seed = if ('seed' %in% names(query)) query[['seed']] else "s33d"
+  el = textInput("seed", label = "Seed:", width = "150px", value = seed)
+  if('seed_disable' %in% names(query)){
+    return(shinyjs::disabled(el))
+  }else{
+    return(el)
+  }
+})
+
+output$clipseed <- renderUI({
+    rclipboard::rclipButton("clipbtnseed", "Copy seed", input$seed, icon("clipboard"))
+  })
+
+output$masterseedbox <- renderUI({
+  query = getQueryString()
+  mseed = if ('masterseed' %in% names(query)) query[['masterseed']] else ""
+  el = textInput("masterseed", label = "Master seed:", width = "150px", value = mseed)
+  if('masterseed_disable' %in% names(query)){
+    return(shinyjs::disabled(el))
+  }else{
+    return(el)
+  }
+})
+
+output$solutionsbox <- renderUI({
+  query = getQueryString()
+  sol = if ('solutions' %in% names(query)) query[['solutions']] else FALSE
+  sol = as.logical(sol)
+  el = checkboxInput("solutions", label = "Show solutions?", value = as.logical(sol))
+  if('solutions_disable' %in% names(query)){
+    return(shinyjs::disabled(el))
+  }else{
+    return(el)
+  }
+})
+```
+
+```{r}
+observeEvent(input$masterseed, {
+  values$masterseed_change_n = values$masterseed_change_n + 1
+  if(input$masterseed == "" && values$masterseed_change_n < 2) return()
+
+  updateTextInput(
+    session, "seed", 
+    value = flexTeaching:::animal_seed(input$masterseed, "ASSIGNMENT_SALT!")
+  )
+})
+
+shiny::outputOptions(output, 'seedbox', suspendWhenHidden=FALSE)
+shiny::outputOptions(output, 'masterseedbox', suspendWhenHidden=FALSE)
+shiny::outputOptions(output, 'clipseed', suspendWhenHidden=FALSE)
+
+
+```
+
