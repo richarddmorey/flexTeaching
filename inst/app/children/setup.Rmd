@@ -4,6 +4,8 @@ require(flexdashboard)
 require(flexTeaching)
 knitr::opts_chunk$set(echo = FALSE)
 
+assignments = flexTeaching:::getAssignments()
+
 values = reactiveValues(masterseed_change_n = 0)
 
 ```

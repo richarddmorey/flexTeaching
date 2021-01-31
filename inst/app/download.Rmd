@@ -25,7 +25,7 @@ Row  {data-height=60}
 
 ```{r}
 renderUI({
-  htmltools::tags$span("data", style="color: red;")
+  htmltools::tags$span(input$assignment, style="color: red;")
 })
 ```
 
@@ -37,7 +37,7 @@ Row
 
 ```{r}
 renderUI({
-  htmltools::tags$h3("PAGE", style="color: red;")
+  htmltools::tags$h3(input$assignment, style="color: red;")
 })
 ```
 

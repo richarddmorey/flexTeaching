@@ -20,4 +20,16 @@ output$idbox <- renderUI({
   }
 })
 
+output$assignmentbox <- renderUI({
+  query = getQueryString()
+  assignment = if ('assignment' %in% names(query)) query[['assignment']] else NULL
+  el = selectInput("assignment", label = "Assignment:", width = "150px", choices = assignments, selected = assignment)
+  if('assignment_disable' %in% names(query)){
+    return(shinyjs::disabled(el))
+  }else{
+    return(el)
+  }
+})
+
+
 ```
