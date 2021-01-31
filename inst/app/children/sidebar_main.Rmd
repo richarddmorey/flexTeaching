@@ -4,7 +4,7 @@ shinyjs::useShinyjs(rmd=TRUE)
 
 uiOutput("assignmentbox")
 uiOutput("idbox")
-
+uiOutput("formatbox")
 
 ```
 
@@ -25,6 +25,17 @@ output$assignmentbox <- renderUI({
   assignment = if ('assignment' %in% names(query)) query[['assignment']] else NULL
   el = selectInput("assignment", label = "Assignment:", width = "150px", choices = assignments, selected = assignment)
   if('assignment_disable' %in% names(query)){
+    return(shinyjs::disabled(el))
+  }else{
+    return(el)
+  }
+})
+
+output$formatbox <- renderUI({
+  query = getQueryString()
+  format = if ('format' %in% names(query)) query[['format']] else NULL
+  el = selectInput("format", label = "Data format:", choices = names(flexTeaching:::formats), selected = format)
+  if('format_disable' %in% names(query)){
     return(shinyjs::disabled(el))
   }else{
     return(el)

@@ -20,5 +20,8 @@ Imports:
     yaml,
     rmarkdown,
     flexdashboard,
-    digest
+    digest,
+    haven,
+    readr,
+    writexl
 RoxygenNote: 7.1.1

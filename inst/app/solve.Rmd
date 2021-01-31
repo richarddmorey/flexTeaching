@@ -33,6 +33,7 @@ Row  {data-height=60}
 
 ```{r}
 renderUI({
+  
   htmltools::tags$span(input$assignment, style="color: red;")
 })
 ```

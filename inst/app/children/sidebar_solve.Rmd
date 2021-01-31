@@ -60,14 +60,32 @@ output$solutionsbox <- renderUI({
 
 ```{r}
 observeEvent(input$masterseed, {
-  values$masterseed_change_n = values$masterseed_change_n + 1
-  if(input$masterseed == "" && values$masterseed_change_n < 2) return()
+  if(values$masterseed_first){
+    values$masterseed_first = FALSE
+    if(input$masterseed == "" | is.null(input$assignment))
+      return()
+  }
+  
+  salt = all_assignment_data[[input$assignment]]$`seed-salt`
 
   updateTextInput(
     session, "seed", 
-    value = flexTeaching:::animal_seed(input$masterseed, "ASSIGNMENT_SALT!")
+    value = flexTeaching:::animal_seed(input$masterseed, salt)
   )
 })
+
+observeEvent(input$assignment, {
+  if(input$masterseed == "" | is.null(input$assignment))
+    return()
+
+  salt = all_assignment_data[[input$assignment]]$`seed-salt`
+  
+  updateTextInput(
+    session, "seed", 
+    value = flexTeaching:::animal_seed(input$masterseed, salt)
+  )
+})
+
 
 shiny::outputOptions(output, 'seedbox', suspendWhenHidden=FALSE)
 shiny::outputOptions(output, 'masterseedbox', suspendWhenHidden=FALSE)

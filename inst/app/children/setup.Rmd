@@ -5,7 +5,9 @@ require(flexTeaching)
 knitr::opts_chunk$set(echo = FALSE)
 
 assignments = flexTeaching:::getAssignments()
+all_assignment_data =  flexTeaching:::getAssignments(simple = FALSE)
 
-values = reactiveValues(masterseed_change_n = 0)
+values = reactiveValues(masterseed_first = TRUE,
+                        assignment_first = TRUE)
 
 ```

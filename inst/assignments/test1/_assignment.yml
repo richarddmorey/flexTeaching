@@ -4,6 +4,7 @@ author: Richard D. Morey
 date: 31/1/2021
 version: 0.1
 category: PS2024
-salt: kyao95mw8nq7tlcr6x1j
+seed-salt: kyao95mw8nq7tlcr6x1j
+data-salt: ndt4927lzourmbke3fhy
 source: ['R/utility.R']
 data-gen: assignment_data
