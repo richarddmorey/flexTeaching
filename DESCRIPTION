@@ -19,5 +19,6 @@ Imports:
     glue,
     yaml,
     rmarkdown,
-    flexdashboard
+    flexdashboard,
+    digest
 RoxygenNote: 7.1.1
