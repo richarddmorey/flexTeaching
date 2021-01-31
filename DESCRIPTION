@@ -17,5 +17,7 @@ Imports:
     knitr,
     R.utils,
     glue,
-    yaml
+    yaml,
+    rmarkdown,
+    flexdashboard
 RoxygenNote: 7.1.1
