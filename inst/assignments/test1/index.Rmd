@@ -23,3 +23,6 @@ plot(.flexteach_data)
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+`.flexteach_solutions` is `r .flexteach_solutions`.

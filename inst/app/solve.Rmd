@@ -32,7 +32,6 @@ Row {data-height=60}
 ```{r}
 render_out <- reactive({
   
-  
   ## Add solutions
   assignment = input$assignment
   id = input$id
@@ -44,6 +43,7 @@ render_out <- reactive({
   seed = flexTeaching:::assignmentSeed(id, seed, salt)
 
   e = new.env()
+  e$.flexteach_solutions = input$solutions
 
   src = all_assignment_data[[assignment]]$source
   if(!is.null(src))
