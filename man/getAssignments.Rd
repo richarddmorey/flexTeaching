@@ -4,7 +4,10 @@
 \alias{getAssignments}
 \title{Get a list of assignments in a directory}
 \usage{
-getAssignments(path = system.file("assignments", package = "flexTeaching"))
+getAssignments(
+  path = system.file("assignments", package = "flexTeaching"),
+  simple = TRUE
+)
 }
 \arguments{
 \item{path}{Directory path}

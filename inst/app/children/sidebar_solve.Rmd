@@ -68,7 +68,7 @@ observeEvent(input$masterseed, {
     seed = globals$first_seed
   }else{
     salt = all_assignment_data[[input$assignment]]$`seed-salt`
-    seed = flexTeaching:::animal_seed(input$masterseed, salt)
+    seed = flexTeaching:::animalSeed(input$masterseed, salt)
   }
 
   updateTextInput(
@@ -84,7 +84,7 @@ observeEvent(input$assignment, {
   if(input$masterseed == "") return()
     
   salt = all_assignment_data[[input$assignment]]$`seed-salt`
-  seed = flexTeaching:::animal_seed(input$masterseed, salt)
+  seed = flexTeaching:::animalSeed(input$masterseed, salt)
   
   updateTextInput(
     session, "seed", 

@@ -7,7 +7,9 @@
 #' @importFrom noah pseudonymize
 #' @return
 #'
-animal_seed <- function(seed, salt){
+animalSeed <- function(seed, salt){
+  seed = trimws(seed)
+  salt = trimws(salt)
   hash = digest::digest(paste0(seed, salt))
   animals = R.utils::withSeed({noah::pseudonymize("")},
                               alp2int(hash))
@@ -15,7 +17,7 @@ animal_seed <- function(seed, salt){
                  replacement = "_",
                  x = tolower(animals)
                  )
-  alpha_num = R.utils::withSeed({ran_alphanum(1)},
+  alpha_num = R.utils::withSeed({randomAlphaNum(1)},
                                 alp2int(hash))
   return(paste(animals, alpha_num,  sep = "_"))
 }
