@@ -26,18 +26,27 @@ Column {.sidebar}
 ```{r child="children/sidebar_solve.Rmd"}
 ```
 
-Row  {data-height=60}
+Row {data-height=60}
 ------------------------------------
-    
-### Data 
 
 ```{r}
-renderUI({
-  
-  htmltools::tags$span(input$assignment, style="color: red;")
-})
-```
+uiOutput("dataDownloadBox", style="height:60px;")
+         
+output$dataDownloadBox <- renderUI(
+  {
+    downloadButton("dataDownload", "Download data")
+  }
+)
 
+output$dataDownload <- downloadHandler(
+  filename = function() {
+      paste("test.csv", sep = "")
+    },
+    content = function(file) {
+      write.csv(sleep, file, row.names = FALSE)
+    }
+  )
+```
 
 Row 
 -------------------------------------
@@ -46,7 +55,18 @@ Row
 
 ```{r}
 renderUI({
-  htmltools::tags$h3(input$assignment, style="color: red;")
+  
+  if(is.null(input$assignment)) return()
+  
+  salt = all_assignment_data[[input$assignment]]$`data-salt`
+  seed0 = input$seed
+  id = input$id
+  
+  seed = flexTeaching:::assignmentSeed(id, seed0, salt)
+  
+  x = R.utils::withSeed({rnorm(1)}, seed)
+  
+  htmltools::tags$h3(x, style="color: red;")
 })
 ```
 
