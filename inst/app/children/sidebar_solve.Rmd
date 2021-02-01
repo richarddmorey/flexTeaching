@@ -22,6 +22,7 @@ htmltools::tags$div(
 output$seedbox <- renderUI({
   query = getQueryString()
   seed = if ('seed' %in% names(query)) query[['seed']] else "s33d"
+  globals$first_seed = seed
   el = textInput("seed", label = "Seed:", width = "150px", value = seed)
   if('seed_disable' %in% names(query)){
     return(shinyjs::disabled(el))
@@ -60,31 +61,34 @@ output$solutionsbox <- renderUI({
 
 ```{r}
 observeEvent(input$masterseed, {
-  if(values$masterseed_first){
-    values$masterseed_first = FALSE
-    if(input$masterseed == "" | is.null(input$assignment))
-      return()
-  }
   
-  salt = all_assignment_data[[input$assignment]]$`seed-salt`
+  if(is.null(input$assignment)) return()
+  
+  if(input$masterseed == ""){
+    seed = globals$first_seed
+  }else{
+    salt = all_assignment_data[[input$assignment]]$`seed-salt`
+    seed = flexTeaching:::animal_seed(input$masterseed, salt)
+  }
 
   updateTextInput(
     session, "seed", 
-    value = flexTeaching:::animal_seed(input$masterseed, salt)
+    value = seed 
   )
 })
 
 observeEvent(input$assignment, {
-  if(values$assignment_first){
-    values$assignment_first = FALSE
-    if(input$masterseed == "" | is.null(input$assignment))
-      return()
-  }
+  
+  if(is.null(input$assignment)) return()
+  
+  if(input$masterseed == "") return()
+    
   salt = all_assignment_data[[input$assignment]]$`seed-salt`
+  seed = flexTeaching:::animal_seed(input$masterseed, salt)
   
   updateTextInput(
     session, "seed", 
-    value = flexTeaching:::animal_seed(input$masterseed, salt)
+    value = seed 
   )
 })
 
