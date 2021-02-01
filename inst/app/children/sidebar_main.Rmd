@@ -9,6 +9,9 @@ uiOutput("formatbox")
 ```
 
 ```{r}
+
+session$allowReconnect(TRUE)
+
 output$idbox <- renderUI({
   query = getQueryString()
   seed = if ('id' %in% names(query)) query[['id']] else ""

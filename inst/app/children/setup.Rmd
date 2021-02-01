@@ -1,14 +1,21 @@
 
 ```{r setup, include=FALSE}
-require(flexdashboard)
-require(flexTeaching)
+library(flexdashboard)
+library(magrittr)
+library(flexTeaching)
 knitr::opts_chunk$set(echo = FALSE)
 
 assignments = flexTeaching:::getAssignments()
 all_assignment_data =  flexTeaching:::getAssignments(simple = FALSE)
 
-values = reactiveValues()
-
 globals = new.env()
+
+#shinyOptions(
+#  cache = cachem::cache_disk(
+#    dir = "./my_app_cache",
+#    max_size = 1024 * 1024^2,
+#    max_age = 60 * 60 * 24 * 7
+#    )
+#)
 
 ```

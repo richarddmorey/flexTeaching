@@ -23,5 +23,6 @@ Imports:
     digest,
     haven,
     readr,
-    writexl
+    writexl,
+    magrittr
 RoxygenNote: 7.1.1
