@@ -5,3 +5,6 @@ date: 31/1/2021
 version: 0.1
 category: PS2024
 seed-salt: 7e3przwv54qumioahsb2
+source: ['R/utility.R']
+data-gen: get_data
+html-gen: compile_assignment_html

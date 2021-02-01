@@ -7,4 +7,5 @@ category: PS2024
 seed-salt: kyao95mw8nq7tlcr6x1j
 data-salt: ndt4927lzourmbke3fhy
 source: ['R/utility.R']
-data-gen: assignment_data
+data-gen: get_data
+html-gen: compile_assignment_html

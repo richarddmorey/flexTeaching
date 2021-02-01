@@ -34,18 +34,27 @@ uiOutput("dataDownloadBox", style="height:60px;")
          
 output$dataDownloadBox <- renderUI(
   {
+  
+    if(is.null(values$data_set)) return()
+    
     downloadButton("dataDownload", "Download data")
   }
 )
 
 output$dataDownload <- downloadHandler(
   filename = function() {
-      paste("test.csv", sep = "")
-    },
-    content = function(file) {
-      write.csv(sleep, file, row.names = FALSE)
-    }
-  )
+    assignment = input$assignment
+    id = input$id
+    seed = input$seed
+    time = format(Sys.time(), "%d%m%Y_%H%M%S")
+    hash = digest::digest(values$data_set)
+    ext = formats[[input$format]]$ext
+    glue::glue("data_solve_{assignment}_{id}_{seed}_{time}_{hash}{ext}")
+  },
+  content = function(file) {
+    formats[[input$format]]$f(values$data_set, file)
+  }
+)
 ```
 
 Row 
@@ -56,17 +65,40 @@ Row
 ```{r}
 renderUI({
   
-  if(is.null(input$assignment)) return()
+  assignment = input$assignment
   
-  salt = all_assignment_data[[input$assignment]]$`data-salt`
-  seed0 = input$seed
-  id = input$id
+  if(is.null(assignment)) return()
   
-  seed = flexTeaching:::assignmentSeed(id, seed0, salt)
+  salt = all_assignment_data[[assignment]]$`data-salt`
+  seed = flexTeaching:::assignmentSeed(input$id, input$seed, salt)
+
+  e = new.env()
+
+  src = all_assignment_data[[assignment]]$source
+  if(!is.null(src))
+    source(file.path(all_assignment_data[[assignment]]$path, src), local = e, chdir = FALSE) 
+
+  compile_assignment = get(all_assignment_data[[assignment]]$`html-gen`, envir = e)
+
+  if(!is.null(all_assignment_data[[assignment]]$`data-gen`)){
+    get_data = get(all_assignment_data[[assignment]]$`data-gen`, envir = e)
+    R.utils::withSeed({
+      get_data(envir = e)
+    }, seed)
+    
+    values$data_set = e$.flexteach_data
+  }else{
+    values$data_set = NULL
+  }
+
+  R.utils::withSeed({
+    res = compile_assignment(all_assignment_data[[assignment]]$path, envir = e)
+    seed
+  }, seed)
+
+
   
-  x = R.utils::withSeed({rnorm(1)}, seed)
-  
-  htmltools::tags$h3(x, style="color: red;")
+  return(withMathJax(includeHTML(res)))
 })
 ```
 
