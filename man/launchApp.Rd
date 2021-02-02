@@ -4,7 +4,7 @@
 \alias{launchApp}
 \title{Run one of the shiny interfaces}
 \usage{
-launchApp(which = "solve", query = "")
+launchApp(which = "solve", query = "", port = NULL)
 }
 \arguments{
 \item{which}{Which app to open ('solve' or 'download')}
