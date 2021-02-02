@@ -1,5 +1,5 @@
 
-```{r}
+```{r context="render"}
 shinyjs::useShinyjs(rmd=TRUE)
 
 uiOutput("assignmentbox")
@@ -8,7 +8,7 @@ uiOutput("formatbox")
 
 ```
 
-```{r}
+```{r context="server"}
 
 session$allowReconnect(TRUE)
 

@@ -1,5 +1,6 @@
 
-```{r setup, include=FALSE}
+
+```{r setup, include=FALSE, context="setup"}
 library(flexdashboard)
 library(magrittr)
 library(flexTeaching)
@@ -9,13 +10,15 @@ assignments = flexTeaching:::getAssignments()
 all_assignment_data =  flexTeaching:::getAssignments(simple = FALSE)
 
 globals = new.env()
-
-#shinyOptions(
-#  cache = cachem::cache_disk(
-#    dir = "./my_app_cache",
-#    max_size = 1024 * 1024^2,
-#    max_age = 60 * 60 * 24 * 7
-#    )
-#)
-
 ```
+
+```{r cache, eval = FALSE, context="server"}
+shinyOptions(
+  cache = cachem::cache_disk(
+    dir = "./my_app_cache",
+    max_size = 512 * 1024^2,
+    max_age = 60 * 60 * 24 * 10
+    )
+)
+```
+

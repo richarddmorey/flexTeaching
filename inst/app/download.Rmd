@@ -4,7 +4,7 @@ output:
   flexdashboard::flex_dashboard:
     theme: united
     orientation: row
-runtime: shiny
+runtime: shiny_prerendered
 ---
 
 ```{r child="children/setup.Rmd"}
@@ -18,15 +18,39 @@ Column {.sidebar}
 ```{r child="children/sidebar_main.Rmd"}
 ```
 
-Row  {data-height=60}
+Row {data-height=60}
 ------------------------------------
-    
-### Data 
 
-```{r}
-renderUI({
-  htmltools::tags$span(input$assignment, style="color: red;")
+```{r context="render"}
+uiOutput("dataDownloadBox", style="height:60px;")
+```
+
+
+```{r context="server"}
+render_out <- reactive({
+  return(list())
 })
+```
+
+```{r context="server"}
+output$dataDownloadBox <- renderUI(
+  {
+  
+    if(is.null(render_out()$data_set)) return()
+    
+    downloadButton("dataDownload", "Download data")
+  }
+)
+
+output$dataDownload <- downloadHandler(
+  filename = function() {
+    ext = flexTeaching:::formats[[input$format]]$ext
+    glue::glue(render_out()$fn)
+  },
+  content = function(file) {
+    flexTeaching:::formats[[input$format]]$f(render_out()$data_set, file)
+  }
+)
 ```
 
 
@@ -35,11 +59,18 @@ Row
     
 ### Assignment
 
-```{r}
-renderUI({
-  htmltools::tags$h3(input$assignment, style="color: red;")
+
+```{r context="render"}
+uiOutput("assignmentBox")
+```
+
+
+```{r context="server"}
+output$assignmentBox <- renderUI({
+  htmltools::tags$span(input$assignment, style="color: red;")
 })
 ```
+
 
 
 

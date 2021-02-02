@@ -4,13 +4,14 @@ output:
   flexdashboard::flex_dashboard:
     theme: yeti
     orientation: row
-runtime: shiny
+runtime: shiny_prerendered
 ---
+
 
 ```{r child="children/setup.Rmd"}
 ```
 
-```{r}
+```{r, context="render"}
 library(rclipboard)
 shiny::includeScript(path = system.file("lib/clipboard.min.js", package = "rclipboard"))
 
@@ -29,7 +30,11 @@ Column {.sidebar}
 Row {data-height=60}
 ------------------------------------
 
-```{r}
+```{r context="render"}
+uiOutput("dataDownloadBox", style="height:60px;")
+```
+
+```{r context="server"}
 render_out <- reactive({
   
   ## Add solutions
@@ -79,9 +84,8 @@ render_out <- reactive({
   bindCache(input$assignment, input$id, input$seed, input$solutions)
 ```
 
-```{r}
-uiOutput("dataDownloadBox", style="height:60px;")
-         
+
+```{r context="server"}
 output$dataDownloadBox <- renderUI(
   {
   
@@ -93,11 +97,11 @@ output$dataDownloadBox <- renderUI(
 
 output$dataDownload <- downloadHandler(
   filename = function() {
-    ext = formats[[input$format]]$ext
+    ext = flexTeaching:::formats[[input$format]]$ext
     glue::glue(render_out()$fn)
   },
   content = function(file) {
-    formats[[input$format]]$f(render_out()$data_set, file)
+    flexTeaching:::formats[[input$format]]$f(render_out()$data_set, file)
   }
 )
 ```
@@ -107,8 +111,12 @@ Row
     
 ### Assignment
 
-```{r}
-renderUI({
+```{r context="render"}
+uiOutput("assignmentBox")
+```
+
+```{r context="server"}
+output$assignmentBox <- renderUI({
   withMathJax(render_out()$html)
 })
 ```

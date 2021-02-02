@@ -1,5 +1,5 @@
 
-```{r}
+```{r context="render"}
 
 uiOutput("solutionsbox")
 
@@ -18,7 +18,7 @@ htmltools::tags$div(
 
 ```
 
-```{r}
+```{r context="server"}
 output$seedbox <- renderUI({
   query = getQueryString()
   seed = if ('seed' %in% names(query)) query[['seed']] else "s33d"
@@ -59,7 +59,7 @@ output$solutionsbox <- renderUI({
 })
 ```
 
-```{r}
+```{r context="server"}
 observeEvent(input$masterseed, {
   
   if(is.null(input$assignment)) return()
