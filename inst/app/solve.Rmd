@@ -3,7 +3,6 @@ title: "Check your assignments"
 output: 
   flexdashboard::flex_dashboard:
     theme: yeti
-    orientation: row
 runtime: shiny_prerendered
 ---
 
@@ -26,11 +25,15 @@ Column {.sidebar}
 ```{r child="children/sidebar_solve.Rmd"}
 ```
 
-Row {data-height=60}
+Column
 ------------------------------------
 
 ```{r context="render"}
-uiOutput("dataDownloadBox", style="height:60px;")
+shiny::tags$div(
+  uiOutput("dataDownloadBox", style="height:54px; float: left; margin-right: 20px;"),
+  uiOutput("pdfDownloadBox", style="height:54px;"),
+  style = "width: 100%; height: 54px; margin: auto;"
+)
 ```
 
 
@@ -53,11 +56,6 @@ output$dataDownload <- downloadHandler(
     flexTeaching:::formats[[input$format]]$f(render_out()$data_set, file)
   }
 )
-```
-
-
-```{r context="render"}
-uiOutput("pdfDownloadBox", style="height:60px;")
 ```
 
 
@@ -91,8 +89,6 @@ output$pdfDownload <- downloadHandler(
 ```
 
 
-
-
 ```{r context="server"}
 render_out <- reactive({
   
@@ -113,9 +109,6 @@ render_out <- reactive({
 ```
 
 
-Row 
--------------------------------------
-    
 ### Assignment
 
 ```{r context="render"}

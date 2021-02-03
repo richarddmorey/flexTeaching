@@ -18,7 +18,7 @@ Column {.sidebar}
 ```{r child="children/sidebar_main.Rmd"}
 ```
 
-Row {data-height=60}
+Column 
 ------------------------------------
 
 ```{r context="render"}
@@ -53,9 +53,6 @@ output$dataDownload <- downloadHandler(
 )
 ```
 
-
-Row 
--------------------------------------
     
 ### Assignment
 
