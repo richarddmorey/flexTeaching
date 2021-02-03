@@ -77,13 +77,10 @@ output$pdfDownload <- downloadHandler(
     time = format(Sys.time(), "%d%m%Y_%H%M%S")
     glue::glue("questions_solve_{input$assignment}_{input$id}_{input$seed}_{time}.pdf")
   },
-  content = function(file) {
-    assignment_data = all_assignment_data[[input$assignment]]
-    shinybusy::show_modal_spinner(text = "Creating PDF...")
-    out = flexTeaching:::compileAll(assignment_data, input$id, input$seed, input$solutions, pdf = TRUE)
-    if(is.null(out)) stop("Could not create PDF file.")
-    file.copy(out, file, overwrite = TRUE)
-    shinybusy::remove_modal_spinner()
+  content = function(f) {
+    con = file(f, open = "wb")
+    writeBin(object = pdf_content(), con = con)
+    close(con)
   }
 )
 ```
@@ -108,6 +105,18 @@ render_out <- reactive({
   bindCache(input$assignment, input$id, input$seed, input$solutions)
 ```
 
+```{r context="server"}
+pdf_content <- reactive({
+    assignment_data = all_assignment_data[[input$assignment]]
+    shinybusy::show_modal_spinner(text = "Creating PDF...")
+    out = flexTeaching:::compileAll(assignment_data, input$id, input$seed, input$solutions, pdf = TRUE)
+    if(is.null(out)) stop("Could not create PDF file.")
+    file_content = readBin(con = out, what = "raw", n = file.size(out))
+    shinybusy::remove_modal_spinner()
+    return(file_content)
+}) %>%
+  bindCache(input$assignment, input$id, input$seed, input$solutions)
+```
 
 ### Assignment
 
