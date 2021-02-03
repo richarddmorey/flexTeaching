@@ -1,28 +1,114 @@
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(
+  echo = FALSE
+  , dev = "png"
+  , dpi = 150
+  , fig.width = 5
+  , fig.height = 5
+  , dev.args = list(pointsize=14)
+  , out.width = "60%"
+  )
+library(broom)
+library(gt)
+library(dplyr)
 ```
 
-## R Markdown
+## Exercises
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+1. Download the data above and import it into SPSS.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
-```{r cars}
-summary(cars)
+```{r}
+cn = names(.flexteach_data)
 ```
 
-## Including Plots
+2. Compute the correlation between the two variables, ``r cn[1]`` and ``r cn[2]``.
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(.flexteach_data)
+```{r results = 'asis', eval = .flexteach_solutions}
+glue::glue("> The correlation is {cor(.flexteach_data)[2] %>% round(3)}.") %>%
+  cat()
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+3. Create a scatterplot.
+
+```{r eval = .flexteach_solutions}
+plot(.flexteach_data, pch = 19, col = rgb(0,0,0,.3))
+abline(lm(y ~ x, data = .flexteach_data))
+```
+
+4. Perform a linear regression analysis.
+
+```{r eval = .flexteach_solutions}
+
+lm_obj = lm(y ~ x, data = .flexteach_data)
+r2 = summary(lm_obj)$r.square
+ar2 = summary(lm_obj)$adj.r.square
+
+s = summary(lm_obj)$sigma
+preds = glue::glue("Predictors: {paste( names(coef(lm_obj)), collapse=', ')}")
+
+data.frame(
+  Model = "1", 
+  R = sqrt(r2),
+  r2 = r2,
+  ar2 = ar2,
+  s = s
+) %>%
+  gt() %>%
+  cols_label(
+    r2 = "R Square",
+    ar2 = "Adjusted R Square",
+    s = "Std. Error of the Estimate"
+  ) %>%
+  tab_footnote(preds, cells_body(columns = "R")) %>%
+  fmt_number(c("R","r2","ar2","s"), decimals = 3) %>%
+  tab_header("Model summary")
+
+```
+
+<br/>
+<br/>
 
 
-`.flexteach_solutions` is `r .flexteach_solutions`.
+```{r eval = .flexteach_solutions}
+
+std_beta = c(NA, QuantPsyc::lm.beta(lm_obj))
+
+lm_obj %>%
+  tidy() %>%
+  mutate(std_beta = std_beta) %>%
+  relocate(std_beta, .before = "statistic") %>%
+  gt() %>%
+  cols_label(
+    term="",
+    estimate="B",
+    std_beta = "Beta",
+    std.error="Std. Error",
+    statistic="t",
+    p.value="Sig."
+  ) %>%
+  fmt_missing(everything(),missing_text = "") %>%
+  fmt_number(
+    c("std.error","std_beta","statistic","p.value"),
+    decimals=3
+  ) %>%
+  text_transform(
+    locations = cells_body(columns = "estimate"),
+    fn = function(x){
+      x = as.numeric(x)
+      z = ifelse(abs(x)>=.0005,
+                 round(x, 3),
+                 toupper(format(x,digits=4,scientific=TRUE))
+      )
+      as.character(z)
+    }) %>%
+  tab_header("Coefficients") %>%
+  tab_spanner("Unstandardized", c("estimate","std.error")) %>%
+  tab_spanner("Standardized", "std_beta")
+
+```
+
+

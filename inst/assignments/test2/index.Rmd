@@ -13,15 +13,13 @@ When you click the **Knit** button a document will be generated that includes bo
 summary(cars)
 ```
 
-## Including Plots
+## Solutions
 
-You can also embed plots, for example:
+The solutions will appear below when you fill the "Show solutions?" checkbox.
 
-```{r pressure, echo=FALSE}
+```{r eval = .flexteach_solutions, echo=FALSE}
 plot(.flexteach_data)
 ```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
 \[
 y \sim \mbox{Normal}(0,1)
