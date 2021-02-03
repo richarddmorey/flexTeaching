@@ -30,8 +30,8 @@ Column
 
 ```{r context="render"}
 shiny::tags$div(
-  uiOutput("dataDownloadBox", style="height:54px; float: left; margin-right: 20px;"),
-  uiOutput("pdfDownloadBox", style="height:54px;"),
+  uiOutput("dataDownloadBox", style="height:54px; float: left; margin-right: 20px; width: 154px;"),
+  uiOutput("pdfDownloadBox", style="height:54px; margin-left:160px"),
   style = "width: 100%; height: 54px; margin: auto;"
 )
 ```
