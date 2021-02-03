@@ -2,11 +2,15 @@
 #' Get a list of assignments in a directory
 #'
 #' @param path Directory path
+#' @param simple return only a named vector (for selectInput) 
 #'
 #' @return
 #'
 getAssignments = function(path = system.file("assignments", package = "flexTeaching"), simple = TRUE){
+   
   potential_dirs = list.dirs(path, recursive = FALSE) 
+  potential_dirs = potential_dirs[ grepl("^[^_]", basename(potential_dirs)) ] 
+  
   lapply(potential_dirs, function(d){
     fp = file.path(d,"_assignment.yml")
     if(file.exists(fp)){
@@ -32,5 +36,4 @@ getAssignments = function(path = system.file("assignments", package = "flexTeach
   names(dirs) = shortnames
 
   return(dirs)
-  
 }

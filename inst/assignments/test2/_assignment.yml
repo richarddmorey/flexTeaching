@@ -4,8 +4,10 @@ author: Richard D. Morey
 date: 31/1/2021
 version: 0.1
 category: PS2024
+sortkey: 2
 seed-salt: 7e3przwv54qumioahsb2
-source: ['R/utility.R']
+data-salt: ywubp28o4a5i0d31q9je
+source: ['../_common/R/utility.R', 'R/utility.R']
 data-gen: get_data
 html-gen: compile_assignment_html
 pdf-gen: compile_assignment_pdf

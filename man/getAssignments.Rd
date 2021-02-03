@@ -11,6 +11,8 @@ getAssignments(
 }
 \arguments{
 \item{path}{Directory path}
+
+\item{simple}{return only a named vector (for selectInput)}
 }
 \value{
 

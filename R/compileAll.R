@@ -23,9 +23,11 @@ compileAll <- function(assignment_data, id, seed, solutions, e = new.env(), type
   
   e$.flexteach_solutions = solutions
   
-  src = assignment_data$source
-  if(!is.null(src))
-    source(file.path(assignment_data$path, src), local = e, chdir = FALSE) 
+  if(length(assignment_data$source)){
+    src = file.path(assignment_data$path, assignment_data$source)
+    for(s in src)
+      source(s, local = e, chdir = FALSE) 
+  }
   
   if(pdf){
     pdf_func = assignment_data$`pdf-gen`
