@@ -24,5 +24,6 @@ Imports:
     haven,
     readr,
     writexl,
-    magrittr
+    magrittr,
+    shinybusy
 RoxygenNote: 7.1.1
