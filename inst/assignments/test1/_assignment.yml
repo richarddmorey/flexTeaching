@@ -8,6 +8,6 @@ sortkey: 1
 seed-salt: kyao95mw8nq7tlcr6x1j
 data-salt: ndt4927lzourmbke3fhy
 source: ['../_common/R/utility.R', 'R/utility.R']
-data-gen: get_data
+init: init
 html-gen: compile_assignment_html
-#pdf-gen: compile_assignment_pdf
+buttons: buttons

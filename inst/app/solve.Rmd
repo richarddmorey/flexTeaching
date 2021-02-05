@@ -28,95 +28,102 @@ Column {.sidebar}
 Column
 ------------------------------------
 
-```{r context="render"}
-shiny::tags$div(
-  uiOutput("dataDownloadBox", style="height:54px; float: left; margin-right: 20px; width: 154px;"),
-  uiOutput("pdfDownloadBox", style="height:54px; margin-left:160px"),
-  style = "width: 100%; height: 54px; margin: auto;"
-)
-```
-
-
 ```{r context="server"}
-output$dataDownloadBox <- renderUI(
-  {
+
+init_list = reactive({
   
-    if(is.null(render_out()$data_set)) return()
-    
-    downloadButton("dataDownload", "Download data")
-  }
-)
+  req(input$assignment)
 
-output$dataDownload <- downloadHandler(
-  filename = function() {
-    ext = flexTeaching:::formats[[input$format]]$ext
-    glue::glue(render_out()$fn)
-  },
-  content = function(file) {
-    flexTeaching:::formats[[input$format]]$f(render_out()$data_set, file)
-  }
-)
-```
-
-
-```{r context="server"}
-output$pdfDownloadBox <- renderUI(
-  {
-    assignment = input$assignment
-    if(is.null(assignment)) return()
-    assignment_data = all_assignment_data[[assignment]]
-    
-    if(is.null(assignment_data$`pdf-gen`)) return()
-    
-    downloadButton("pdfDownload", "Download PDF", icon = shiny::icon("file-export"))
-  }
-)
-
-output$pdfDownload <- downloadHandler(
-  filename = function() {
-    time = format(Sys.time(), "%d%m%Y_%H%M%S")
-    glue::glue("questions_solve_{input$assignment}_{input$id}_{input$seed}_{time}.pdf")
-  },
-  content = function(f) {
-    con = file(f, open = "wb")
-    writeBin(object = pdf_content(), con = con)
-    close(con)
-  }
-)
-```
-
-
-```{r context="server"}
-render_out <- reactive({
-  
   assignment = input$assignment
-  if(is.null(assignment)) return()
   assignment_data = all_assignment_data[[assignment]]
-  
+    
   id = input$id
   seed = input$seed
   solutions = input$solutions
+  
+  salt = assignment_data$`data-salt`
+  seed0 = flexTeaching:::assignmentSeed(id, seed, salt)
+  
+  e = new.env()
+  
+  flexTeaching:::sourceAll(assignment_data, e)
+  
+  init_func = get(assignment_data$init, envir = e)
+  if(!is.null(init_func)){
+      R.utils::withSeed({
+        ret_list = init_func(assignment_data, id, seed, solutions, e)
+      },
+      seed0)
+  }else{
+    ret_list = list()
+  }
+    
+  return(ret_list)
+    
+}) %>% bindCache(input$assignment, input$id, input$seed, input$solutions)
+```
 
-  out = flexTeaching:::compileAll(assignment_data, id, seed, solutions, type = "solve")
-  
-  list(data_set = out$data_set, fn = out$fn, html = out$html)
-  
-}) %>%
-  bindCache(input$assignment, input$id, input$seed, input$solutions)
+
+```{r context="render"}
+uiOutput("buttonBox", style = "width: 100%; margin: auto;")
 ```
 
 ```{r context="server"}
-pdf_content <- reactive({
-    assignment_data = all_assignment_data[[input$assignment]]
-    shinybusy::show_modal_spinner(text = "Creating PDF...")
-    out = flexTeaching:::compileAll(assignment_data, input$id, input$seed, input$solutions, pdf = TRUE)
-    if(is.null(out)) stop("Could not create PDF file.")
-    file_content = readBin(con = out, what = "raw", n = file.size(out))
-    shinybusy::remove_modal_spinner()
-    return(file_content)
-}) %>%
-  bindCache(input$assignment, input$id, input$seed, input$solutions)
+
+output$buttonBox <- renderUI({
+  
+  req(input$assignment)
+  
+  assignment = input$assignment
+  assignment_data = all_assignment_data[[assignment]]
+  
+  e = new.env()
+  flexTeaching:::sourceAll(assignment_data, e)
+  
+  bn = assignment_data$buttons
+
+  if(is.null(bn)) return()
+  
+  if(!exists(bn, envir = e)) return()
+  bs = get(bn, envir = e)
+  
+  button_reactives = list()
+
+  bl = lapply(names(bs), function(b){
+    button_reactives[[b]] = reactive({
+      shinybusy::show_modal_spinner(text = "Creating file...")
+      fc = bs[[b]]$f(
+        assignment_data,
+        input$id,
+        input$seed,
+        input$solutions,
+        input$format,
+        init_list())
+      shinybusy::remove_modal_spinner()
+      return(fc)
+    }) %>% bindCache(input$assignment, input$id, input$seed, input$solutions, input$format, b)
+    
+    output[[glue::glue("button_{b}")]] <- downloadHandler(
+      filename = function() {
+        button_reactives[[b]]()$fn
+      },
+      content = function(f) {
+        d = button_reactives[[b]]()$d
+        con = file(description = f, open = "wb")
+        writeBin(object = d, con = con)
+        close(con)
+      }
+    )
+    
+    shiny::downloadButton(glue::glue("button_{b}"), label=bs[[b]]$label,
+                          icon = icon(bs[[b]]$icon))
+  })
+  
+  do.call(tagList, bl)
+})
 ```
+
+
 
 ### Assignment
 
@@ -125,8 +132,32 @@ uiOutput("assignmentBox")
 ```
 
 ```{r context="server"}
+render_out <- reactive({
+  
+  req(input$assignment)
+  assignment = input$assignment
+  assignment_data = all_assignment_data[[assignment]]
+  
+  id = input$id
+  seed = input$seed
+  solutions = input$solutions
+  
+  i = init_list()
+  
+  e = new.env()
+  flexTeaching:::sourceAll(assignment_data, e)
+  
+  html = flexTeaching:::compilePage(assignment_data, id, seed, solutions, e, i)
+  
+ return(html)
+  
+}) %>%
+  bindCache(input$assignment, input$id, input$seed, input$solutions)
+```
+
+```{r context="server"}
 output$assignmentBox <- renderUI({
-  withMathJax(render_out()$html)
+  withMathJax(render_out())
 })
 ```
 

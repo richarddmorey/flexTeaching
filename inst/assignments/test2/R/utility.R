@@ -1,10 +1,48 @@
 
-get_data <- function(envir){
+get_data <- function(){
   N = 100
   x = rnorm(N)
   df = data.frame(
     x = x,
     y = 2*x + rnorm(N)
   )
-  assign(".flexteach_data", df, envir = envir)
 }
+
+
+init <- function(assignment_data, id, seed, solutions, e){
+  ret_list = list(
+    data = get_data()
+    )  
+  return(ret_list)
+}
+
+create_pdf <- function(assignment_data, id, seed, solutions, format, init){
+  
+  e = new.env()
+  flexTeaching:::sourceAll(assignment_data, e)
+  
+  e$.flexteach_solutions = solutions
+  e$.flexteach_info = init
+  
+  tmpfn = tempfile(fileext = ".pdf")
+  input = file.path(assignment_data$path, "index.Rmd")
+  output_format = "pdf_document"
+  rmarkdown::render(input = input, output_format = output_format, output_file = tmpfn,
+                    envir = e, quiet = TRUE)
+  d = readBin(con = tmpfn, what = "raw", n = file.size(tmpfn))
+  time = format(Sys.time(), "%d%m%Y_%H%M%S")
+  return(list(fn = glue::glue("{assignment_data$shortname}_{id}_{seed}_{time}.pdf"), d = d))
+}
+
+buttons <- list(
+  data = list(
+    label = "Download data",
+    icon = "download",
+    f = data_file
+  ),
+  pdf = list(
+    label = "Download PDF",
+    icon = "file-download",
+    f = create_pdf
+  )
+)

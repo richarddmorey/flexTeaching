@@ -1,18 +1,24 @@
 
+```{r solutions}
+# This is optional to prevent annoying errors when deploying shiny apps
+if(!exists(".flexteach_solutions"))
+  .flexteach_solutions = FALSE
+```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
   echo = FALSE
-  , dev = "png"
+  , dev = "svg"
   , dpi = 150
   , fig.width = 5
   , fig.height = 5
-  , dev.args = list(pointsize=14)
-  , out.width = "60%"
+  , dev.args = list(pointsize=13)
+  , out.width = "40%"
   )
 library(broom)
 library(gt)
 library(dplyr)
+library(tidyr)
 ```
 
 ## Exercises
@@ -21,29 +27,66 @@ library(dplyr)
 
 
 ```{r}
-cn = names(.flexteach_data)
+cn = names(.flexteach_info$data)
 ```
 
-2. Compute the correlation between the two variables, ``r cn[1]`` and ``r cn[2]``.
+
+2. Create a scatterplot.
+
+```{r eval = .flexteach_solutions}
+plot(.flexteach_info$data, pch = 19, col = rgb(0,0,0,.3), cex = .8, las = 1)
+abline(lm(y ~ x, data = .flexteach_info$data))
+```
+
+
+3. Compute the mean and standard deviation of each of the two variables, ``r cn[1]`` and ``r cn[2]``.
+
+```{r eval = .flexteach_solutions}
+.flexteach_info$data %>%
+  pivot_longer(c("x","y"), names_to = "variable", values_to = "x") %>%
+  group_by(variable) %>%
+  summarise(
+    N = n(),
+    Mean = mean(x),
+    SD = sd(x)
+    ) -> sum_stats 
+
+sum_stats %>%
+  gt(rowname_col = "variable") %>%
+  cols_label(SD = "Std. Dev.") %>%
+  tab_header(title="Summary statistics") %>%
+  fmt_number(c("Mean","SD"), decimals = 3)
+```
+
+
+4. Compute the correlation between the two variables ``r cn[1]`` and ``r cn[2]``.
 
 ```{r results = 'asis', eval = .flexteach_solutions}
-glue::glue("> The correlation is {cor(.flexteach_data)[2] %>% round(3)}.") %>%
+r = cor(.flexteach_info$data)[2] %>% 
+  round(3)
+glue::glue("> The correlation is {r}.") %>%
   cat()
 ```
 
 
-3. Create a scatterplot.
+5. Use the summary statistics and correlation you computed above to compute the slope of the regression line.
 
-```{r eval = .flexteach_solutions}
-plot(.flexteach_data, pch = 19, col = rgb(0,0,0,.3))
-abline(lm(y ~ x, data = .flexteach_data))
+```{r eval = .flexteach_solutions, child='children/slope.Rmd'}
 ```
 
-4. Perform a linear regression analysis.
+
+6. Use the summary statistics, correlation, and slope you computed above to compute the intercept of the regression line. Use ``r cn[1]`` as the independent variable and ``r cn[2]`` as the dependent variable.
+
+```{r eval = .flexteach_solutions, child='children/intercept.Rmd'}
+```
+
+
+
+7. Perform a linear regression analysis in SPSS.
 
 ```{r eval = .flexteach_solutions}
 
-lm_obj = lm(y ~ x, data = .flexteach_data)
+lm_obj = lm(y ~ x, data = .flexteach_info$data)
 r2 = summary(lm_obj)$r.square
 ar2 = summary(lm_obj)$adj.r.square
 
@@ -111,4 +154,10 @@ lm_obj %>%
 
 ```
 
+```{r results = 'asis', eval = .flexteach_solutions}
+cat(
+"
+> Note that the values given by SPSS may be slightly different than the ones you calculated due to the rounding in the calculation. When you calculate it, it is best not to round until the end (unlike what is shown in questions 5 and 6, where values were rounded after each step for neatness of the display).
+")
+```
 

@@ -18,7 +18,7 @@ summary(cars)
 The solutions will appear below when you fill the "Show solutions?" checkbox.
 
 ```{r eval = .flexteach_solutions, echo=FALSE}
-plot(.flexteach_data)
+plot(.flexteach_info$data)
 ```
 
 \[
