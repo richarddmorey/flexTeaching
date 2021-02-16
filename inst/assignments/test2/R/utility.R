@@ -16,7 +16,7 @@ init <- function(assignment_data, id, seed, solutions, e){
   return(ret_list)
 }
 
-create_pdf <- function(assignment_data, id, seed, solutions, format, init){
+create_pdf <- function(assignment_data, id, seed, solutions, format, init, entry){
   
   e = new.env()
   flexTeaching:::sourceAll(assignment_data, e)
@@ -31,7 +31,11 @@ create_pdf <- function(assignment_data, id, seed, solutions, format, init){
                     envir = e, quiet = TRUE)
   d = readBin(con = tmpfn, what = "raw", n = file.size(tmpfn))
   time = format(Sys.time(), "%d%m%Y_%H%M%S")
-  return(list(fn = glue::glue("{assignment_data$shortname}_{id}_{seed}_{time}.pdf"), d = d))
+  fn = ifelse(entry=="solve",
+              glue::glue("{assignment_data$shortname}_{id}_{seed}_{time}.pdf"),
+              glue::glue("{assignment_data$shortname}_{id}_{time}.pdf")
+  )
+  return(list(fn = fn, d = d))
 }
 
 buttons <- list(

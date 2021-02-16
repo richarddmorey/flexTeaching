@@ -8,11 +8,14 @@ compile_assignment_html <- function(path, envir = new.env(), ...){
   return(tmpfn)
 }
 
-data_file = function(assignment_data, id, seed, solutions, format, init){
+data_file = function(assignment_data, id, seed, solutions, format, init, entry){
   df = init$data
   ext = flexTeaching:::formats[[format]]$ext
   time = format(Sys.time(), "%d%m%Y_%H%M%S")
-  fn = glue::glue("data_{assignment_data$shortname}_{id}_{seed}_{time}{ext}")
+  fn = ifelse(entry=="solve",
+              glue::glue("{entry}_{assignment_data$shortname}_{id}_{seed}_{time}{ext}"),
+              glue::glue("{entry}_{assignment_data$shortname}_{id}_{time}{ext}")
+              )
   tf = tempfile(fileext = ext)
   flexTeaching:::formats[[format]]$f(df, tf)
   d = readBin(con = tf, what = "raw", n = file.size(tf))

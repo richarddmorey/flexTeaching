@@ -1,0 +1,135 @@
+
+```{r context="server"}
+init_list = reactive({
+  
+  req(input$assignment)
+
+  assignment = input$assignment
+  assignment_data = all_assignment_data[[assignment]]
+    
+  id = input$id
+  seed = seed()
+  solutions = solutions()
+  
+  salt = assignment_data$`data-salt`
+  seed0 = flexTeaching:::assignmentSeed(id, seed, salt)
+  
+  e = new.env()
+  
+  flexTeaching:::sourceAll(assignment_data, e)
+  
+  init_func = get(assignment_data$init, envir = e)
+  if(!is.null(init_func)){
+      R.utils::withSeed({
+        ret_list = init_func(assignment_data, id, seed, solutions, e)
+      },
+      seed0)
+  }else{
+    ret_list = list()
+  }
+    
+  return(ret_list)
+    
+}) %>% bindCache(input$assignment, input$id, seed(), solutions())
+```
+
+
+```{r context="render"}
+uiOutput("buttonBox", style = "width: 100%; margin: auto;")
+```
+
+```{r context="server"}
+
+output$buttonBox <- renderUI({
+  
+  req(input$assignment)
+  
+  assignment = input$assignment
+  assignment_data = all_assignment_data[[assignment]]
+  
+  solutions = solutions()
+  
+  e = new.env()
+  flexTeaching:::sourceAll(assignment_data, e)
+  
+  bn = assignment_data$buttons
+
+  if(is.null(bn)) return()
+  
+  if(!exists(bn, envir = e)) return()
+  bs = get(bn, envir = e)
+  
+  button_reactives = list()
+  
+  bl = lapply(names(bs), function(b){
+    button_reactives[[b]] = reactive({
+      shinybusy::show_modal_spinner(text = "Creating file...")
+      fc = bs[[b]]$f(
+        assignment_data,
+        input$id,
+        seed(),
+        solutions,
+        input$format,
+        init_list(),
+        entry)
+      shinybusy::remove_modal_spinner()
+      return(fc)
+    }) %>% bindCache(input$assignment, input$id, seed(), solutions(), input$format, b)
+    
+    output[[glue::glue("button_{b}")]] <- downloadHandler(
+      filename = function() {
+        button_reactives[[b]]()$fn
+      },
+      content = function(f) {
+        d = button_reactives[[b]]()$d
+        con = file(description = f, open = "wb")
+        writeBin(object = d, con = con)
+        close(con)
+      }
+    )
+    
+    shiny::downloadButton(glue::glue("button_{b}"), label=bs[[b]]$label,
+                          icon = icon(bs[[b]]$icon))
+  })
+  
+  do.call(tagList, bl)
+})
+```
+
+
+
+### Assignment
+
+```{r context="render"}
+uiOutput("assignmentBox")
+```
+
+```{r context="server"}
+render_out <- reactive({
+  
+  req(input$assignment)
+  assignment = input$assignment
+  assignment_data = all_assignment_data[[assignment]]
+  
+  id = input$id
+  seed = seed()
+  solutions = solutions()
+  
+  i = init_list()
+  
+  e = new.env()
+  flexTeaching:::sourceAll(assignment_data, e)
+  
+  html = flexTeaching:::compilePage(assignment_data, id, seed, solutions, e, i)
+  
+ return(html)
+  
+}) %>%
+  bindCache(input$assignment, input$id, seed(), solutions())
+```
+
+```{r context="server"}
+output$assignmentBox <- renderUI({
+  withMathJax(render_out())
+})
+```

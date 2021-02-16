@@ -22,54 +22,19 @@ Column {.sidebar}
 Column 
 ------------------------------------
 
-```{r context="render"}
-uiOutput("dataDownloadBox", style="height:60px;")
-```
-
-
 ```{r context="server"}
-render_out <- reactive({
-  return(list())
-})
+entry <- "download"
+
+seed <- function(){
+  l = readLines("secret")
+  l[length(l)]
+}
+
+solutions <- function(){
+  FALSE
+}
+
 ```
 
-```{r context="server"}
-output$dataDownloadBox <- renderUI(
-  {
-  
-    if(is.null(render_out()$data_set)) return()
-    
-    downloadButton("dataDownload", "Download data")
-  }
-)
-
-output$dataDownload <- downloadHandler(
-  filename = function() {
-    ext = flexTeaching:::formats[[input$format]]$ext
-    glue::glue(render_out()$fn)
-  },
-  content = function(file) {
-    flexTeaching:::formats[[input$format]]$f(render_out()$data_set, file)
-  }
-)
+```{r child="children/content.Rmd"}
 ```
-
-    
-### Assignment
-
-
-```{r context="render"}
-uiOutput("assignmentBox")
-```
-
-
-```{r context="server"}
-output$assignmentBox <- renderUI({
-  htmltools::tags$span(input$assignment, style="color: red;")
-})
-```
-
-
-
-
-
