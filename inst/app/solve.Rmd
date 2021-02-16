@@ -3,6 +3,8 @@ title: "Check your assignments"
 output: 
   flexdashboard::flex_dashboard:
     theme: yeti
+    includes:
+      in_header: !expr flexTeaching:::writeHeaders()
 runtime: shiny_prerendered
 ---
 
@@ -12,7 +14,6 @@ runtime: shiny_prerendered
 ```{r, context="render"}
 library(rclipboard)
 shiny::includeScript(path = system.file("lib/clipboard.min.js", package = "rclipboard"))
-
 ```
 
 

@@ -3,7 +3,8 @@ title: "Assignment data download"
 output: 
   flexdashboard::flex_dashboard:
     theme: united
-    orientation: row
+    includes:
+      in_header: !expr flexTeaching:::writeHeaders()
 runtime: shiny_prerendered
 ---
 
