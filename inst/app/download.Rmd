@@ -25,7 +25,7 @@ Column
 ```{r context="server"}
 entry <- "download"
 
-seed <- function(){
+masterseed <- function(){
   l = readLines("secret")
   l[length(l)]
 }
@@ -33,6 +33,20 @@ seed <- function(){
 solutions <- function(){
   FALSE
 }
+
+seed <- reactive({
+  
+  if(is.null(input$assignment)) return()
+  
+  if(masterseed() == "") stop("Master seed cannot be blank!")
+    
+  salt = all_assignment_data[[input$assignment]]$`seed-salt`
+  seed = flexTeaching:::animalSeed(masterseed(), salt)
+  
+  return(seed)
+
+})
+
 
 ```
 
