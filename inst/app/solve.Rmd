@@ -11,6 +11,9 @@ runtime: shiny_prerendered
 ```{r child="children/setup.Rmd"}
 ```
 
+```{r child="children/query_string.Rmd"}
+```
+
 ```{r, context="render"}
 library(rclipboard)
 shiny::includeScript(path = system.file("lib/clipboard.min.js", package = "rclipboard"))

@@ -21,6 +21,3 @@ shinyOptions(
     )
 )
 ```
-
-```{r child="query_string.Rmd"}
-```

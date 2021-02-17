@@ -25,5 +25,7 @@ Imports:
     readr,
     writexl,
     magrittr,
-    shinybusy
+    shinybusy,
+    purrr,
+    dplyr
 RoxygenNote: 7.1.1
