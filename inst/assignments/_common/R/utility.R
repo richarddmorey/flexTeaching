@@ -10,11 +10,12 @@ compile_assignment_html <- function(path, envir = new.env(), ...){
 
 data_file = function(assignment_data, id, seed, solutions, format, init, entry){
   df = init$data
+  hash = digest::digest(df)
   ext = flexTeaching:::formats[[format]]$ext
   time = format(Sys.time(), "%d%m%Y_%H%M%S")
   fn = ifelse(entry=="solve",
-              glue::glue("{entry}_{assignment_data$shortname}_{id}_{seed}_{time}{ext}"),
-              glue::glue("{entry}_{assignment_data$shortname}_{id}_{time}{ext}")
+              glue::glue("{entry}_{assignment_data$shortname}_{id}_{seed}_{time}_{hash}{ext}"),
+              glue::glue("{entry}_{assignment_data$shortname}_{id}_{time}_{hash}{ext}")
               )
   tf = tempfile(fileext = ext)
   flexTeaching:::formats[[format]]$f(df, tf)

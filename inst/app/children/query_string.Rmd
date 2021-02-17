@@ -1,0 +1,23 @@
+
+
+```{r context='server'}
+
+observeEvent(c(input$assignment, input$id, input$format, solutions(), seed()), {
+  
+  req(
+    !is.null(input$assignment) & 
+    !is.null(input$id) &
+    !is.null(solutions()) &
+    !is.null(input$format)
+    )
+  
+  string = glue::glue("?assignment={input$assignment}&id={input$id}&format={input$format}")
+  
+  if(entry == 'solve')
+    string = glue::glue("{string}&solutions={solutions()}&seed={seed()}")
+  
+  shiny::updateQueryString(queryString = string)
+  
+})
+
+```

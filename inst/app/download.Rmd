@@ -11,8 +11,6 @@ runtime: shiny_prerendered
 ```{r child="children/setup.Rmd"}
 ```
 
-
-
 Column {.sidebar}
 -----------------------------------------------------------------------
 
@@ -25,23 +23,21 @@ Column
 ```{r context="server"}
 entry <- "download"
 
-masterseed <- function(){
-  l = readLines("secret")
-  l[length(l)]
-}
-
 solutions <- function(){
   FALSE
 }
 
+l = readLines("secret")
+masterseed = l[length(l)]
+
 seed <- reactive({
   
-  if(is.null(input$assignment)) return()
-  
-  if(masterseed() == "") stop("Master seed cannot be blank!")
+  req(!is.null(input$assignment))
+
+  if(masterseed == "") stop("Master seed cannot be blank!")
     
   salt = all_assignment_data[[input$assignment]]$`seed-salt`
-  seed = flexTeaching:::animalSeed(masterseed(), salt)
+  seed = flexTeaching:::animalSeed(masterseed, salt)
   
   return(seed)
 
