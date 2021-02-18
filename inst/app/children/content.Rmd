@@ -1,3 +1,17 @@
+```{r context="server"}
+
+assignment_accessible = reactive({
+    
+  req(input$assignment)
+
+  assignment = input$assignment
+  assignment_data = all_assignment_data[[assignment]]
+  
+  assignment_data$restrict_before<Sys.time()
+  
+})
+
+```
 
 ```{r context="server"}
 init_list = reactive({
@@ -6,7 +20,14 @@ init_list = reactive({
 
   assignment = input$assignment
   assignment_data = all_assignment_data[[assignment]]
-    
+  
+  fmt = flexTeaching::pkg_options()$date_format_prnt
+  
+  validate(
+    need(assignment_accessible(), 
+         glue::glue("This assignment will not be available until {strftime(assignment_data$restrict_before, format = '%A, %d %B %Y at %X %z')}."))
+  )
+  
   id = input$id
   seed = seed()
   solutions = solutions()
@@ -30,7 +51,7 @@ init_list = reactive({
     
   return(ret_list)
     
-}) %>% bindCache(input$assignment, input$id, seed(), solutions())
+}) %>% bindCache(input$assignment, input$id, seed(), solutions(), assignment_accessible())
 ```
 
 
@@ -46,6 +67,10 @@ output$buttonBox <- renderUI({
   
   assignment = input$assignment
   assignment_data = all_assignment_data[[assignment]]
+  
+  fmt = flexTeaching::pkg_options()$date_format_prnt
+  
+  req(assignment_data$restrict_before<Sys.time())
   
   solutions = solutions()
   
@@ -74,7 +99,7 @@ output$buttonBox <- renderUI({
         entry)
       shinybusy::remove_modal_spinner()
       return(fc)
-    }) %>% bindCache(input$assignment, input$id, seed(), solutions(), input$format, b)
+    }) %>% bindCache(input$assignment, input$id, seed(), solutions(), input$format, b, assignment_accessible())
     
     output[[glue::glue("button_{b}")]] <- downloadHandler(
       filename = function() {
@@ -125,7 +150,7 @@ render_out <- reactive({
  return(html)
   
 }) %>%
-  bindCache(input$assignment, input$id, seed(), solutions())
+  bindCache(input$assignment, input$id, seed(), solutions(), assignment_accessible())
 ```
 
 ```{r context="server"}

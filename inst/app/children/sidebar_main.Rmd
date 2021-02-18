@@ -25,7 +25,21 @@ output$idbox <- renderUI({
 
 output$assignmentbox <- renderUI({
   query = getQueryString()
-  assignment = if ('assignment' %in% names(query)) query[['assignment']] else NULL
+  assignment = query[['assignment']]
+  flexTeaching:::getAssignments() %>%
+    {
+      if(is.null(assignment)){
+        filter(., !hidden)
+      }else{
+        filter(., !hidden | (shortname == !!assignment))
+      }
+    } %>%
+    split(.$category) %>%
+    purrr::map(function(el){
+      z = pull(el, shortname)
+      names(z) = pull(el, title)
+      return(z)
+    }) -> assignments
   el = selectInput("assignment", label = "Assignment:", width = "150px", choices = assignments, selected = assignment)
   if('assignment_disable' %in% names(query)){
     return(shinyjs::disabled(el))

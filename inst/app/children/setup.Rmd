@@ -3,10 +3,10 @@
 ```{r setup, include=FALSE, context="setup"}
 library(flexdashboard)
 library(magrittr)
+library(dplyr)
 library(flexTeaching)
 knitr::opts_chunk$set(echo = FALSE)
 
-assignments = flexTeaching:::getAssignments()
 all_assignment_data =  flexTeaching:::getAssignments(simple = FALSE)
 
 globals = new.env()

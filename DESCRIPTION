@@ -27,5 +27,6 @@ Imports:
     magrittr,
     shinybusy,
     purrr,
-    dplyr
+    dplyr,
+    settings
 RoxygenNote: 7.1.1
