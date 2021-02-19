@@ -175,8 +175,12 @@ observeEvent(render_out(), {
   e = new.env()
   e$.flexteach_info = init_list()
   js_expr = parse(text = glue::glue('glue::glue("{js_content}")'))
-  js_parsed = eval(expr = js_expr, envir = e)
-  
+  js_parsed = tryCatch(eval(expr = js_expr, envir = e),
+    error = function(c) 
+      safeError(glue::glue("Problem parsing javascript code on load of assignment {input$assignment}: {c}"))
+    )
+
+
   if(!is.null(js_parsed) & length(js_parsed)>0)
     shinyjs::runjs(js_parsed)
   
