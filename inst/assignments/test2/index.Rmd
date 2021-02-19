@@ -24,3 +24,13 @@ plot(.flexteach_info$data)
 \[
 y \sim \mbox{Normal}(0,1)
 \]
+
+
+What is 39+22? <input id='test2-input-q1'/>
+
+What is 34 / 2? <input id='test2-input-q2'/>
+
+<a id="test2-button" class="btn btn-default" target="_blank">
+  <i class="fa fa-file-download" role="presentation" aria-label="file-download icon"></i>
+  Download your responses
+</a>

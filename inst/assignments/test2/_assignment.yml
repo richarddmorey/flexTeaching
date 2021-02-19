@@ -12,5 +12,18 @@ init: init
 html-gen: compile_assignment_html
 buttons: buttons
 on-load: |
-  alert("You can set up javascript to run when an assignment loads. Your id is: {.flexteach_info$id}")
-  console.log("You have loaded an assignment.")
+  $('#assignmentBox')
+    .off('click','#test2-button')
+    .on('click','#test2-button',function(){{
+    var q1 = $('#test2-input-q1').val()
+    var q2 = $('#test2-input-q2').val()
+    var text = `ASSIGNMENT TEST2\nID: {.flexteach_info$id}\nQ1: ${{q1}}\nQ2: ${{q2}}\n`
+    $('<a></a>')
+      .attr('id', 'test2-download-link')
+      .attr('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text))
+      .attr('download', 'responses.txt')
+      .hide()
+      .appendTo('body')[0]
+      .click()
+      $('#test2-download-link').remove()
+  }})
