@@ -12,6 +12,14 @@ all_assignment_data =  flexTeaching:::getAssignments(simple = FALSE)
 globals = new.env()
 ```
 
+```{r, echo=FALSE}
+shiny::addResourcePath("shinyjs", system.file("srcjs", package = "shinyjs"))
+```
+```{r, context="server"}
+shinyjs::useShinyjs(html = TRUE)
+```
+<script src="shinyjs/inject.js"></script>
+
 ```{r cache, eval = FALSE, context="server"}
 shinyOptions(
   cache = cachem::cache_disk(

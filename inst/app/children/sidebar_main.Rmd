@@ -1,11 +1,8 @@
 
 ```{r context="render"}
-shinyjs::useShinyjs(rmd=TRUE)
-
 uiOutput("assignmentbox")
 uiOutput("idbox")
 uiOutput("formatbox")
-
 ```
 
 ```{r context="server"}

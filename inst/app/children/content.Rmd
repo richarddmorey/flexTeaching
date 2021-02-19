@@ -158,3 +158,27 @@ output$assignmentBox <- renderUI({
   withMathJax(render_out())
 })
 ```
+
+
+```{r context="server"}
+observeEvent(render_out(), {
+  
+  req(input$assignment)
+  assignment = input$assignment
+  assignment_data = all_assignment_data[[assignment]]
+  
+  req(!is.null(assignment_data[['on-load']]))
+  
+  js_content = gsub(pattern = "\"", replacement = "\\\"", x = assignment_data[['on-load']],
+                    fixed = TRUE)
+  
+  e = new.env()
+  e$.flexteach_info = init_list()
+  js_expr = parse(text = glue::glue('glue::glue("{js_content}")'))
+  js_parsed = eval(expr = js_expr, envir = e)
+  
+  if(!is.null(js_parsed) & length(js_parsed)>0)
+    shinyjs::runjs(js_parsed)
+  
+})
+```
