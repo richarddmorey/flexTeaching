@@ -8,6 +8,7 @@ Maintainer: Richard D. Morey <richarddmorey@gmail.com>
 Description: More about what it does (maybe more than one line)
 License: MIT
 Encoding: UTF-8
+StagedInstall: no
 Imports: 
     noah (== 0.1.0),
     shiny,
