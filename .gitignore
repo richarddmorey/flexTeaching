@@ -42,3 +42,4 @@ app/rsconnect*
 rsconnect/shinyapps.io/richarddmorey/test.dcf
 inst/app/solve.html
 inst/app/download.html
+*.dcf
