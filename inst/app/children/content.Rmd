@@ -25,7 +25,7 @@ init_list = reactive({
   
   validate(
     need(assignment_accessible(), 
-         glue::glue("This assignment will not be available until {strftime(assignment_data$restrict_before, format = '%A, %d %B %Y at %X %z')}."))
+         glue::glue("This assignment will not be available until {strftime(assignment_data$restrict_before, format = fmt)}."))
   )
   
   id = input$id
@@ -67,8 +67,6 @@ output$buttonBox <- renderUI({
   
   assignment = input$assignment
   assignment_data = all_assignment_data[[assignment]]
-  
-  fmt = flexTeaching::pkg_options()$date_format_prnt
   
   req(assignment_data$restrict_before<Sys.time())
   

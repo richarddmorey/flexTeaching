@@ -22,12 +22,12 @@ getAssignments = function(path = system.file("assignments", package = "flexTeach
       if(file.exists(fp)){
         y = yaml::read_yaml(fp)
         if(!is.null(y$hide_before)){
-          strptime(y$hide_before, format = date_format)
+          y$hide_before = strptime(y$hide_before, format = date_format)
         }else{
           y$hide_before = -Inf
         }
         if(!is.null(y$restrict_before)){
-          strptime(y$restrict_before, format = date_format)
+          y$restrict_before = strptime(y$restrict_before, format = date_format)
         }else{
           y$restrict_before = -Inf
         }
