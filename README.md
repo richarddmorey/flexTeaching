@@ -5,7 +5,7 @@ Use rstudio shiny+flexdashboard to create random stats assignments
 
 The flexTeaching app is an interface which allows the creation and deployment of lessons and assignments that include personalized random data, based on a random seed based on their student ID.
 
-[![Screenshot](http://learnbayes.org/images/flexTeach/flexTeach1_tn.png)](http://learnbayes.org/images/flexTeach/flexTeach1.png)
+[![Screenshot](https://raw.githubusercontent.com/richarddmorey/flexTeaching/gh-pages/images/flexTeach2_tn.png)](https://raw.githubusercontent.com/richarddmorey/flexTeaching/gh-pages/images/flexTeach2_tn.png)
 
 *Students* can download their personalized data sets and see the assignment. *Assignment markers* can obtain the solutions specific to that student using their ID plus the secret in use at the time the student downloaded the data set. *Students* can obtain solutions to exercises with other randomized data sets for practice.
 
@@ -22,7 +22,7 @@ Benefits:
 
 Just download the repository and run the corresponding `.Rmd` file in the Rstudio interface. 
 
-![Run button](http://learnbayes.org/images/flexTeach/run.png)
+![Run button](https://raw.githubusercontent.com/richarddmorey/flexTeaching/gh-pages/images/run.png)
 
 
 The button may say "knit" the first time you run it; that's ok, just click it. You might have to install the packages listed below before it will run.
