@@ -11,10 +11,16 @@ observeEvent(c(input$assignment, input$id, input$format, solutions(), seed()), {
     !is.null(input$format)
     )
   
+  query = getQueryString()
+  cat_regex = query[['category']]
+  
   string = glue::glue("?assignment={input$assignment}&id={input$id}&format={input$format}")
   
   if(entry == 'solve')
     string = glue::glue("{string}&solutions={solutions()}&seed={seed()}")
+  
+  if(!is.null(cat_regex))
+    string = glue::glue("{string}&category={cat_regex}")
   
   shiny::updateQueryString(queryString = string)
   
