@@ -9,7 +9,6 @@ seed-salt: 7e3przwv54qumioahsb2
 data-salt: ywubp28o4a5i0d31q9je
 source: ['../_common/R/utility.R', 'R/utility.R']
 init: init
-html-gen: compile_assignment_html
 buttons: buttons
 on-load: |
   $('#fake-files-q3').remove()

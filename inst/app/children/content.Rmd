@@ -39,12 +39,12 @@ init_list = reactive({
   
   flexTeaching:::sourceAll(assignment_data, e)
   
-  init_func = get(assignment_data$init, envir = e)
-  if(!is.null(init_func)){
-      R.utils::withSeed({
-        ret_list = init_func(assignment_data, id, seed, solutions, e)
-      },
-      seed0)
+  if(!is.null(assignment_data$init)){
+    init_func = get(assignment_data$init, envir = e)
+    R.utils::withSeed({
+      ret_list = init_func(assignment_data, id, seed, solutions, e)
+    },
+    seed0)
   }else{
     ret_list = list()
   }
