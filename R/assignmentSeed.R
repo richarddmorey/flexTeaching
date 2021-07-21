@@ -6,9 +6,11 @@
 #' @param salt assignment salt
 #'
 #' @return
+#' @importFrom digest sha1
+#' @importFrom dplyr `%>%`
 assignmentSeed <- function(id, seed, salt){
-  concat = paste0(trimws(id),
-         trimws(seed),
-         trimws(salt))
-  return(alp2int(concat))
+  c(id, seed, salt) %>%
+    trimws() %>%
+    digest::sha1() %>%
+    alp2int()
 }

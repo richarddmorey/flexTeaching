@@ -21,6 +21,12 @@ getAssignments = function(path = system.file("assignments", package = "flexTeach
       fp = file.path(d,"_assignment.yml")
       if(file.exists(fp)){
         y = yaml::read_yaml(fp)
+        if(is.null(y$category)){
+          y$category = " "
+        }
+        if(is.null(y$sortkey)){
+          y$sortkey = Inf
+        }
         if(!is.null(y$hide_before)){
           y$hide_before = strptime(y$hide_before, format = date_format)
         }else{
@@ -39,7 +45,12 @@ getAssignments = function(path = system.file("assignments", package = "flexTeach
     }) %>%
     Filter(length, .) -> dirs
   
-  names(dirs) = purrr::map_chr(dirs, ~`$`(., 'shortname'))
+  shortnames = purrr::map_chr(dirs, ~`$`(., 'shortname'))
+  # Check for duplicate shortnames
+  if(any(duplicated(shortnames)))
+    stop("All assignment shortnames must be unique.")
+  
+  names(dirs) = shortnames
   if(!simple) return(dirs)
   
   purrr::map_df(dirs, function(el){

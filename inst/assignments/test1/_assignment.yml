@@ -11,5 +11,4 @@ seed-salt: kyao95mw8nq7tlcr6x1j
 data-salt: ndt4927lzourmbke3fhy
 source: ['../_common/R/utility.R', 'R/utility.R']
 init: init
-html-gen: compile_assignment_html
 buttons: buttons

@@ -21,7 +21,11 @@ compilePage <- function(assignment_data, id, seed, solutions, e, init_list = lis
   e$.flexteach_solutions = solutions
   e$.flexteach_info = init_list
   
-  compile_assignment = get(assignment_data$`html-gen`, envir = e)
+  compile_assignment = ifelse(
+    is.null(assignment_data$`html-gen`),
+    flexTeaching:::compileAssignmentHtmlDefault,
+    get(assignment_data$`html-gen`, envir = e)
+  )
 
   R.utils::withSeed({
     content = compile_assignment(assignment_data$path, envir = e)

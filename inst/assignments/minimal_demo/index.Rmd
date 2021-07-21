@@ -1,0 +1,8 @@
+
+```{r solutions, echo=FALSE}
+# This is optional to prevent annoying errors when deploying shiny apps
+if(!exists(".flexteach_solutions"))
+  .flexteach_solutions = FALSE
+```
+
+This is a minimal demo.
