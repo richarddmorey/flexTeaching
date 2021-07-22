@@ -5,6 +5,8 @@ output:
     theme: united
     includes:
       in_header: !expr flexTeaching:::writeHeaders()
+params:
+  cache_setup: false
 runtime: shiny_prerendered
 ---
 

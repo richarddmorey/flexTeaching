@@ -19,11 +19,41 @@ htmltools::tags$div(
 ```
 
 ```{r context="server"}
+# This value just exists to tell us whether the masterseed has changed
+# from its default of "". Doesn't need to be reactive
+changed_master = FALSE
+
 output$seedbox <- renderUI({
   query = getQueryString()
-  seed = if ('seed' %in% names(query)) query[['seed']] else "s33d"
-  globals$first_seed = seed
-  el = textInput("seed", label = "Seed:", width = "150px", value = seed)
+  
+  curr_seed = isolate(input$seed)
+  
+  # initial setting from query string
+  if(is.null(input$masterseed) || is.null(input$assignment)){
+    seed0 = if ('seed' %in% names(query)) query[['seed']] else flexTeaching::pkg_options()$initial_seed
+    globals$first_seed = seed0
+  }else{ # not initial value
+    changed_master <<- changed_master || input$masterseed != ""
+    
+    salt = all_assignment_data[[input$assignment]]$`seed-salt`
+    seed0 = flexTeaching:::animalSeed(input$masterseed, salt)
+    
+    # IF      we've changed the master seed and the master seed is blank, set it back
+    #         to the default.
+    # ELSE IF the masterseed is blank and we haven't changed it (that is, it 
+    #         remains the default) then keep the seed at its current value.
+    # ELSE    we need to freeze the reactive value temporarily so it the first change
+    #         doesn't get picked up (before the assignment has changed)
+    if(is.null(curr_seed) || (changed_master & input$masterseed == "")){
+      seed0 = globals$first_seed
+    }else if (input$masterseed == "" & !changed_master){
+      seed0 = curr_seed
+    } else {
+      freezeReactiveValue(input, "seed")
+    }
+  }
+  
+  el = textInput("seed", label = "Seed:", width = "150px", value = seed0)
   if('seed_disable' %in% names(query)){
     return(shinyjs::disabled(el))
   }else{
@@ -60,43 +90,10 @@ output$solutionsbox <- renderUI({
 ```
 
 ```{r context="server"}
-observeEvent(input$masterseed, {
-  
-  if(is.null(input$assignment)) return()
-  
-  if(input$masterseed == ""){
-    seed = globals$first_seed
-  }else{
-    salt = all_assignment_data[[input$assignment]]$`seed-salt`
-    seed = flexTeaching:::animalSeed(input$masterseed, salt)
-  }
-
-  updateTextInput(
-    session, "seed", 
-    value = seed 
-  )
-})
-
-observeEvent(input$assignment, {
-  
-  if(is.null(input$assignment)) return()
-  
-  if(input$masterseed == "") return()
-    
-  salt = all_assignment_data[[input$assignment]]$`seed-salt`
-  seed = flexTeaching:::animalSeed(input$masterseed, salt)
-  
-  updateTextInput(
-    session, "seed", 
-    value = seed 
-  )
-})
-
 
 shiny::outputOptions(output, 'seedbox', suspendWhenHidden=FALSE)
 shiny::outputOptions(output, 'masterseedbox', suspendWhenHidden=FALSE)
 shiny::outputOptions(output, 'clipseed', suspendWhenHidden=FALSE)
-
 
 ```
 

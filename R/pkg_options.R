@@ -2,7 +2,8 @@
 # This function is not exported to user space and does not need to be documented.
 MYPKGOPTIONS <- settings::options_manager(
   date_format_yaml = "%Y-%m-%d %H:%M:%S %z",
-  date_format_prnt = "%A, %d %B %Y at %X %z"
+  date_format_prnt = "%A, %d %B %Y at %X %z",
+  initial_seed = "s33d"
 )
 
 # User function that gets exported:
@@ -16,6 +17,7 @@ MYPKGOPTIONS <- settings::options_manager(
 #' \itemize{
 #'  \item{\code{date_format_yaml}}{(\code{character}) Format from which to parse dates in YAML for assignments }
 #'  \item{\code{date_format_prnt}}{(\code{character}) Format in which to print dates (e.g., in error messages) }
+#'  \item{\code{initial_seed}}{(\code{character}) Default seed to put in the seed box, if no query string is used }
 #' }
 #'
 #' @export
