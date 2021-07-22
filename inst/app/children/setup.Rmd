@@ -20,7 +20,7 @@ shinyjs::useShinyjs(html = TRUE)
 ```
 <script src="shinyjs/inject.js"></script>
 
-```{r cache, eval = FALSE, context="server"}
+```{r cache, eval = params$cache_setup, context="server"}
 shinyOptions(
   cache = cachem::cache_disk(
     dir = "./my_app_cache",

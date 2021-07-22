@@ -18,6 +18,7 @@ The following options are supported
 \itemize{
  \item{\code{date_format_yaml}}{(\code{character}) Format from which to parse dates in YAML for assignments }
  \item{\code{date_format_prnt}}{(\code{character}) Format in which to print dates (e.g., in error messages) }
+ \item{\code{initial_seed}}{(\code{character}) Default seed to put in the seed box, if no query string is used }
 }
 }
 
