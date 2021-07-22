@@ -29,5 +29,6 @@ Imports:
     shinybusy,
     purrr,
     dplyr,
-    settings
+    settings,
+    cachem
 RoxygenNote: 7.1.1
