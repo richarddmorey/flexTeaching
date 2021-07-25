@@ -35,10 +35,7 @@ init_list = reactive({
   salt = assignment_data$`data-salt`
   seed0 = flexTeaching:::assignmentSeed(id, seed, salt)
   
-  # Make parent .GlobelEnv so that apps will not have access to shiny
-  # variables; prevents some sneaky hacks like entering R code into
-  # text inputs
-  e = new.env(parent = .GlobalEnv)
+  e = new.env()
   
   flexTeaching:::sourceAll(assignment_data, e)
   
