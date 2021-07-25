@@ -35,7 +35,10 @@ init_list = reactive({
   salt = assignment_data$`data-salt`
   seed0 = flexTeaching:::assignmentSeed(id, seed, salt)
   
-  e = new.env()
+  # Make parent .GlobelEnv so that apps will not have access to shiny
+  # variables; prevents some sneaky hacks like entering R code into
+  # text inputs
+  e = new.env(parent = .GlobalEnv)
   
   flexTeaching:::sourceAll(assignment_data, e)
   
@@ -72,7 +75,11 @@ output$buttonBox <- renderUI({
   
   solutions = solutions()
   
-  e = new.env()
+  # Make parent .GlobelEnv so that apps will not have access to shiny
+  # variables; prevents some sneaky hacks like entering R code into
+  # text inputs
+  e = new.env(parent = .GlobalEnv)
+  
   flexTeaching:::sourceAll(assignment_data, e)
   
   bn = assignment_data$buttons
@@ -140,7 +147,7 @@ render_out <- reactive({
   
   i = init_list()
   
-  e = new.env()
+  e = new.env(parent = .GlobalEnv)
   flexTeaching:::sourceAll(assignment_data, e)
   
   html = flexTeaching:::compilePage(assignment_data, id, seed, solutions, e, i)
@@ -170,13 +177,22 @@ observeEvent(render_out(), {
   js_content = gsub(pattern = "\"", replacement = "\\\"", x = assignment_data[['on-load']],
                     fixed = TRUE)
   
-  e = new.env()
+  e = new.env(parent = .GlobalEnv)
   e$.flexteach_info = init_list()
   js_expr = parse(text = glue::glue('glue::glue("{js_content}")'))
+  
   js_parsed = tryCatch(eval(expr = js_expr, envir = e),
-    error = function(c) 
-      safeError(glue::glue("Problem parsing javascript code on load of assignment {input$assignment}: {c}"))
-    )
+    error = function(c){
+      # Using paste0 instead of glue to prevent code injection from input
+      error_text = paste0(
+        "Problem parsing javascript code on load of assignment ",
+        input$assignment,
+        ": ",
+        c
+      )
+      safeError(error_text)
+    }
+  )
 
 
   if(!is.null(js_parsed) & length(js_parsed)>0)

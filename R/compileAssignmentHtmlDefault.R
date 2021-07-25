@@ -9,7 +9,7 @@
 #' @export
 #'
 #' @examples
-compileAssignmentHtmlDefault <- function(path, envir = new.env(), ...){
+compileAssignmentHtmlDefault <- function(path, envir = new.env(parent = .GlobalEnv), ...){
   tmpfn = tempfile(fileext = ".html")
   input = file.path(path, "index.Rmd")
   output_format = rmarkdown::html_fragment(pandoc_args = c("--metadata", "title= " ) )

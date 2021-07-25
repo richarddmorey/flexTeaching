@@ -19,7 +19,7 @@ init <- function(assignment_data, id, seed, solutions, e){
 
 create_pdf <- function(assignment_data, id, seed, solutions, format, init, entry){
   
-  e = new.env()
+  e = new.env(parent = .GlobalEnv)
   flexTeaching:::sourceAll(assignment_data, e)
   
   e$.flexteach_solutions = solutions
