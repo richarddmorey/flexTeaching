@@ -6,3 +6,7 @@ if(!exists(".flexteach_solutions"))
 ```
 
 This is a minimal demo.
+
+```{r echo=TRUE}
+ls()
+```
