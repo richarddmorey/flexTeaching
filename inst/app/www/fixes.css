@@ -24,3 +24,8 @@ input.shiny-bound-input:hover {
     display: inline-block;
     vertical-align: baseline;
 }
+
+#assignmentbox button.btn-default {
+  background-color: white;
+  color: black;
+}
