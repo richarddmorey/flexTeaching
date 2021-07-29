@@ -21,6 +21,11 @@ getAssignments = function(path = system.file("assignments", package = "flexTeach
       fp = file.path(d,"_assignment.yml")
       if(file.exists(fp)){
         y = yaml::read_yaml(fp)
+        if(is.null(y$exam)){
+          y$exam = FALSE
+        }else{
+          y$exam = as.logical(y$exam)
+        }
         if(is.null(y$category)){
           y$category = " "
         }
@@ -58,7 +63,8 @@ getAssignments = function(path = system.file("assignments", package = "flexTeach
               title = el$title, 
               shortname = el$shortname,
               sortkey = el$sortkey,
-              hidden = el$hide_before>Sys.time())
+              hidden = el$hide_before>Sys.time(),
+              exam = el$exam)
   }) %>% 
     arrange(category, sortkey, title) %>%
     select(-sortkey) -> x
