@@ -39,7 +39,6 @@ vignettes/*.pdf
 
 app/rsconnect*
 
-rsconnect/shinyapps.io/richarddmorey/test.dcf
-inst/app/solve.html
-inst/app/download.html
+inst/app/*.html
 *.dcf
+

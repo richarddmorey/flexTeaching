@@ -139,7 +139,7 @@ output$assignmentbox <- renderUI({
           ),
         style = case_when(
           !available ~ "color: lightcoral;",
-          exam & entry == 'solve' ~ "color: lightcoral;",
+          exam & entry() == 'solve' ~ "color: lightcoral;",
           TRUE ~ ""
           )
         ) -> icon_prep
