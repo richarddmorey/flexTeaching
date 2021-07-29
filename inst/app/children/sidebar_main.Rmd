@@ -90,8 +90,17 @@ assignment <- eventReactive(input$assignment, {
 })
 
 output$assignmentbox <- renderUI({
+  
+  req(entry())
+  
+  curr_assignment = isolate(input$assignment)
+  
   query = getQueryString()
-  assignment = query[['assignment']]
+  if(is.null(curr_assignment)){
+    assignment = query[['assignment']]
+  }else{
+    assignment = curr_assignment
+  }
   cat_regex   = query[['category']]
   if(is.null(cat_regex))
     cat_regex = ""
@@ -116,6 +125,7 @@ output$assignmentbox <- renderUI({
       names(z) = pull(el, title)
       return(z)
     }) -> assignments
+
   if('assignment_disable' %in% names(query)){
     el = selectInput("assignment", label = "Assignment:", width = "150px", choices = assignments, selected = assignment)
     return(shinyjs::disabled(el))
