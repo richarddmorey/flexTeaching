@@ -19,6 +19,8 @@ The following options are supported
  \item{\code{date_format_yaml}}{(\code{character}) Format from which to parse dates in YAML for assignments }
  \item{\code{date_format_prnt}}{(\code{character}) Format in which to print dates (e.g., in error messages) }
  \item{\code{initial_seed}}{(\code{character}) Default seed to put in the seed box, if no query string is used }
+ \item{\code{start_practice_message}}{(\code{character}) Message to give when switching to practice mode }
+ \item{\code{start_assignment_message}}{(\code{character}) Message to give when switching to assignment mode }
 }
 }
 

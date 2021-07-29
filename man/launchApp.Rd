@@ -9,7 +9,7 @@ launchApp(which = "solve", query = "", port = NULL)
 \arguments{
 \item{which}{Which app to open ('solve' or 'download')}
 
-\item{query}{Query string to add to the URL}
+\item{query}{Query string to add to the URL (no initial '?')}
 }
 \value{
 
