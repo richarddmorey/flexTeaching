@@ -185,7 +185,14 @@ observeEvent(render_out(), {
     assignment_accessible(),
     !assignment_data$exam || entry != "solve"
   )
-  
+  # Identicon
+  id = input$id
+  seed = seed()
+  salt = assignment_data$`data-salt`
+  seed0 = flexTeaching:::assignmentSeed(id, seed, salt)
+  shinyjs::runjs(glue::glue("jdenticon.updateSvg('#flexteaching-fingerprint', '{seed0}');"))
+
+  # Loading javascript
   req(!is.null(assignment_data[['on-load']]))
   
   js_content = gsub(pattern = "\"", replacement = "\\\"", x = assignment_data[['on-load']],
@@ -207,7 +214,6 @@ observeEvent(render_out(), {
       safeError(error_text)
     }
   )
-
 
   if(!is.null(js_parsed) & length(js_parsed)>0)
     shinyjs::runjs(js_parsed)
