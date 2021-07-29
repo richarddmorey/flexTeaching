@@ -4,7 +4,7 @@
 \alias{compileAssignmentHtmlDefault}
 \title{A fallback function to compile an assignment, if none is given in the assignment YAML}
 \usage{
-compileAssignmentHtmlDefault(path, envir = new.env(), ...)
+compileAssignmentHtmlDefault(path, envir = new.env(parent = .GlobalEnv), ...)
 }
 \arguments{
 \item{path}{The path to the assignment folder}
