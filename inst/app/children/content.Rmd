@@ -28,6 +28,12 @@ init_list = reactive({
          glue::glue("This assignment will not be available until {strftime(assignment_data$restrict_before, format = fmt)}."))
   )
   
+  validate(
+    need(!assignment_data$exam || entry != "solve", 
+          "This assignment is not available in practice mode."
+         )
+  )
+  
   id = input$id
   seed = seed()
   solutions = solutions()
@@ -71,7 +77,10 @@ output$buttonBox <- renderUI({
   assignment = input$assignment
   assignment_data = all_assignment_data[[assignment]]
   
-  req(assignment_data$restrict_before<Sys.time())
+  req(
+    assignment_accessible(),
+    !assignment_data$exam || entry != "solve"
+    )
   
   solutions = solutions()
   
@@ -171,6 +180,11 @@ observeEvent(render_out(), {
   req(input$assignment)
   assignment = input$assignment
   assignment_data = all_assignment_data[[assignment]]
+  
+  req(
+    assignment_accessible(),
+    !assignment_data$exam || entry != "solve"
+  )
   
   req(!is.null(assignment_data[['on-load']]))
   
