@@ -4,6 +4,7 @@
 library(flexdashboard)
 library(magrittr)
 library(dplyr)
+library(shinyWidgets)
 library(flexTeaching)
 knitr::opts_chunk$set(echo = FALSE)
 
