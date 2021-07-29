@@ -1,0 +1,26 @@
+
+
+/*
+  Make it more obvious when there is more text to one
+  side in text boxes (e.g., the seed and id boxes)
+*/
+input.shiny-bound-input {
+  text-overflow: ellipsis;
+  -o-textoverflow: ellipsis;
+}
+
+input.shiny-bound-input:hover {
+  overflow: visible;
+}
+
+
+/* 
+  This css is a fix for shinyWidgets::switchInput
+  See: https://github.com/dreamRs/shinyWidgets/issues/107
+}*/
+.bootstrap-switch .bootstrap-switch-handle-on,
+.bootstrap-switch .bootstrap-switch-handle-off,
+.bootstrap-switch .bootstrap-switch-label {
+    display: inline-block;
+    vertical-align: baseline;
+}

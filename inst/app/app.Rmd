@@ -2,10 +2,10 @@
 title: flexTeaching
 output: 
   flexdashboard::flex_dashboard:
-    theme: united
+    theme: yeti
     favicon: 'www/favicon.ico'
     logo: 'www/wave.svg'
-    css: ["www/fingerprint.css", "www/logo.css"]
+    css: ["www/fingerprint.css", "www/logo.css", "www/fixes.css", "www/practice.css"]
     includes:
       in_header: !expr flexTeaching:::writeHeaders()
 params:
@@ -13,10 +13,20 @@ params:
 runtime: shiny_prerendered
 ---
 
+```{r context="server"}
+l = readLines("secret")
+masterseed = trimws(l[length(l)])
+```
+
 ```{r child="children/setup.Rmd"}
 ```
 
 ```{r child="children/query_string.Rmd"}
+```
+
+```{r, context="render"}
+library(rclipboard)
+shiny::includeScript(path = system.file("lib/clipboard.min.js", package = "rclipboard"))
 ```
 
 ```{r context="render"}
@@ -31,35 +41,41 @@ Column {.sidebar}
 ```{r child="children/sidebar_main.Rmd"}
 ```
 
-Column 
+```{r child="children/sidebar_solve.Rmd"}
+```
+
+Column
 ------------------------------------
 
 ```{r context="server"}
-entry <- "download"
-validSeed <- TRUE
 
-solutions <- function(){
-  FALSE
-}
-
-l = readLines("secret")
-masterseed = l[length(l)]
+entry <- reactive({
+  ifelse(input$entry == TRUE, "solve", "download")
+})
 
 seed <- reactive({
   
-  req(!is.null(assignment()))
+  req(!is.null(input$assignment))
 
   if(masterseed == "") stop("Master seed cannot be blank!")
     
-  salt = all_assignment_data[[assignment()]]$`seed-salt`
-  seed = flexTeaching:::animalSeed(masterseed, salt)
+  if(entry()=='solve'){
+    seed0 = input$seed
+  }else{
+    salt = all_assignment_data[[input$assignment]]$`seed-salt`
+    seed0 = flexTeaching:::animalSeed(masterseed, salt)
+  }
+  return(seed0)
   
-  return(seed)
-
 })
 
+solutions <- reactive({
+  req(entry())
+  input$solutions & (entry() == "solve")
+})
 
 ```
 
 ```{r child="children/content.Rmd"}
 ```
+

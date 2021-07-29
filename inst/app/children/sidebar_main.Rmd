@@ -1,5 +1,6 @@
 
 ```{r context="render"}
+uiOutput("entrybox")
 uiOutput("assignmentbox")
 uiOutput("idbox")
 
@@ -16,6 +17,55 @@ uiOutput("formatbox")
 ```{r context="server"}
 
 session$allowReconnect(TRUE)
+
+output$entrybox <- renderUI({
+  query = getQueryString()
+  solve_mode = 'solve' %in% names(query)
+  disabled = 'entry_disable' %in% names(query)
+  el = switchInput(
+    "entry",
+    onStatus = "success", 
+    offStatus = "danger",
+    onLabel = "Practice",
+    offLabel = "Assignment",
+    label = "Mode",
+    value = solve_mode,
+    handleWidth = 125,
+    labelWidth = 65,
+    inline = TRUE,
+    width = "200px",
+    disabled = disabled
+  )
+  return(el)
+})
+
+## Warning(s) when switching modes
+observeEvent(entry(), {
+
+  if(entry()=='solve'){
+    message = flexTeaching::pkg_options("start_practice_message")
+    shinyjs::runjs("$('.navbar').addClass('navbar-practice');")
+    shinyjs::runjs("$('#section-column.sidebar').addClass('sidebar-practice');")
+    shinyjs::runjs("$('span.navbar-brand').addClass('title-practice');")
+  }
+  
+  if(entry()=='download'){
+    message = flexTeaching::pkg_options("start_assignment_message")
+    shinyjs::runjs("$('.navbar').removeClass('navbar-practice');")
+    shinyjs::runjs("$('#section-column.sidebar').removeClass('sidebar-practice');")
+    shinyjs::runjs("$('span.navbar-brand').removeClass('title-practice');")
+  }
+  
+  req(message)
+  
+  sendSweetAlert(
+    session = session,
+    title = "Information",
+    text = message,
+    type = "info"
+  )
+}, ignoreInit = TRUE)
+
 
 output$idbox <- renderUI({
   query = getQueryString()

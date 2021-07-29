@@ -1,19 +1,25 @@
 
 ```{r context="render"}
 
-uiOutput("solutionsbox")
-
-htmltools::tags$div(
-  "Show admin",
-  id = "show_admin"
-)
-
-htmltools::tags$div(
-  uiOutput("seedbox"),
-  uiOutput("clipseed"),
-  htmltools::tags$hr(),
-  uiOutput("masterseedbox"),
-  id = "admin_panel"
+conditionalPanel(
+  condition = "input.entry",
+  uiOutput("solutionsbox"),
+  shinyWidgets::dropdown(
+    htmltools::tags$div(
+      uiOutput("seedbox"),
+      uiOutput("clipseed"),
+      htmltools::tags$hr(),
+      uiOutput("masterseedbox"),
+      id = "admin_panel"
+    ),
+    style = "unite", icon = icon("gear"),
+    status = "default", width = "100%",
+    tooltip = "Seed options",
+    animate = animateOptions(
+      enter = animations$fading_entrances$fadeInLeftBig,
+      exit = animations$fading_exits$fadeOutRightBig
+    )
+  )
 )
 
 ```
@@ -63,7 +69,7 @@ output$masterseedbox <- renderUI({
 output$solutionsbox <- renderUI({
   query = getQueryString()
   sol = 'solutions' %in% names(query)
-  el = checkboxInput("solutions", label = "Show solutions?", value = sol)
+  el = awesomeCheckbox("solutions", label = "Show solutions?", value = sol)
   if('solutions_disable' %in% names(query)){
     return(shinyjs::disabled(el))
   }else{
