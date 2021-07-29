@@ -26,6 +26,7 @@ output$assignmentbox <- renderUI({
   cat_regex   = query[['category']]
   if(is.null(cat_regex))
     cat_regex = ""
+  
   flexTeaching:::getAssignments() %>%
     mutate(
       hidden = case_when(
@@ -46,10 +47,46 @@ output$assignmentbox <- renderUI({
       names(z) = pull(el, title)
       return(z)
     }) -> assignments
-  el = selectInput("assignment", label = "Assignment:", width = "150px", choices = assignments, selected = assignment)
   if('assignment_disable' %in% names(query)){
+    el = selectInput("assignment", label = "Assignment:", width = "150px", choices = assignments, selected = assignment)
     return(shinyjs::disabled(el))
   }else{
+    
+    ## Get relevant settings
+    ## This is ugly code, revisit and combine with above to shorten
+    flexTeaching:::getAssignments(simple=FALSE) %>% 
+      `[`(unlist(assignments)) %>%
+      purrr::map_df(function(el){
+        tibble(shortname = el$shortname,
+               available = el$restrict_before < Sys.time(),
+               exam = el$exam
+               )
+        }) %>%
+      mutate(
+        icon = case_when(
+          !available ~ "glyphicon-hourglass",
+          exam ~ "glyphicon-pencil",
+          TRUE ~ ""
+          ),
+        style = case_when(
+          !available ~ "color: lightcoral;",
+          exam & entry == 'solve' ~ "color: lightcoral;",
+          TRUE ~ ""
+          )
+        ) -> icon_prep
+    
+    el = shinyWidgets::pickerInput(
+      "assignment", 
+      label = "Assignment:", 
+      width = "150px", 
+      choices = assignments,
+      selected = assignment,
+      options = list(`live-search`=TRUE),
+      choicesOpt = list(
+        style = icon_prep$style,
+        icon = icon_prep$icon
+        )
+      )
     return(el)
   }
 })

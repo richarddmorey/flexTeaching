@@ -13,6 +13,7 @@ Imports:
     noah (== 0.1.0),
     shiny,
     shinyjs,
+    shinyWidgets,
     htmltools,
     rclipboard,
     knitr,
