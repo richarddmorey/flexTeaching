@@ -1,0 +1,15 @@
+
+#flexteaching-fingerprint {
+  width: 100px;
+  height: 100px;
+  background-color: white;
+  margin: auto;
+  display: block;
+  text-align: center;
+  border: 1px solid lightgray;
+}
+
+.flexteaching-fingerprint-container {
+  width: 105px;
+  margin-left: 20px;
+}

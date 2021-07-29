@@ -2,6 +2,14 @@
 ```{r context="render"}
 uiOutput("assignmentbox")
 uiOutput("idbox")
+
+# Identicon
+includeScript(path = system.file("app/www/jdenticon.min.js", package = "flexTeaching"))
+tags$div(
+  title="Fingerprint", class="flexteaching-fingerprint-container",
+  tags$svg(id="flexteaching-fingerprint")
+)
+
 uiOutput("formatbox")
 ```
 
