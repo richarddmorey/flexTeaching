@@ -37,6 +37,7 @@ Column
 
 ```{r context="server"}
 entry <- "solve"
+validSeed <- FALSE
 
 seed <- reactive({
   input$seed

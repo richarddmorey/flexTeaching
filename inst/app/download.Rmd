@@ -28,6 +28,7 @@ Column
 
 ```{r context="server"}
 entry <- "download"
+validSeed <- TRUE
 
 solutions <- function(){
   FALSE

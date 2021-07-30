@@ -32,7 +32,6 @@ output$idbox <- renderUI({
 # new seed when the assignment changes. This prevents double execution of 
 # the init_list
 # Note that validSeed is global and is set later with `<<-`
-validSeed <- FALSE
 assignment <- eventReactive(input$assignment, {
   req(entry)
   if(!is.null(input$masterseed) && input$masterseed != "" && entry == 'solve')
