@@ -16,7 +16,7 @@ assignment_accessible = reactive({
 ```{r context="server"}
 init_list = reactive({
   
-  req(assignment(), validSeed, entry())
+  req(assignment(), isolate(validSeed()), entry())
 
   assignment = assignment()
   assignment_data = all_assignment_data[[assignment]]
@@ -164,7 +164,7 @@ uiOutput("assignmentBox")
 ```{r context="server"}
 render_out <- reactive({
   
-  req(assignment(), validSeed, entry())
+  req(assignment(), isolate(validSeed()), entry())
   assignment = assignment()
   assignment_data = all_assignment_data[[assignment]]
   
@@ -195,7 +195,7 @@ output$assignmentBox <- renderUI({
 ```{r context="server"}
 observeEvent(render_out(), {
   
-  req(assignment(), validSeed, entry())
+  req(assignment(), isolate(validSeed()), entry())
   assignment = assignment()
   assignment_data = all_assignment_data[[assignment]]
   

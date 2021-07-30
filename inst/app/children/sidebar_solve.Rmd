@@ -42,7 +42,7 @@ output$seedbox <- renderUI({
     }
   }
 
-  on.exit({validSeed <<- TRUE})
+  on.exit({validSeed(TRUE)})
   el = textInput("seed", label = "Seed:", width = "150px", value = seed0)
   if('seed_disable' %in% names(query)){
     return(shinyjs::disabled(el))

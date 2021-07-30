@@ -50,6 +50,7 @@ observeEvent(entry(), {
   }
   
   if(entry()=='download'){
+    validSeed(TRUE)
     message = flexTeaching::pkg_options("start_assignment_message")
     shinyjs::runjs("$('.navbar').removeClass('navbar-practice');")
     shinyjs::runjs("$('#section-column.sidebar').removeClass('sidebar-practice');")
@@ -85,7 +86,7 @@ output$idbox <- renderUI({
 assignment <- eventReactive(input$assignment, {
   req(entry())
   if(!is.null(input$masterseed) && input$masterseed != "" && entry() == 'solve')
-    validSeed <<- FALSE
+    validSeed(FALSE)
   return(input$assignment)
 })
 
