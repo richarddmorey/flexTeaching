@@ -3,6 +3,7 @@ title: "Assignment data download"
 output: 
   flexdashboard::flex_dashboard:
     theme: united
+    css: ["www/fingerprint.css"]
     includes:
       in_header: !expr flexTeaching:::writeHeaders()
 params:
