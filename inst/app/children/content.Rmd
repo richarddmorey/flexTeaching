@@ -2,9 +2,9 @@
 
 assignment_accessible = reactive({
     
-  req(input$assignment)
+  req(assignment())
 
-  assignment = input$assignment
+  assignment = assignment()
   assignment_data = all_assignment_data[[assignment]]
   
   assignment_data$restrict_before<Sys.time()
@@ -16,9 +16,9 @@ assignment_accessible = reactive({
 ```{r context="server"}
 init_list = reactive({
   
-  req(input$assignment)
+  req(assignment(), validSeed)
 
-  assignment = input$assignment
+  assignment = assignment()
   assignment_data = all_assignment_data[[assignment]]
   
   fmt = flexTeaching::pkg_options()$date_format_prnt
@@ -33,11 +33,11 @@ init_list = reactive({
           "This assignment is not available in practice mode."
          )
   )
-  
+
   id = input$id
   seed = seed()
   solutions = solutions()
-  
+
   salt = assignment_data$`data-salt`
   seed0 = flexTeaching:::assignmentSeed(id, seed, salt)
   
@@ -60,7 +60,7 @@ init_list = reactive({
     
   return(ret_list)
     
-}) %>% bindCache(input$assignment, input$id, seed(), solutions(), assignment_accessible())
+}) %>% bindCache(assignment(), input$id, seed(), solutions(), assignment_accessible())
 ```
 
 
@@ -72,9 +72,9 @@ uiOutput("buttonBox", style = "width: 100%; margin: auto;")
 
 output$buttonBox <- renderUI({
   
-  req(input$assignment)
+  req(assignment())
   
-  assignment = input$assignment
+  assignment = assignment()
   assignment_data = all_assignment_data[[assignment]]
   
   req(
@@ -113,7 +113,7 @@ output$buttonBox <- renderUI({
         entry)
       shinybusy::remove_modal_spinner()
       return(fc)
-    }) %>% bindCache(input$assignment, input$id, seed(), solutions(), input$format, b, assignment_accessible())
+    }) %>% bindCache(assignment(), input$id, seed(), solutions(), input$format, b, assignment_accessible())
     
     output[[glue::glue("button_{b}")]] <- downloadHandler(
       filename = function() {
@@ -146,8 +146,8 @@ uiOutput("assignmentBox")
 ```{r context="server"}
 render_out <- reactive({
   
-  req(input$assignment)
-  assignment = input$assignment
+  req(assignment(), validSeed)
+  assignment = assignment()
   assignment_data = all_assignment_data[[assignment]]
   
   id = input$id
@@ -164,7 +164,7 @@ render_out <- reactive({
  return(html)
   
 }) %>%
-  bindCache(input$assignment, input$id, seed(), solutions(), assignment_accessible())
+  bindCache(assignment(), input$id, seed(), solutions(), assignment_accessible())
 ```
 
 ```{r context="server"}
@@ -177,8 +177,8 @@ output$assignmentBox <- renderUI({
 ```{r context="server"}
 observeEvent(render_out(), {
   
-  req(input$assignment)
-  assignment = input$assignment
+  req(assignment(), validSeed)
+  assignment = assignment()
   assignment_data = all_assignment_data[[assignment]]
   
   req(
@@ -207,7 +207,7 @@ observeEvent(render_out(), {
       # Using paste0 instead of glue to prevent code injection from input
       error_text = paste0(
         "Problem parsing javascript code on load of assignment ",
-        input$assignment,
+        assignment(),
         ": ",
         c
       )

@@ -38,11 +38,11 @@ masterseed = l[length(l)]
 
 seed <- reactive({
   
-  req(!is.null(input$assignment))
+  req(!is.null(assignment()))
 
   if(masterseed == "") stop("Master seed cannot be blank!")
     
-  salt = all_assignment_data[[input$assignment]]$`seed-salt`
+  salt = all_assignment_data[[assignment()]]$`seed-salt`
   seed = flexTeaching:::animalSeed(masterseed, salt)
   
   return(seed)

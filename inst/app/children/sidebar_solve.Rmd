@@ -29,13 +29,13 @@ output$seedbox <- renderUI({
   curr_seed = isolate(input$seed)
   
   # initial setting from query string
-  if(is.null(input$masterseed) || is.null(input$assignment)){
+  if(is.null(input$masterseed) || is.null(assignment())){
     seed0 = if ('seed' %in% names(query)) query[['seed']] else flexTeaching::pkg_options()$initial_seed
     globals$first_seed = seed0
   }else{ # not initial value
     changed_master <<- changed_master || input$masterseed != ""
     
-    salt = all_assignment_data[[input$assignment]]$`seed-salt`
+    salt = all_assignment_data[[assignment()]]$`seed-salt`
     seed0 = flexTeaching:::animalSeed(input$masterseed, salt)
     
     # IF      we've changed the master seed and the master seed is blank, set it back
@@ -52,7 +52,7 @@ output$seedbox <- renderUI({
       freezeReactiveValue(input, "seed")
     }
   }
-  
+  validSeed <<- TRUE
   el = textInput("seed", label = "Seed:", width = "150px", value = seed0)
   if('seed_disable' %in% names(query)){
     return(shinyjs::disabled(el))
