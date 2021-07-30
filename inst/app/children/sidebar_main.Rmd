@@ -83,8 +83,8 @@ output$idbox <- renderUI({
 # the init_list
 # Note that validSeed is global and is set later with `<<-`
 assignment <- eventReactive(input$assignment, {
-  req(entry)
-  if(!is.null(input$masterseed) && input$masterseed != "" && entry == 'solve')
+  req(entry())
+  if(!is.null(input$masterseed) && input$masterseed != "" && entry() == 'solve')
     validSeed <<- FALSE
   return(input$assignment)
 })
