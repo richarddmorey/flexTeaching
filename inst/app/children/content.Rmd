@@ -29,7 +29,7 @@ init_list = reactive({
   )
   
   validate(
-    need(!assignment_data$exam || entry() != "solve", 
+    need(!assignment_data$exam || entry() != "solve" || seedMatches(), 
           "This assignment is not available in practice mode."
          )
   )
@@ -60,7 +60,7 @@ init_list = reactive({
     
   return(ret_list)
     
-}) %>% bindCache(assignment(), input$id, seed(), solutions(), assignment_accessible(), entry())
+}) %>% bindCache(assignment(), input$id, seed(), solutions(), assignment_accessible(), entry(), seedMatches())
 ```
 
 
@@ -79,7 +79,7 @@ output$buttonBox <- renderUI({
   
   req(
     assignment_accessible(),
-    !assignment_data$exam || entry() != "solve"
+    !assignment_data$exam || entry() != "solve" || seedMatches()
     )
   
   solutions = solutions()
@@ -131,7 +131,7 @@ output$buttonBox <- renderUI({
         stop(err_text)
       }else{
         return(fc)
-      }    }) %>% bindCache(assignment(), input$id, seed(), solutions(), input$format, b, assignment_accessible())
+      }    }) %>% bindCache(assignment(), input$id, seed(), solutions(), input$format, b, assignment_accessible(), entry(), seedMatches())
     
     output[[glue::glue("button_{b}")]] <- downloadHandler(
       filename = function() {
@@ -182,7 +182,7 @@ render_out <- reactive({
  return(html)
   
 }) %>%
-  bindCache(assignment(), input$id, seed(), solutions(), assignment_accessible(), entry())
+  bindCache(assignment(), input$id, seed(), solutions(), assignment_accessible(), entry(), seedMatches())
 ```
 
 ```{r context="server"}
@@ -201,7 +201,7 @@ observeEvent(render_out(), {
   
   req(
     assignment_accessible(),
-    !assignment_data$exam || entry() != "solve"
+    !assignment_data$exam || entry() != "solve" || seedMatches()
   )
   # Identicon
   id = input$id

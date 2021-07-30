@@ -53,19 +53,31 @@ entry <- reactive({
   ifelse(input$entry == TRUE, "solve", "download")
 })
 
+seedMatches <- reactiveVal(FALSE)
+
 seed <- reactive({
   
   req(!is.null(input$assignment))
 
   if(masterseed == "") stop("Master seed cannot be blank!")
-    
+  
+  salt = all_assignment_data[[input$assignment]]$`seed-salt`
+  seed0_masterseed = flexTeaching:::animalSeed(masterseed, salt)
+
   if(entry()=='solve'){
     seed0 = input$seed
+    if(seed0 == seed0_masterseed){
+      seedMatches(TRUE)
+    }else{
+      seedMatches(FALSE)
+    }
+    return_seed = seed0
   }else{
-    salt = all_assignment_data[[input$assignment]]$`seed-salt`
-    seed0 = flexTeaching:::animalSeed(masterseed, salt)
+    seedMatches(FALSE)
+    return_seed = seed0_masterseed
   }
-  return(seed0)
+  
+  return(return_seed)
   
 })
 
