@@ -29,7 +29,7 @@ init_list = reactive({
   )
   
   validate(
-    need(!assignment_data$exam || entry() != "solve" || seedMatches(), 
+    need(!assignment_data$exam || entry() != "solve" || ( seedMatches() & assignment_data[['exam_practice']] ), 
           "This assignment is not available in practice mode."
          )
   )
@@ -79,7 +79,7 @@ output$buttonBox <- renderUI({
   
   req(
     assignment_accessible(),
-    !assignment_data$exam || entry() != "solve" || seedMatches()
+    !assignment_data$exam || entry() != "solve" || ( seedMatches() & assignment_data[['exam_practice']] )
     )
   
   solutions = solutions()
@@ -201,7 +201,7 @@ observeEvent(render_out(), {
   
   req(
     assignment_accessible(),
-    !assignment_data$exam || entry() != "solve" || seedMatches()
+    !assignment_data$exam || entry() != "solve" || ( seedMatches() & assignment_data[['exam_practice']] )
   )
   # Identicon
   id = input$id

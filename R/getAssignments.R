@@ -23,8 +23,14 @@ getAssignments = function(path = system.file("assignments", package = "flexTeach
         y = yaml::read_yaml(fp)
         if(is.null(y$exam)){
           y$exam = FALSE
+          y$exam_practice = FALSE
         }else{
           y$exam = as.logical(y$exam)
+        }
+        if(is.null(y$exam_practice)){
+          y$exam_practice = FALSE
+        }else{
+          y$exam_practice = as.logical(y$exam_practice)
         }
         if(is.null(y$category)){
           y$category = " "
