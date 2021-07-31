@@ -1,9 +1,11 @@
 ---
-title: "Check your assignments"
+title: flexTeaching
 output: 
   flexdashboard::flex_dashboard:
     theme: yeti
-    css: ["www/fingerprint.css"]
+    favicon: 'www/favicon.ico'
+    logo: 'www/wave.svg'
+    css: ["www/fingerprint.css", "www/logo.css"]
     includes:
       in_header: !expr flexTeaching:::writeHeaders()
 params:
