@@ -13,7 +13,8 @@ compileAssignmentHtmlDefault <- function(path, envir = new.env(parent = .GlobalE
   tmpfn = tempfile(fileext = ".html")
   input = file.path(path, "index.Rmd")
   output_format = rmarkdown::html_fragment(pandoc_args = c("--metadata", "title= " ) )
-  rmarkdown::render(input = input, output_format = output_format, output_file = tmpfn, 
+  rmarkdown::render(input = input, output_format = output_format, output_file = tmpfn,
+                    intermediates_dir = dirname(tmpfn),
                     envir = envir, quiet = TRUE, ...)
   return(tmpfn)
 }

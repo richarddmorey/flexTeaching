@@ -29,6 +29,7 @@ create_pdf <- function(assignment_data, id, seed, solutions, format, init, entry
   input = file.path(assignment_data$path, "index.Rmd")
   output_format = "pdf_document"
   rmarkdown::render(input = input, output_format = output_format, output_file = tmpfn,
+                    intermediates_dir = dirname(tmpfn),
                     envir = e, quiet = TRUE)
   d = readBin(con = tmpfn, what = "raw", n = file.size(tmpfn))
   time = format(Sys.time(), "%d%m%Y_%H%M%S")
