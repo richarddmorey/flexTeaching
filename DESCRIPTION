@@ -31,5 +31,8 @@ Imports:
     purrr,
     dplyr,
     settings,
-    cachem
+    cachem,
+    zip,
+    rsvg,
+    magick
 RoxygenNote: 7.1.1
