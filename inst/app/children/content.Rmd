@@ -103,17 +103,33 @@ output$buttonBox <- renderUI({
   bl = lapply(names(bs), function(b){
     button_reactives[[b]] = reactive({
       shinybusy::show_modal_spinner(text = "Creating file...")
-      fc = bs[[b]]$f(
-        assignment_data,
-        input$id,
-        seed(),
-        solutions,
-        input$format,
-        init_list(),
-        entry)
+      fc = try(
+        {
+          bs[[b]]$f(
+            assignment_data,
+            input$id,
+            seed(),
+            solutions,
+            input$format,
+            init_list(),
+            entry
+            )
+        })
       shinybusy::remove_modal_spinner()
-      return(fc)
-    }) %>% bindCache(assignment(), input$id, seed(), solutions(), input$format, b, assignment_accessible())
+      if(inherits(fc, "try-error")){
+        err_text = glue::glue("There was an error creating the file. {paste(fc)}")
+        shinyWidgets::sendSweetAlert(
+          session = session,
+          title = "Error...",
+          text = err_text,
+          type = "error"
+        )
+        ## There doesn't seem to be a good way of cancelling a download.
+        ## See: https://github.com/rstudio/shiny/issues/2611
+        stop(err_text)
+      }else{
+        return(fc)
+      }    }) %>% bindCache(assignment(), input$id, seed(), solutions(), input$format, b, assignment_accessible())
     
     output[[glue::glue("button_{b}")]] <- downloadHandler(
       filename = function() {
