@@ -24,6 +24,11 @@ library(rclipboard)
 shiny::includeScript(path = system.file("lib/clipboard.min.js", package = "rclipboard"))
 ```
 
+```{r context="render"}
+shinybusy::add_busy_spinner(spin = "orbit",
+                            position = "bottom-right",
+                            margins = c(40, 40))
+```
 
 Column {.sidebar}
 -----------------------------------------------------------------------

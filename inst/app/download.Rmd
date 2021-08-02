@@ -19,6 +19,12 @@ runtime: shiny_prerendered
 ```{r child="children/query_string.Rmd"}
 ```
 
+```{r context="render"}
+shinybusy::add_busy_spinner(spin = "orbit",
+                            position = "bottom-right",
+                            margins = c(40, 40))
+```
+
 Column {.sidebar}
 -----------------------------------------------------------------------
 
