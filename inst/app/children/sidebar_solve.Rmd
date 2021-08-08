@@ -62,9 +62,8 @@ output$masterseedbox <- renderUI({
 
 output$solutionsbox <- renderUI({
   query = getQueryString()
-  sol = if ('solutions' %in% names(query)) query[['solutions']] else FALSE
-  sol = as.logical(sol)
-  el = checkboxInput("solutions", label = "Show solutions?", value = as.logical(sol))
+  sol = 'solutions' %in% names(query)
+  el = checkboxInput("solutions", label = "Show solutions?", value = sol)
   if('solutions_disable' %in% names(query)){
     return(shinyjs::disabled(el))
   }else{
