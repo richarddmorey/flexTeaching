@@ -5,7 +5,8 @@ MYPKGOPTIONS <- settings::options_manager(
   date_format_prnt = "%A, %d %B %Y at %X %z",
   initial_seed = "s33d",
   start_practice_message = "Switching to practice mode.",
-  start_assignment_message = "Switching to assignment mode."
+  start_assignment_message = "Switching to assignment mode.",
+  secret_filename = "secret"
 )
 
 # User function that gets exported:
@@ -22,6 +23,7 @@ MYPKGOPTIONS <- settings::options_manager(
 #'  \item{\code{initial_seed}}{(\code{character}) Default seed to put in the seed box, if no query string is used }
 #'  \item{\code{start_practice_message}}{(\code{character}) Message to give when switching to practice mode }
 #'  \item{\code{start_assignment_message}}{(\code{character}) Message to give when switching to assignment mode }
+#'  \item{\code{secret_filename}}{(\code{character}) Filename that contains the secret (in the last line of the file) }
 #' }
 #'
 #' @export

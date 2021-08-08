@@ -13,11 +13,6 @@ params:
 runtime: shiny_prerendered
 ---
 
-```{r context="server"}
-l = readLines("secret")
-masterseed = trimws(l[length(l)])
-```
-
 ```{r child="children/setup.Rmd"}
 ```
 
