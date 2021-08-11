@@ -21,6 +21,8 @@ The following options are supported
  \item{\code{initial_seed}}{(\code{character}) Default seed to put in the seed box, if no query string is used }
  \item{\code{start_practice_message}}{(\code{character}) Message to give when switching to practice mode }
  \item{\code{start_assignment_message}}{(\code{character}) Message to give when switching to assignment mode }
+ \item{\code{secret_filename}}{(\code{character}) Filename that contains the secret (in the last line of the file) }
+ \item{\code{assignment_pkg}}{(\code{character}) Installed package to use for the assignments }
 }
 }
 

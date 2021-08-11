@@ -33,6 +33,7 @@ Imports:
     settings,
     cachem,
     zip,
+    withr,
     rsvg,
     magick
 RoxygenNote: 7.1.1
