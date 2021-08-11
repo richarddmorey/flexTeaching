@@ -6,7 +6,8 @@ MYPKGOPTIONS <- settings::options_manager(
   initial_seed = "s33d",
   start_practice_message = "Switching to practice mode.",
   start_assignment_message = "Switching to assignment mode.",
-  secret_filename = "secret"
+  secret_filename = "secret",
+  assignment_pkg = "flexTeaching"
 )
 
 # User function that gets exported:
@@ -24,6 +25,8 @@ MYPKGOPTIONS <- settings::options_manager(
 #'  \item{\code{start_practice_message}}{(\code{character}) Message to give when switching to practice mode }
 #'  \item{\code{start_assignment_message}}{(\code{character}) Message to give when switching to assignment mode }
 #'  \item{\code{secret_filename}}{(\code{character}) Filename that contains the secret (in the last line of the file) }
+#'  \item{\code{assignment_pkg}}{(\code{character}) Installed package to use for the assignments }
+
 #' }
 #'
 #' @export

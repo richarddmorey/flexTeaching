@@ -1,7 +1,7 @@
 
 #' Get a list of assignments in a directory
 #'
-#' @param path Directory path
+#' @param pkg Package from which to pull the assignments (character string)
 #' @param simple return only a named vector (for selectInput) 
 #'
 #' @importFrom yaml read_yaml
@@ -9,12 +9,21 @@
 #' @importFrom dplyr `%>%` bind_rows pull arrange select
 #' @return
 #'
-getAssignments = function(path = system.file("assignments", package = "flexTeaching"), simple = TRUE){
+getAssignments = function(pkg = pkg_options()$assignment_pkg, simple = TRUE){
+  
+  if(pkg != "flexTeaching" && !require(pkg, character.only = TRUE, quietly = TRUE))
+    stop("Could not load assignments package: ", pkg)
    
+  path = system.file("assignments", package = pkg)
+  
+  if(!dir.exists(path))
+    stop("Assignments path does not exist: ", path)
+  
   date_format = flexTeaching::pkg_options()$date_format_yaml
   
+  
   potential_dirs = list.dirs(path, recursive = FALSE) 
-  potential_dirs = potential_dirs[ grepl("^[^_]", basename(potential_dirs)) ] 
+  potential_dirs = potential_dirs[ grepl("^[^_]", basename(potential_dirs)) ]
   
   potential_dirs %>%
     purrr::map(function(d){
@@ -55,6 +64,9 @@ getAssignments = function(path = system.file("assignments", package = "flexTeach
       }
     }) %>%
     Filter(length, .) -> dirs
+  
+  if(length(dirs) < 1)
+    stop("No assignment directories found: ", path)
   
   shortnames = purrr::map_chr(dirs, ~`$`(., 'shortname'))
   # Check for duplicate shortnames

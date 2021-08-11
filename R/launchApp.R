@@ -26,9 +26,7 @@ launchApp <- function(which = "solve", query = "", port = NULL){
   # Necessary because rmarkdown::run
   # seems to use the current working 
   # directory to serve the app
-  curwd = getwd()
-  on.exit( { setwd(curwd) } )
-  setwd(dirname(path))
+  withr::local_dir(dirname(path))
   
   rmarkdown::run(path,
                  shiny_args = list(
