@@ -32,5 +32,6 @@ Imports:
     dplyr,
     settings,
     cachem,
-    withr
+    withr,
+    future
 RoxygenNote: 7.1.1
