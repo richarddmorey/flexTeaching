@@ -121,13 +121,6 @@
       "Repository": "CRAN",
       "Hash": "e75525c55c70e5f4f78c9960a4b402e9"
     },
-    "curl": {
-      "Package": "curl",
-      "Version": "4.3.2",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "022c42d49c28e95d69ca60446dbabf88"
-    },
     "digest": {
       "Package": "digest",
       "Version": "0.6.27",
@@ -289,13 +282,6 @@
       "Repository": "CRAN",
       "Hash": "3471fb65971f1a7b2d4ae7848cf2db8d"
     },
-    "magick": {
-      "Package": "magick",
-      "Version": "2.7.2",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "db36bbb91bf293f0550c51ecbf6f1928"
-    },
     "magrittr": {
       "Package": "magrittr",
       "Version": "2.0.1",
@@ -407,13 +393,6 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "1fb097f233ee98968f8e5d0bcd42df6d"
-    },
-    "rsvg": {
-      "Package": "rsvg",
-      "Version": "2.1.2",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "4ce04f0635867a4af4ff7578a9df776a"
     },
     "sass": {
       "Package": "sass",
@@ -561,13 +540,6 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "2826c5d9efb0a88f657c7a679c7106db"
-    },
-    "zip": {
-      "Package": "zip",
-      "Version": "2.2.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "c7eef2996ac270a18c2715c997a727c5"
     }
   }
 }

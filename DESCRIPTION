@@ -32,8 +32,5 @@ Imports:
     dplyr,
     settings,
     cachem,
-    zip,
-    withr,
-    rsvg,
-    magick
+    withr
 RoxygenNote: 7.1.1
