@@ -33,5 +33,6 @@ Imports:
     settings,
     cachem,
     withr,
-    future
+    future,
+    promises
 RoxygenNote: 7.1.1

@@ -177,9 +177,12 @@ render_out <- reactive({
   e = new.env(parent = .GlobalEnv)
   flexTeaching:::sourceAll(assignment_data, e)
   
-  html = flexTeaching:::compilePage(assignment_data, id, seed, solutions, e, i)
-  
- return(html)
+  future_promise({
+    flexTeaching:::compilePage(assignment_data, id, seed, solutions, e, i) 
+  }, 
+  seed = NULL,
+  )  %...>%
+  withMathJax()
   
 }) %>%
   bindCache(assignment(), input$id, seed(), solutions(), assignment_accessible() || cache_mode(), entry(), seedMatches())
@@ -187,20 +190,7 @@ render_out <- reactive({
 
 ```{r context="server"}
 output$assignmentBox <- renderUI({
-  
-  req(assignment())
-
-  assignment = assignment()
-  assignment_data = all_assignment_data[[assignment]]
-  
-  fmt = flexTeaching::pkg_options()$date_format_prnt
-
-  validate(
-    need(assignment_accessible(), 
-         glue::glue("This assignment will not be available until {strftime(assignment_data$restrict_before, format = fmt)}."))
-  )
-  
-  withMathJax(render_out())
+  render_out()
 })
 ```
 
