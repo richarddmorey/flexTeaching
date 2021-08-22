@@ -44,21 +44,22 @@ init_list = reactive({
   # Make parent .GlobelEnv so that apps will not have access to shiny
   # variables; prevents some sneaky hacks like entering R code into
   # text inputs
-  e = new.env(parent = .GlobalEnv)
+  future_promise({
+    e = new.env(parent = .GlobalEnv)
   
-  flexTeaching:::sourceAll(assignment_data, e)
+    flexTeaching:::sourceAll(assignment_data, e)
   
-  if(!is.null(assignment_data$init)){
-    init_func = get(assignment_data$init, envir = e)
-    R.utils::withSeed({
-      ret_list = init_func(assignment_data, id, seed, solutions, e)
-    },
-    seed0)
-  }else{
-    ret_list = list()
-  }
-    
-  return(ret_list)
+    if(!is.null(assignment_data$init)){
+      init_func = get(assignment_data$init, envir = e)
+      R.utils::withSeed({
+        ret_list = init_func(assignment_data, id, seed, solutions, e)
+      },
+      seed0)
+    }else{
+      ret_list = list()
+    }
+    return(ret_list)
+  }, seed = NULL)
     
 }) %>% bindCache(assignment(), input$id, seed(), solutions(), assignment_accessible() || cache_mode(), entry(), seedMatches())
 ```
@@ -102,36 +103,43 @@ output$buttonBox <- renderUI({
   
   button_reactives = list()
   
-  bl = lapply(names(bs), function(b){
-    button_reactives[[b]] = reactive({
-      shinybusy::show_modal_spinner(text = "Creating file...")
-      fc = try(
-        {
-          bs[[b]]$f(
-            assignment_data,
-            input$id,
-            seed(),
-            solutions,
-            input$format,
-            init_list(),
-            entry()
-            )
-        })
-      shinybusy::remove_modal_spinner()
-      if(inherits(fc, "try-error")){
-        err_text = glue::glue("There was an error creating the file. {paste(fc)}")
-        shinyWidgets::sendSweetAlert(
-          session = session,
-          title = "Error...",
-          text = err_text,
-          type = "error"
-        )
-        ## There doesn't seem to be a good way of cancelling a download.
-        ## See: https://github.com/rstudio/shiny/issues/2611
-        stop(err_text)
-      }else{
-        return(fc)
-      }    }) %>% bindCache(assignment(), input$id, seed(), solutions(), input$format, b, assignment_accessible(), entry(), seedMatches())
+  id_ = input$id
+  seed_ = seed()
+  format_ = input$format
+  entry_ = entry()
+  
+  init_list() %...>% {
+    bl = lapply(names(bs), function(b){
+      button_reactives[[b]] = reactive({
+        shinybusy::show_modal_spinner(text = "Creating file...")
+        fc = try(
+          {
+            bs[[b]]$f(
+              assignment_data,
+              id_,
+              seed_,
+              solutions,
+              format_,
+              ., # init_list()
+              entry_
+              )
+          })
+        shinybusy::remove_modal_spinner()
+        if(inherits(fc, "try-error")){
+          err_text = glue::glue("There was an error creating the file. {paste(fc)}")
+          shinyWidgets::sendSweetAlert(
+            session = session,
+            title = "Error...",
+            text = err_text,
+            type = "error"
+          )
+          ## There doesn't seem to be a good way of cancelling a download.
+          ## See: https://github.com/rstudio/shiny/issues/2611
+          stop(err_text)
+        }else{
+          return(fc)
+        }
+    }) %>% bindCache(assignment(), input$id, seed(), solutions(), input$format, b, assignment_accessible(), entry(), seedMatches())
     
     output[[glue::glue("button_{b}")]] <- downloadHandler(
       filename = function() {
@@ -150,6 +158,7 @@ output$buttonBox <- renderUI({
   })
   
   do.call(tagList, bl)
+  }
 })
 ```
 
@@ -172,17 +181,18 @@ render_out <- reactive({
   seed = seed()
   solutions = solutions()
   
-  i = init_list()
+  init_list() %...>% {
   
-  e = new.env(parent = .GlobalEnv)
-  flexTeaching:::sourceAll(assignment_data, e)
+    e = new.env(parent = .GlobalEnv)
+    flexTeaching:::sourceAll(assignment_data, e)
   
-  future_promise({
-    flexTeaching:::compilePage(assignment_data, id, seed, solutions, e, i) 
-  }, 
-  seed = NULL,
-  )  %...>%
-  withMathJax()
+    future_promise({
+      flexTeaching:::compilePage(assignment_data, id, seed, solutions, e, .) 
+    }, 
+    seed = NULL,
+    )  %...>%
+    withMathJax()
+  }
   
 }) %>%
   bindCache(assignment(), input$id, seed(), solutions(), assignment_accessible() || cache_mode(), entry(), seedMatches())
@@ -234,25 +244,26 @@ observeEvent(render_out(), {
   js_content = gsub(pattern = "\"", replacement = "\\\"", x = assignment_data[['on-load']],
                     fixed = TRUE)
   
-  e = new.env(parent = .GlobalEnv)
-  e$.flexteach_info = init_list()
-  js_expr = parse(text = glue::glue('glue::glue("{js_content}")'))
+  init_list() %...>% {
+    e = new.env(parent = .GlobalEnv)
+    e$.flexteach_info = init_list()
+    js_expr = parse(text = glue::glue('glue::glue("{js_content}")'))
   
-  js_parsed = tryCatch(eval(expr = js_expr, envir = e),
-    error = function(c){
-      # Using paste0 instead of glue to prevent code injection from input
-      error_text = paste0(
-        "Problem parsing javascript code on load of assignment ",
-        assignment(),
-        ": ",
-        c
-      )
-      safeError(error_text)
-    }
-  )
+    js_parsed = tryCatch(eval(expr = js_expr, envir = e),
+      error = function(c){
+        # Using paste0 instead of glue to prevent code injection from input
+        error_text = paste0(
+          "Problem parsing javascript code on load of assignment ",
+          assignment(),
+          ": ",
+          c
+        )
+        safeError(error_text)
+      }
+    )
 
-  if(!is.null(js_parsed) & length(js_parsed)>0)
-    shinyjs::runjs(js_parsed)
-  
+    if(!is.null(js_parsed) & length(js_parsed)>0)
+      shinyjs::runjs(js_parsed)
+  }
 })
 ```
