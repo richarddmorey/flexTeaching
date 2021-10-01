@@ -24,7 +24,7 @@ init_list = reactive({
   fmt = flexTeaching::pkg_options()$date_format_prnt
   
   validate(
-    need(assignment_accessible(), 
+    need(assignment_accessible() | cache_mode(), 
          glue::glue("This assignment will not be available until {strftime(assignment_data$restrict_before, format = fmt)}."))
   )
   
@@ -60,7 +60,7 @@ init_list = reactive({
     
   return(ret_list)
     
-}) %>% bindCache(assignment(), input$id, seed(), solutions(), assignment_accessible(), entry(), seedMatches())
+}) %>% bindCache(assignment(), input$id, seed(), solutions(), assignment_accessible() || cache_mode(), entry(), seedMatches())
 ```
 
 
@@ -182,12 +182,46 @@ render_out <- reactive({
  return(html)
   
 }) %>%
-  bindCache(assignment(), input$id, seed(), solutions(), assignment_accessible(), entry(), seedMatches())
+  bindCache(assignment(), input$id, seed(), solutions(), assignment_accessible() || cache_mode(), entry(), seedMatches())
 ```
 
 ```{r context="server"}
 output$assignmentBox <- renderUI({
+  
+  req(assignment())
+
+  assignment = assignment()
+  assignment_data = all_assignment_data[[assignment]]
+  
+  fmt = flexTeaching::pkg_options()$date_format_prnt
+
+  validate(
+    need(assignment_accessible(), 
+         glue::glue("This assignment will not be available until {strftime(assignment_data$restrict_before, format = fmt)}."))
+  )
+  
   withMathJax(render_out())
+})
+```
+
+```{r context="server"}
+identicon_obs <- observe({
+  
+  req(assignment(), isolate(validSeed()), entry())
+  assignment = assignment()
+  assignment_data = all_assignment_data[[assignment]]
+  
+  # Identicon
+  id = input$id
+  seed = seed()
+  salt = assignment_data$`data-salt`
+  seed0 = flexTeaching:::assignmentSeed(id, seed, salt)
+  if(assignment_accessible()){
+    shinyjs::runjs(glue::glue("jdenticon.updateSvg('#flexteaching-fingerprint', '{seed0}');"))
+  }else{
+    shinyjs::runjs("$('#flexteaching-fingerprint').empty();")
+  }
+  
 })
 ```
 
@@ -203,12 +237,6 @@ observeEvent(render_out(), {
     assignment_accessible(),
     !assignment_data$exam || entry() != "solve" || ( seedMatches() & assignment_data[['exam_practice']] )
   )
-  # Identicon
-  id = input$id
-  seed = seed()
-  salt = assignment_data$`data-salt`
-  seed0 = flexTeaching:::assignmentSeed(id, seed, salt)
-  shinyjs::runjs(glue::glue("jdenticon.updateSvg('#flexteaching-fingerprint', '{seed0}');"))
 
   # Loading javascript
   req(!is.null(assignment_data[['on-load']]))

@@ -30,6 +30,11 @@ shiny::addResourcePath("shinyjs", system.file("srcjs", package = "shinyjs"))
 
 ```{r, context="server"}
 shinyjs::useShinyjs(html = TRUE)
+
+cache_mode = reactive({
+  query = getQueryString()
+  'cache_mode' %in% names(query)
+})
 ```
 <script src="shinyjs/inject.js"></script>
 
