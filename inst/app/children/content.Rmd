@@ -113,17 +113,18 @@ output$buttonBox <- renderUI({
       button_reactives[[b]] = reactive({
         init_list = .
         future_promise(
-          bs[[b]]$f(
-            assignment_data,
-            id_,
-            seed_,
-            solutions,
-            format_,
-            init_list,
-            entry_
-          ),
-        seed = NULL
-        )
+          {
+            bs[[b]]$f(
+              assignment_data,
+              id_,
+              seed_,
+              solutions,
+              format_,
+              init_list,
+              entry_
+            )
+          },
+        seed = NULL)
     }) %>% bindCache(assignment(), input$id, seed(), solutions(), input$format, b, assignment_accessible(), entry(), seedMatches())
     
     output[[glue::glue("button_{b}")]] <- downloadHandler(
@@ -140,7 +141,17 @@ output$buttonBox <- renderUI({
       },
       content = function(f) {
         con = file(description = f, open = "wb")
-        d = button_reactives[[b]]() %...>%
+        d = button_reactives[[b]]() %>%
+          catch(function(error){
+            err_text = sprintf("There was an error creating the file. %s", paste(error))
+            shinyWidgets::sendSweetAlert(
+              session = session,
+              title = "Error...",
+              text = err_text,
+              type = "error"
+            )
+            stop(err_text)
+            }, tee = TRUE) %...>%
           `[[`('d') %...>% 
           { writeBin(object = ., con = con); close(con) }
       }
