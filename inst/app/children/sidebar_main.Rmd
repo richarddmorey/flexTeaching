@@ -1,5 +1,6 @@
 
 ```{r context="render"}
+uiOutput("entrybox")
 uiOutput("assignmentbox")
 uiOutput("idbox")
 
@@ -17,6 +18,56 @@ uiOutput("formatbox")
 
 session$allowReconnect(TRUE)
 
+output$entrybox <- renderUI({
+  query = getQueryString()
+  solve_mode = 'solve' %in% names(query)
+  disabled = 'entry_disable' %in% names(query)
+  el = switchInput(
+    "entry",
+    onStatus = "success", 
+    offStatus = "danger",
+    onLabel = "Practice",
+    offLabel = "Assignment",
+    label = "Mode",
+    value = solve_mode,
+    handleWidth = 125,
+    labelWidth = 65,
+    inline = TRUE,
+    width = "200px",
+    disabled = disabled
+  )
+  return(el)
+})
+
+## Warning(s) when switching modes
+observeEvent(entry(), {
+
+  if(entry()=='solve'){
+    message = flexTeaching::pkg_options("start_practice_message")
+    shinyjs::runjs("$('.navbar').addClass('navbar-practice');")
+    shinyjs::runjs("$('#section-column.sidebar').addClass('sidebar-practice');")
+    shinyjs::runjs("$('span.navbar-brand').addClass('title-practice');")
+  }
+  
+  if(entry()=='download'){
+    validSeed(TRUE)
+    message = flexTeaching::pkg_options("start_assignment_message")
+    shinyjs::runjs("$('.navbar').removeClass('navbar-practice');")
+    shinyjs::runjs("$('#section-column.sidebar').removeClass('sidebar-practice');")
+    shinyjs::runjs("$('span.navbar-brand').removeClass('title-practice');")
+  }
+  
+  req(message)
+  
+  sendSweetAlert(
+    session = session,
+    title = "Information",
+    text = message,
+    type = "info"
+  )
+}, ignoreInit = TRUE)
+
+
 output$idbox <- renderUI({
   query = getQueryString()
   seed = if ('id' %in% names(query)) query[['id']] else ""
@@ -33,15 +84,24 @@ output$idbox <- renderUI({
 # the init_list
 # Note that validSeed is global and is set later with `<<-`
 assignment <- eventReactive(input$assignment, {
-  req(entry)
-  if(!is.null(input$masterseed) && input$masterseed != "" && entry == 'solve')
-    validSeed <<- FALSE
+  req(entry())
+  if(!is.null(input$masterseed) && input$masterseed != "" && entry() == 'solve')
+    validSeed(FALSE)
   return(input$assignment)
 })
 
 output$assignmentbox <- renderUI({
+  
+  req(entry())
+  
+  curr_assignment = isolate(input$assignment)
+  
   query = getQueryString()
-  assignment = query[['assignment']]
+  if(is.null(curr_assignment)){
+    assignment = query[['assignment']]
+  }else{
+    assignment = curr_assignment
+  }
   cat_regex   = query[['category']]
   if(is.null(cat_regex))
     cat_regex = ""
@@ -66,6 +126,7 @@ output$assignmentbox <- renderUI({
       names(z) = pull(el, title)
       return(z)
     }) -> assignments
+
   if('assignment_disable' %in% names(query)){
     el = selectInput("assignment", label = "Assignment:", width = "150px", choices = assignments, selected = assignment)
     return(shinyjs::disabled(el))
@@ -89,7 +150,7 @@ output$assignmentbox <- renderUI({
           ),
         style = case_when(
           !available ~ "color: lightcoral;",
-          exam & entry == 'solve' ~ "color: lightcoral;",
+          exam & entry() == 'solve' ~ "color: lightcoral;",
           TRUE ~ ""
           )
         ) -> icon_prep

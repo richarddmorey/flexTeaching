@@ -32,7 +32,7 @@ Imports:
     dplyr,
     settings,
     cachem,
-    zip,
-    rsvg,
-    magick
+    withr,
+    future,
+    promises
 RoxygenNote: 7.1.1

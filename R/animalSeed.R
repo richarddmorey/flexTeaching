@@ -3,7 +3,7 @@
 #' @param seed 
 #'
 #' @importFrom digest sha1
-#' @importFRom dplyr `%>%`
+#' @importFrom dplyr `%>%`
 #' @importFrom R.utils withSeed
 #' @importFrom noah pseudonymize
 #' @return

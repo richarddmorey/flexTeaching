@@ -16,7 +16,7 @@ assignment_accessible = reactive({
 ```{r context="server"}
 init_list = reactive({
   
-  req(assignment(), validSeed)
+  req(assignment(), isolate(validSeed()), entry())
 
   assignment = assignment()
   assignment_data = all_assignment_data[[assignment]]
@@ -24,12 +24,12 @@ init_list = reactive({
   fmt = flexTeaching::pkg_options()$date_format_prnt
   
   validate(
-    need(assignment_accessible(), 
+    need(assignment_accessible() | cache_mode(), 
          glue::glue("This assignment will not be available until {strftime(assignment_data$restrict_before, format = fmt)}."))
   )
   
   validate(
-    need(!assignment_data$exam || entry != "solve", 
+    need(!assignment_data$exam || entry() != "solve" || ( seedMatches() & assignment_data[['exam_practice']] ), 
           "This assignment is not available in practice mode."
          )
   )
@@ -44,23 +44,24 @@ init_list = reactive({
   # Make parent .GlobelEnv so that apps will not have access to shiny
   # variables; prevents some sneaky hacks like entering R code into
   # text inputs
-  e = new.env(parent = .GlobalEnv)
+  future_promise({
+    e = new.env(parent = .GlobalEnv)
   
-  flexTeaching:::sourceAll(assignment_data, e)
+    flexTeaching:::sourceAll(assignment_data, e)
   
-  if(!is.null(assignment_data$init)){
-    init_func = get(assignment_data$init, envir = e)
-    R.utils::withSeed({
-      ret_list = init_func(assignment_data, id, seed, solutions, e)
-    },
-    seed0)
-  }else{
-    ret_list = list()
-  }
+    if(!is.null(assignment_data$init)){
+      init_func = get(assignment_data$init, envir = e)
+      R.utils::withSeed({
+        ret_list = init_func(assignment_data, id, seed, solutions, e)
+      },
+      seed0)
+    }else{
+      ret_list = list()
+    }
+    return(ret_list)
+  }, seed = NULL)
     
-  return(ret_list)
-    
-}) %>% bindCache(assignment(), input$id, seed(), solutions(), assignment_accessible())
+}) %>% bindCache(assignment(), input$id, seed(), solutions(), assignment_accessible() || cache_mode(), entry(), seedMatches())
 ```
 
 
@@ -72,14 +73,14 @@ uiOutput("buttonBox", style = "width: 100%; margin: auto;")
 
 output$buttonBox <- renderUI({
   
-  req(assignment())
+  req(assignment(), entry())
   
   assignment = assignment()
   assignment_data = all_assignment_data[[assignment]]
   
   req(
     assignment_accessible(),
-    !assignment_data$exam || entry != "solve"
+    !assignment_data$exam || entry() != "solve" || ( seedMatches() & assignment_data[['exam_practice']] )
     )
   
   solutions = solutions()
@@ -93,53 +94,66 @@ output$buttonBox <- renderUI({
   
   bn = assignment_data$buttons
 
-  if(is.null(bn)) return()
+  req(
+    !is.null(bn),
+    exists(bn, envir = e)
+    )
   
-  if(!exists(bn, envir = e)) return()
   bs = get(bn, envir = e)
   
   button_reactives = list()
   
-  bl = lapply(names(bs), function(b){
-    button_reactives[[b]] = reactive({
-      shinybusy::show_modal_spinner(text = "Creating file...")
-      fc = try(
-        {
-          bs[[b]]$f(
-            assignment_data,
-            input$id,
-            seed(),
-            solutions,
-            input$format,
-            init_list(),
-            entry
+  id_ = input$id
+  seed_ = seed()
+  format_ = input$format
+  entry_ = entry()
+  
+  init_list() %...>% {
+    bl = lapply(names(bs), function(b){
+      button_reactives[[b]] = reactive({
+        init_list = .
+        future_promise(
+          {
+            bs[[b]]$f(
+              assignment_data,
+              id_,
+              seed_,
+              solutions,
+              format_,
+              init_list,
+              entry_
             )
-        })
-      shinybusy::remove_modal_spinner()
-      if(inherits(fc, "try-error")){
-        err_text = glue::glue("There was an error creating the file. {paste(fc)}")
-        shinyWidgets::sendSweetAlert(
-          session = session,
-          title = "Error...",
-          text = err_text,
-          type = "error"
-        )
-        ## There doesn't seem to be a good way of cancelling a download.
-        ## See: https://github.com/rstudio/shiny/issues/2611
-        stop(err_text)
-      }else{
-        return(fc)
-      }    }) %>% bindCache(assignment(), input$id, seed(), solutions(), input$format, b, assignment_accessible())
+          },
+        seed = NULL)
+    }) %>% bindCache(assignment(), input$id, seed(), solutions(), input$format, b, assignment_accessible(), entry(), seedMatches())
     
     output[[glue::glue("button_{b}")]] <- downloadHandler(
       filename = function() {
-        button_reactives[[b]]()$fn
+        bs[[b]]$fn(
+            assignment_data,
+            id_,
+            seed_,
+            solutions,
+            format_,
+            init_list(),
+            entry_
+          )
       },
       content = function(f) {
-        d = button_reactives[[b]]()$d
         con = file(description = f, open = "wb")
-        writeBin(object = d, con = con)
-        close(con)
+        d = button_reactives[[b]]() %>%
+          catch(function(error){
+            err_text = sprintf("There was an error creating the file. %s", paste(error))
+            shinyWidgets::sendSweetAlert(
+              session = session,
+              title = "Error...",
+              text = err_text,
+              type = "error"
+            )
+            stop(err_text)
+            }, tee = TRUE) %...>%
+          `[[`('d') %...>% 
+          { writeBin(object = ., con = con); close(con) }
       }
     )
     
@@ -148,6 +162,7 @@ output$buttonBox <- renderUI({
   })
   
   do.call(tagList, bl)
+  }
 })
 ```
 
@@ -162,7 +177,7 @@ uiOutput("assignmentBox")
 ```{r context="server"}
 render_out <- reactive({
   
-  req(assignment(), validSeed)
+  req(assignment(), isolate(validSeed()), entry())
   assignment = assignment()
   assignment_data = all_assignment_data[[assignment]]
   
@@ -170,22 +185,47 @@ render_out <- reactive({
   seed = seed()
   solutions = solutions()
   
-  i = init_list()
+  init_list() %...>% {
   
-  e = new.env(parent = .GlobalEnv)
-  flexTeaching:::sourceAll(assignment_data, e)
+    e = new.env(parent = .GlobalEnv)
+    flexTeaching:::sourceAll(assignment_data, e)
   
-  html = flexTeaching:::compilePage(assignment_data, id, seed, solutions, e, i)
-  
- return(html)
+    future_promise({
+      flexTeaching:::compilePage(assignment_data, id, seed, solutions, e, .) 
+    }, 
+    seed = NULL,
+    )  %...>%
+    withMathJax()
+  }
   
 }) %>%
-  bindCache(assignment(), input$id, seed(), solutions(), assignment_accessible())
+  bindCache(assignment(), input$id, seed(), solutions(), assignment_accessible() || cache_mode(), entry(), seedMatches())
 ```
 
 ```{r context="server"}
 output$assignmentBox <- renderUI({
-  withMathJax(render_out())
+  render_out()
+})
+```
+
+```{r context="server"}
+identicon_obs <- observe({
+  
+  req(assignment(), isolate(validSeed()), entry())
+  assignment = assignment()
+  assignment_data = all_assignment_data[[assignment]]
+  
+  # Identicon
+  id = input$id
+  seed = seed()
+  salt = assignment_data$`data-salt`
+  seed0 = flexTeaching:::assignmentSeed(id, seed, salt)
+  if(assignment_accessible()){
+    shinyjs::runjs(glue::glue("jdenticon.updateSvg('#flexteaching-fingerprint', '{seed0}');"))
+  }else{
+    shinyjs::runjs("$('#flexteaching-fingerprint').empty();")
+  }
+  
 })
 ```
 
@@ -193,20 +233,14 @@ output$assignmentBox <- renderUI({
 ```{r context="server"}
 observeEvent(render_out(), {
   
-  req(assignment(), validSeed)
+  req(assignment(), isolate(validSeed()), entry())
   assignment = assignment()
   assignment_data = all_assignment_data[[assignment]]
   
   req(
     assignment_accessible(),
-    !assignment_data$exam || entry != "solve"
+    !assignment_data$exam || entry() != "solve" || ( seedMatches() & assignment_data[['exam_practice']] )
   )
-  # Identicon
-  id = input$id
-  seed = seed()
-  salt = assignment_data$`data-salt`
-  seed0 = flexTeaching:::assignmentSeed(id, seed, salt)
-  shinyjs::runjs(glue::glue("jdenticon.updateSvg('#flexteaching-fingerprint', '{seed0}');"))
 
   # Loading javascript
   req(!is.null(assignment_data[['on-load']]))
@@ -214,25 +248,26 @@ observeEvent(render_out(), {
   js_content = gsub(pattern = "\"", replacement = "\\\"", x = assignment_data[['on-load']],
                     fixed = TRUE)
   
-  e = new.env(parent = .GlobalEnv)
-  e$.flexteach_info = init_list()
-  js_expr = parse(text = glue::glue('glue::glue("{js_content}")'))
+  init_list() %...>% {
+    e = new.env(parent = .GlobalEnv)
+    e$.flexteach_info = init_list()
+    js_expr = parse(text = glue::glue('glue::glue("{js_content}")'))
   
-  js_parsed = tryCatch(eval(expr = js_expr, envir = e),
-    error = function(c){
-      # Using paste0 instead of glue to prevent code injection from input
-      error_text = paste0(
-        "Problem parsing javascript code on load of assignment ",
-        assignment(),
-        ": ",
-        c
-      )
-      safeError(error_text)
-    }
-  )
+    js_parsed = tryCatch(eval(expr = js_expr, envir = e),
+      error = function(c){
+        # Using paste0 instead of glue to prevent code injection from input
+        error_text = paste0(
+          "Problem parsing javascript code on load of assignment ",
+          assignment(),
+          ": ",
+          c
+        )
+        safeError(error_text)
+      }
+    )
 
-  if(!is.null(js_parsed) & length(js_parsed)>0)
-    shinyjs::runjs(js_parsed)
-  
+    if(!is.null(js_parsed) & length(js_parsed)>0)
+      shinyjs::runjs(js_parsed)
+  }
 })
 ```

@@ -4,13 +4,10 @@
 \alias{getAssignments}
 \title{Get a list of assignments in a directory}
 \usage{
-getAssignments(
-  path = system.file("assignments", package = "flexTeaching"),
-  simple = TRUE
-)
+getAssignments(pkg = pkg_options()$assignment_pkg, simple = TRUE)
 }
 \arguments{
-\item{path}{Directory path}
+\item{pkg}{Package from which to pull the assignments (character string)}
 
 \item{simple}{return only a named vector (for selectInput)}
 }

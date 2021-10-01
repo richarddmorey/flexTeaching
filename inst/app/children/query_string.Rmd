@@ -2,13 +2,14 @@
 
 ```{r context='server'}
 
-observeEvent(c(assignment(), input$id, input$format, solutions(), seed()), {
+observeEvent(c(assignment(), input$id, input$format, solutions(), seed(), entry()), {
   
   req(
     !is.null(assignment()) & 
     !is.null(input$id) &
     !is.null(solutions()) &
-    !is.null(input$format)
+    !is.null(input$format) &
+    !is.null(entry())
     )
   
   query = getQueryString()
@@ -19,10 +20,11 @@ observeEvent(c(assignment(), input$id, input$format, solutions(), seed()), {
   format_str = input$format
   seed_str = seed()
   solutions_bool = solutions()
+  cache_mode_bool = cache_mode()
   
   string = glue::glue_safe("?assignment={assignment_str}&id={id_str}&format={format_str}")
-  
-  if(entry == 'solve')
+
+  if(entry() == 'solve')
     string = glue::glue_safe("{string}&seed={seed_str}&solve")
 
   if(solutions_bool)
@@ -31,6 +33,15 @@ observeEvent(c(assignment(), input$id, input$format, solutions(), seed()), {
   if(!is.null(cat_regex))
     string = glue::glue_safe("{string}&category={cat_regex}")
   
+  if(cache_mode_bool)
+    string = glue::glue_safe("{string}&cache_mode")
+
+  # Add back in disabling query variables
+  disabled_var = grep(x = names(query), pattern = "^[a-zA-Z]{1,}_disable$")
+  disabled_str = paste(names(query)[disabled_var], collapse = "&")
+  if(length(disabled_var))
+    string = glue::glue("{string}&{disabled_str}")
+
   shiny::updateQueryString(queryString = string)
   
 })

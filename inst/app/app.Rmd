@@ -5,7 +5,7 @@ output:
     theme: yeti
     favicon: 'www/favicon.ico'
     logo: 'www/wave.svg'
-    css: ["www/fingerprint.css", "www/logo.css"]
+    css: ["www/fingerprint.css", "www/logo.css", "www/fixes.css", "www/practice.css"]
     includes:
       in_header: !expr flexTeaching:::writeHeaders()
 params:
@@ -43,28 +43,48 @@ Column
 ------------------------------------
 
 ```{r context="server"}
-entry <- "solve"
-validSeed <- FALSE
+
+validSeed <- reactiveVal({FALSE})
+
+entry <- reactive({
+  ifelse(input$entry == TRUE, "solve", "download")
+})
+
+seedMatches <- reactiveVal(FALSE)
 
 seed <- reactive({
-  input$seed
+  
+  req(!is.null(input$assignment))
+
+  if(masterseed == "") stop("Master seed cannot be blank!")
+  
+  salt = all_assignment_data[[input$assignment]]$`seed-salt`
+  seed0_masterseed = flexTeaching:::animalSeed(masterseed, salt)
+
+  if(entry()=='solve'){
+    seed0 = input$seed
+    if(seed0 == seed0_masterseed){
+      seedMatches(TRUE)
+    }else{
+      seedMatches(FALSE)
+    }
+    return_seed = seed0
+  }else{
+    seedMatches(FALSE)
+    return_seed = seed0_masterseed
+  }
+  
+  return(return_seed)
+  
 })
 
 solutions <- reactive({
-  input$solutions
+  req(entry())
+  input$solutions & (entry() == "solve")
 })
 
 ```
 
 ```{r child="children/content.Rmd"}
 ```
-
-<script>
-$(document).ready(function () {
-  $("#admin_panel").hide();
-  $("#show_admin").on("click", function() {
-    $("#admin_panel").toggle();
-  });
-});
-</script>
 

@@ -13,7 +13,11 @@ writeHeaders = function(){
   allTags = htmltools::tagList()
   
   app_path = system.file("app/", package = "flexTeaching")
+  common_path = system.file("assignments/_common", package = pkg_options()$assignment_pkg)
   assignment_paths = sapply(assignments, function(a) a$path)
+  if(dir.exists(common_path))
+    assignment_paths = c(assignment_paths, common_path)
+    
   all_paths = c(app_path, assignment_paths)
   
   for(a in all_paths){

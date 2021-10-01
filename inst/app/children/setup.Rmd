@@ -1,6 +1,21 @@
+```{r context="server"}
+# You can change the package options here.
 
+# flexTeaching::pkg_options(start_practice_message = "")
+# flexTeaching::pkg_options(secret_filename = "")
+
+```
+
+```{r context="server"}
+l = readLines(flexTeaching::pkg_options('secret_filename'))
+masterseed = trimws(l[length(l)])
+```
 
 ```{r setup, include=FALSE, context="setup"}
+library(promises)
+library(future)
+plan(multisession)
+
 library(flexdashboard)
 library(magrittr)
 library(dplyr)
@@ -16,8 +31,14 @@ globals = new.env()
 ```{r, echo=FALSE}
 shiny::addResourcePath("shinyjs", system.file("srcjs", package = "shinyjs"))
 ```
+
 ```{r, context="server"}
 shinyjs::useShinyjs(html = TRUE)
+
+cache_mode = reactive({
+  query = getQueryString()
+  'cache_mode' %in% names(query)
+})
 ```
 <script src="shinyjs/inject.js"></script>
 

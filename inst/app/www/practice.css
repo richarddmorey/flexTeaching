@@ -1,0 +1,35 @@
+.navbar.navbar-inverse {
+    background-color: #772953;
+    border-color: #511c39;
+}
+
+.section.sidebar {
+  top: 51px;
+  background-color: rgba(119, 41, 83, 0.1);
+}
+
+.value-box {
+  color: inherit;
+}
+
+.bg-primary {
+  background-color: rgba(221, 72, 20, 0.3);
+}
+
+.nav-tabs-custom > .nav-tabs > li.active {
+  border-top-color: rgba(221, 72, 20, 1);
+}
+
+
+div.navbar-inverse.navbar-practice {
+  background-color: #008cba;
+}
+
+#dashboard-container div.sidebar-practice {
+  background-color: rgba(0, 140, 186, 0.1);
+}
+
+div.navbar-header span.title-practice {
+  color: #ffffff;
+}
+

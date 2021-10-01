@@ -5,7 +5,7 @@ Use rstudio shiny+flexdashboard to create random stats assignments
 
 The flexTeaching app is an interface which allows the creation and deployment of lessons and assignments that include personalized random data, based on a random seed based on their student ID.
 
-[![Screenshot](http://learnbayes.org/images/flexTeach/flexTeach1_tn.png)](http://learnbayes.org/images/flexTeach/flexTeach1.png)
+[![Screenshot](https://github.com/richarddmorey/flexTeaching/raw/gh-pages/images/flexTeaching_ver2.gif)](https://github.com/richarddmorey/flexTeaching/raw/gh-pages/images/flexTeaching_ver2.gif)
 
 *Students* can download their personalized data sets and see the assignment. *Assignment markers* can obtain the solutions specific to that student using their ID plus the secret in use at the time the student downloaded the data set. *Students* can obtain solutions to exercises with other randomized data sets for practice.
 
@@ -20,28 +20,8 @@ Benefits:
  
 ## How can I play with the app?
 
-Just download the repository and run the corresponding `.Rmd` file in the Rstudio interface. 
+See the Wiki, ["Running the demo"](https://github.com/richarddmorey/flexTeaching/wiki/Running-the-demo)
 
-![Run button](http://learnbayes.org/images/flexTeach/run.png)
-
-
-The button may say "knit" the first time you run it; that's ok, just click it. You might have to install the packages listed below before it will run.
-
-    ## Install necessary packages
-     install.packages(c("shiny","rmarkdown","stargazer","broom","xtable",
-         "flexdashboard","digest","base64enc","haven","xlsx",
-         "lubridate"), dep=TRUE)
-
-Without Rstudio:
-
-    ## You may need to install the packages above 
-    setwd('/PATH/TO/REPOSITORY/app')
-    # For data download interface
-    rmarkdown::run('download.Rmd')
-    # For solutions interface
-    rmarkdown::run('solve.Rmd')
-
-    
 ## How can I help?
 
 You can help in three ways:
@@ -50,7 +30,3 @@ You can help in three ways:
 * *Add new features.* The project is very new. No doubt there are many features that could be added to make it more useful to you and others. Please contribute!
 
 
-
-## Current limitations
-
-The `html_fragment` assignments are flexible; however, a current limitation is that I do not know how to include the proper HTML dependencies for nice features like `plotly` and other `htmlwidgets`. Hopefully we'll figure out a way around this.
