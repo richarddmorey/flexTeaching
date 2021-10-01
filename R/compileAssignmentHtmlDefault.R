@@ -14,7 +14,7 @@ compileAssignmentHtmlDefault <- function(path, envir = new.env(parent = .GlobalE
   tmpfn = tempfile(fileext = ".html")
   input = file.path(path, "index.Rmd")
   output_format = rmarkdown::html_fragment(pandoc_args = c("--metadata", "title= " ) )
-  knitr::knit_hooks$set(seed.status = seedStatusHook)
+  knitr::knit_hooks$set(seed.status = flexTeaching::seedStatusHook)
   rmarkdown::render(input = input, output_format = output_format, output_file = tmpfn,
                     intermediates_dir = dirname(tmpfn),
                     envir = envir, quiet = TRUE, ...)

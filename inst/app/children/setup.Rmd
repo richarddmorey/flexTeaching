@@ -12,6 +12,10 @@ masterseed = trimws(l[length(l)])
 ```
 
 ```{r setup, include=FALSE, context="setup"}
+library(promises)
+library(future)
+plan(multisession)
+
 library(flexdashboard)
 library(magrittr)
 library(dplyr)
