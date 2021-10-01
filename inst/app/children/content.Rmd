@@ -111,45 +111,38 @@ output$buttonBox <- renderUI({
   init_list() %...>% {
     bl = lapply(names(bs), function(b){
       button_reactives[[b]] = reactive({
-        shinybusy::show_modal_spinner(text = "Creating file...")
-        fc = try(
-          {
-            bs[[b]]$f(
-              assignment_data,
-              id_,
-              seed_,
-              solutions,
-              format_,
-              ., # init_list()
-              entry_
-              )
-          })
-        shinybusy::remove_modal_spinner()
-        if(inherits(fc, "try-error")){
-          err_text = glue::glue("There was an error creating the file. {paste(fc)}")
-          shinyWidgets::sendSweetAlert(
-            session = session,
-            title = "Error...",
-            text = err_text,
-            type = "error"
-          )
-          ## There doesn't seem to be a good way of cancelling a download.
-          ## See: https://github.com/rstudio/shiny/issues/2611
-          stop(err_text)
-        }else{
-          return(fc)
-        }
+        init_list = .
+        future_promise(
+          bs[[b]]$f(
+            assignment_data,
+            id_,
+            seed_,
+            solutions,
+            format_,
+            init_list,
+            entry_
+          ),
+        seed = NULL
+        )
     }) %>% bindCache(assignment(), input$id, seed(), solutions(), input$format, b, assignment_accessible(), entry(), seedMatches())
     
     output[[glue::glue("button_{b}")]] <- downloadHandler(
       filename = function() {
-        button_reactives[[b]]()$fn
+        bs[[b]]$fn(
+            assignment_data,
+            id_,
+            seed_,
+            solutions,
+            format_,
+            init_list(),
+            entry_
+          )
       },
       content = function(f) {
-        d = button_reactives[[b]]()$d
         con = file(description = f, open = "wb")
-        writeBin(object = d, con = con)
-        close(con)
+        d = button_reactives[[b]]() %...>%
+          `[[`('d') %...>% 
+          { writeBin(object = ., con = con); close(con) }
       }
     )
     
