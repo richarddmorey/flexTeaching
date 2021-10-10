@@ -250,7 +250,7 @@ observeEvent(render_out(), {
   
   init_list() %...>% {
     e = new.env(parent = .GlobalEnv)
-    e$.flexteach_info = init_list()
+    e$.flexteach_info = .
     js_expr = parse(text = glue::glue('glue::glue("{js_content}")'))
   
     js_parsed = tryCatch(eval(expr = js_expr, envir = e),
