@@ -1,3 +1,6 @@
+<script src='https://unpkg.com/survey-jquery'></script>
+
+
 ```{r context="server"}
 # You can change the package options here.
 
