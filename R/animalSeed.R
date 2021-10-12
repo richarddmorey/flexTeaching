@@ -5,7 +5,6 @@
 #' @importFrom digest sha1
 #' @importFrom dplyr `%>%`
 #' @importFrom R.utils withSeed
-#' @importFrom noah pseudonymize
 #' @return
 #'
 animalSeed <- function(seed, salt){
