@@ -12,7 +12,7 @@ conditionalPanel(
       uiOutput("masterseedbox"),
       id = "admin_panel"
     ),
-    style = "unite", icon = icon("gear"),
+    style = "unite", icon = icon("cog"),
     status = "default", width = "100%",
     tooltip = "Seed options",
     animate = animateOptions(
