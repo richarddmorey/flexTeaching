@@ -32,19 +32,18 @@ output$seedbox <- renderUI({
   curr_seed = isolate(input$seed)
   
   # initial setting from query string
-  if(is.null(input$masterseed) || is.null(assignment())){
+  if(is.null(input$masterseed) || is.null(input$assignment)){
     seed0 = if ('seed' %in% names(query)) query[['seed']] else flexTeaching::pkg_options()$initial_seed
   }else{
-    salt = all_assignment_data[[assignment()]]$`seed-salt`
+    salt = all_assignment_data[[input$assignment]]$`seed-salt`
     seed0 = flexTeaching:::animalSeed(input$masterseed, salt)
     if (input$masterseed == ""){
       seed0 = curr_seed
     }
   }
 
-  on.exit({validSeed(TRUE)})
   el = textInput("seed", label = "Seed:", width = "150px", value = seed0)
-  if('seed_disable' %in% names(query)){
+  if( ('seed_disable' %in% names(query)) || isTruthy(input$masterseed) ){
     return(shinyjs::disabled(el))
   }else{
     return(el)
@@ -64,6 +63,18 @@ output$masterseedbox <- renderUI({
   }else{
     return(el)
   }
+})
+
+observeEvent(input$masterseed, {
+  
+  req(entry() == 'solve')
+  
+  if(shiny::isTruthy(input$masterseed)){
+    shinyjs::disable('seed')    
+  }else{
+    shinyjs::enable('seed')    
+  }
+
 })
 
 output$solutionsbox <- renderUI({

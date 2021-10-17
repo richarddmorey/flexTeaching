@@ -2,9 +2,9 @@
 
 assignment_accessible = reactive({
     
-  req(assignment())
+  req(input$assignment)
 
-  assignment = assignment()
+  assignment = input$assignment
   assignment_data = all_assignment_data[[assignment]]
   
   assignment_data$restrict_before<Sys.time()
@@ -16,9 +16,9 @@ assignment_accessible = reactive({
 ```{r context="server"}
 init_list = reactive({
   
-  req(assignment(), isolate(validSeed()), entry())
+  req(input$assignment, seed(), entry())
 
-  assignment = assignment()
+  assignment = input$assignment
   assignment_data = all_assignment_data[[assignment]]
   
   fmt = flexTeaching::pkg_options()$date_format_prnt
@@ -61,7 +61,7 @@ init_list = reactive({
     return(ret_list)
   }, seed = NULL)
     
-}) %>% bindCache(assignment(), input$id, seed(), solutions(), assignment_accessible() || cache_mode(), entry(), seedMatches())
+}) %>% bindCache(input$assignment, input$id, seed(), solutions(), assignment_accessible() || cache_mode(), entry(), seedMatches())
 ```
 
 
@@ -73,9 +73,9 @@ uiOutput("buttonBox", style = "width: 100%; margin: auto;")
 
 output$buttonBox <- renderUI({
   
-  req(assignment(), entry())
+  req(input$assignment, entry())
   
-  assignment = assignment()
+  assignment = input$assignment
   assignment_data = all_assignment_data[[assignment]]
   
   req(
@@ -125,7 +125,7 @@ output$buttonBox <- renderUI({
             )
           },
         seed = NULL)
-    }) %>% bindCache(assignment(), input$id, seed(), solutions(), input$format, b, assignment_accessible(), entry(), seedMatches())
+    }) %>% bindCache(input$assignment, input$id, seed(), solutions(), input$format, b, assignment_accessible(), entry(), seedMatches())
     
     output[[glue::glue("button_{b}")]] <- downloadHandler(
       filename = function() {
@@ -177,8 +177,8 @@ uiOutput("assignmentBox")
 ```{r context="server"}
 render_out <- reactive({
   
-  req(assignment(), isolate(validSeed()), entry())
-  assignment = assignment()
+  req(input$assignment, seed(), entry())
+  assignment = input$assignment
   assignment_data = all_assignment_data[[assignment]]
   
   id = input$id
@@ -199,7 +199,7 @@ render_out <- reactive({
   }
   
 }) %>%
-  bindCache(assignment(), input$id, seed(), solutions(), assignment_accessible() || cache_mode(), entry(), seedMatches())
+  bindCache(input$assignment, input$id, seed(), solutions(), assignment_accessible() || cache_mode(), entry(), seedMatches())
 ```
 
 ```{r context="server"}
@@ -211,8 +211,8 @@ output$assignmentBox <- renderUI({
 ```{r context="server"}
 identicon_obs <- observe({
   
-  req(assignment(), isolate(validSeed()), entry())
-  assignment = assignment()
+  req(input$assignment, seed(), entry())
+  assignment = input$assignment
   assignment_data = all_assignment_data[[assignment]]
   
   # Identicon
@@ -233,8 +233,8 @@ identicon_obs <- observe({
 ```{r context="server"}
 observeEvent(render_out(), {
   
-  req(assignment(), isolate(validSeed()), entry())
-  assignment = assignment()
+  req(input$assignment, seed(), entry())
+  assignment = input$assignment
   assignment_data = all_assignment_data[[assignment]]
   
   req(
@@ -258,7 +258,7 @@ observeEvent(render_out(), {
         # Using paste0 instead of glue to prevent code injection from input
         error_text = paste0(
           "Problem parsing javascript code on load of assignment ",
-          assignment(),
+          input$assignment,
           ": ",
           c
         )

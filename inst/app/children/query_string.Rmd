@@ -2,10 +2,10 @@
 
 ```{r context='server'}
 
-observeEvent(c(assignment(), input$id, input$format, solutions(), seed(), entry()), {
+observeEvent(c(input$assignment, input$id, input$format, solutions(), seed(), entry()), {
   
   req(
-    !is.null(assignment()) & 
+    !is.null(input$assignment) & 
     !is.null(input$id) &
     !is.null(solutions()) &
     !is.null(input$format) &
@@ -15,7 +15,7 @@ observeEvent(c(assignment(), input$id, input$format, solutions(), seed(), entry(
   query = getQueryString()
   cat_regex = query[['category']]
   
-  assignment_str = assignment()
+  assignment_str = input$assignment
   id_str = input$id
   format_str = input$format
   seed_str = seed()
