@@ -1,0 +1,28 @@
+
+<br>
+
+```{r}
+title = glue::glue('{assignment_data$category} / {assignment_data$title}')
+
+tags$div(
+  tags$span('Assignment:', class = 'control-label'),
+  tags$input(value = title, disabled = TRUE, class = 'shiny-bound-input form-control')
+)
+
+tags$div(
+  tags$span('ID:', class = 'control-label'),
+  tags$input(value = id, disabled = TRUE, class = 'shiny-bound-input form-control')
+)
+```
+
+<br>
+
+```{r}
+includeScript(path = system.file("app/www/jdenticon.min.js", package = "flexTeaching"))
+tags$div(
+  title="Fingerprint", class="flexteaching-fingerprint-container",
+  tags$svg(id="flexteaching-fingerprint")
+)
+
+```
+

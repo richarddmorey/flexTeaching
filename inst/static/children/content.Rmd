@@ -1,0 +1,47 @@
+
+```{css}
+
+.button-buffer {
+  margin: 10px 10px 10px 0px;
+  background-color: #cecece;
+  border-color: #adadad;
+  color: black;
+}
+
+```
+
+```{r}
+z = lapply(bl, function(b){
+  tf = file.path(tempdir(), basename(b$fn))
+  writeBin(object = b$content, con = tf)
+  downloadthis::download_file(
+    path = tf,
+    button_label = b$label,
+    button_type = "primary",
+    has_icon = TRUE,
+    icon = glue::glue("fa fa-{b$icon}"),
+    self_contained = FALSE,
+    class = "button-buffer"
+    )
+})
+
+do.call(tagList, z)
+
+```
+
+### Assignment
+
+
+```{r}
+content_uri = base64enc::dataURI(
+  charToRaw(content),
+  mime = 'text/html;charset=UTF-8'
+  )
+content_uri0 = strsplit(content_uri, split = ',')[[1]][2]
+tags$div(
+  content_uri0,
+  id = 'hidden_content',
+  style = 'display: none;',
+  class='shiny-html-output'
+  )
+```

@@ -1,0 +1,57 @@
+---
+title: flexTeaching
+output: 
+  flexdashboard::flex_dashboard:
+    theme: yeti
+    favicon: '../app/www/favicon.ico'
+    logo: '../app/www/wave.svg'
+    css: ["../app/www/fingerprint.css", "../app/www/logo.css", "../app/www/fixes.css", "../app/www/practice.css"]
+    includes:
+      in_header: !expr flexTeaching:::writeHeaders()
+---
+
+
+```{r include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(htmltools)
+
+```
+
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+
+```{r child="children/sidebar_main.Rmd"}
+```
+
+Column
+------------------------------------
+
+
+```{r child="children/content.Rmd"}
+```
+
+
+
+```{r}
+tags$script(
+  glue::glue("$(function() {{ jdenticon.updateSvg('#flexteaching-fingerprint', '{seed}'); }});")
+)
+```
+
+```{js}
+$(function() {
+  var uri_content = $('#hidden_content').text();
+  var content = atob(uri_content);
+  setTimeout(function(){
+    $('#hidden_content')
+      .css('display', 'block')
+      .html(content)
+      .parents('.chart-stage')
+      .css('overflow','scroll');
+    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+  }, 1000)
+});
+```
+
