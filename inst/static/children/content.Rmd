@@ -32,7 +32,7 @@ do.call(tagList, z)
 ### Assignment
 
 
-```{r}
+```{r eval = !exists('.flexteach_plain')}
 content_uri = base64enc::dataURI(
   charToRaw(content),
   mime = 'text/html;charset=UTF-8'
@@ -45,3 +45,11 @@ tags$div(
   class='shiny-html-output'
   )
 ```
+
+```{r eval = exists('.flexteach_plain')}
+tags$div(
+  content,
+  class='shiny-html-output'
+  )
+```
+

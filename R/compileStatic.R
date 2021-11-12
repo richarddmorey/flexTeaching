@@ -16,13 +16,14 @@
 #' @param solutions (boolean; default: `FALSE`) render the solutions?
 #' @param entry mode to use (`solve` vs `download` currently)
 #' @param format data format (for the buttons)
+#' @param plain if `TRUE`, do not use flexDashboard
 #' @param ... Additional arguments to `rmarkdown::render`
 #'
 #' @return The return value of `rmarkdown::render`
 #' @export
 #'
 #' @examples
-compileStatic = function(id, assignment, masterseed, solutions = FALSE, entry = 'download', format = 'SPSS', ...){
+compileStatic = function(id, assignment, masterseed, solutions = FALSE, entry = 'download', format = 'SPSS', plain = FALSE, ...){
   
   td = tempfile(pattern = 'dir')
   dir.create(td)
@@ -94,7 +95,9 @@ compileStatic = function(id, assignment, masterseed, solutions = FALSE, entry = 
     recursive = TRUE
   )
   
+  Rmd_fn = ifelse(plain, 'static/index_noflex.Rmd', 'static/index.Rmd')
+  
   rmarkdown::render(
-    input = file.path(td, 'static/index.Rmd'), ...
+    input = file.path(td, Rmd_fn), ...
     )
 }

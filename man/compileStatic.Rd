@@ -11,6 +11,7 @@ compileStatic(
   solutions = FALSE,
   entry = "download",
   format = "SPSS",
+  plain = FALSE,
   ...
 )
 }
@@ -26,6 +27,8 @@ compileStatic(
 \item{entry}{mode to use (`solve` vs `download` currently)}
 
 \item{format}{data format (for the buttons)}
+
+\item{plain}{if `TRUE`, do not use flexDashboard}
 
 \item{...}{Additional arguments to `rmarkdown::render`}
 }

@@ -1,0 +1,47 @@
+---
+title: "`r glue::glue('{assignment_data$category} / {assignment_data$title}')`"
+output: 
+  rmarkdown::html_document:
+    favicon: '../app/www/favicon.ico'
+    logo: '../app/www/wave.svg'
+    css: ["../app/www/fingerprint.css", "../app/www/logo.css", "../app/www/fixes.css", "../app/www/practice.css"]
+    includes:
+      in_header: !expr flexTeaching:::writeHeaders()
+---
+
+```{css echo=FALSE}
+@media print{a[href]:after {display:none !important}}
+```
+
+```{r include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(htmltools)
+
+.flexteach_plain = TRUE
+```
+
+
+```{r child="children/sidebar_main.Rmd"}
+```
+
+
+```{r child="children/content.Rmd"}
+```
+
+
+
+```{r}
+tags$script(
+  glue::glue("$(function() {{ jdenticon.updateSvg('#flexteaching-fingerprint', '{seed}'); }});")
+)
+```
+
+```{js}
+$(function() {
+  setTimeout(function(){
+    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+  }, 1000)
+});
+```
+
