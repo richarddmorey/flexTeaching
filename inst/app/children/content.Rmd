@@ -129,13 +129,14 @@ output$buttonBox <- renderUI({
     
     output[[glue::glue("button_{b}")]] <- downloadHandler(
       filename = function() {
+        init_list = .
         bs[[b]]$fn(
             assignment_data,
             id_,
             seed_,
             solutions,
             format_,
-            init_list(),
+            init_list,
             entry_
           )
       },
