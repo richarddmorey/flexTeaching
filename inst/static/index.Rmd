@@ -41,9 +41,21 @@ tags$script(
 ```
 
 ```{js}
+// See https://stackoverflow.com/a/30106551/1129889
+function b64DecodeUnicode(str) {
+  // Going backwards: from bytestream, to percent-encoding, to original string.
+  return decodeURIComponent(
+    atob(str)
+      .split('')
+      .map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        })
+        .join(''));
+}
+
 $(function() {
   var uri_content = $('#hidden_content').text();
-  var content = atob(uri_content);
+  var content = b64DecodeUnicode(uri_content);
   setTimeout(function(){
     $('#hidden_content')
       .css('display', 'block')
