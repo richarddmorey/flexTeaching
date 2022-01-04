@@ -25,7 +25,7 @@ z = lapply(bl, function(b){
     )
 })
 
-do.call(tagList, z)
+tags$div(do.call(tagList, z))
 
 ```
 

@@ -53,17 +53,30 @@ function b64DecodeUnicode(str) {
         .join(''));
 }
 
-$(function() {
-  var uri_content = $('#hidden_content').text();
-  var content = b64DecodeUnicode(uri_content);
-  setTimeout(function(){
+function makeContentVisible(){
+  // check to see if flexdashboard init has run
+  // if it has, the parent of dashboard-container will not be <body>
+  const flexInit = !$('#dashboard-container').parent().is('body');
+  
+  // Also check to see if mathjax is defined
+  const mathjaxInit = typeof MathJax !== 'undefined'
+  // if so, decode the content and make visible
+    
+  if(flexInit & mathjaxInit){
+  	const uri_content = $('#hidden_content').text();
+  	const content = b64DecodeUnicode(uri_content);
+      
     $('#hidden_content')
       .css('display', 'block')
       .html(content)
       .parents('.chart-stage')
-      .css('overflow','scroll');
+      		.css('overflow','scroll');
     MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-  }, 1000)
-});
+  }else{
+    setTimeout(makeContentVisible, 200);
+  }
+}
+
+$(function() { makeContentVisible(); });
 ```
 
