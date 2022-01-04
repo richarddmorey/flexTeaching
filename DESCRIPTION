@@ -33,5 +33,7 @@ Imports:
     cachem,
     withr,
     future,
-    promises
+    promises,
+Suggests:
+    downloadthis
 RoxygenNote: 7.1.1
